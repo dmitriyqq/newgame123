@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameModel", "GameModel\GameModel.csproj", "{12BFEB17-280C-41DC-80AA-A88994A7BE92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunDesktop", "RunDesktop\RunDesktop.csproj", "{CE095EF6-9C7B-4F77-966B-EC9E0FCD93AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameRenderer", "GameRenderer\GameRenderer.csproj", "{D01D9186-62D3-4E32-8EDF-AC589CF27ACF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameUI", "GameUI\GameUI.csproj", "{681D10AA-7715-490C-AE9D-F792D5D71842}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12BFEB17-280C-41DC-80AA-A88994A7BE92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12BFEB17-280C-41DC-80AA-A88994A7BE92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12BFEB17-280C-41DC-80AA-A88994A7BE92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12BFEB17-280C-41DC-80AA-A88994A7BE92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE095EF6-9C7B-4F77-966B-EC9E0FCD93AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE095EF6-9C7B-4F77-966B-EC9E0FCD93AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE095EF6-9C7B-4F77-966B-EC9E0FCD93AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE095EF6-9C7B-4F77-966B-EC9E0FCD93AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D01D9186-62D3-4E32-8EDF-AC589CF27ACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D01D9186-62D3-4E32-8EDF-AC589CF27ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D01D9186-62D3-4E32-8EDF-AC589CF27ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D01D9186-62D3-4E32-8EDF-AC589CF27ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{681D10AA-7715-490C-AE9D-F792D5D71842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{681D10AA-7715-490C-AE9D-F792D5D71842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{681D10AA-7715-490C-AE9D-F792D5D71842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{681D10AA-7715-490C-AE9D-F792D5D71842}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
