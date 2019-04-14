@@ -89,9 +89,6 @@ namespace GameRenderer
             {
                 Alpha += e.YDelta * RotationSpeed;
                 Theta += e.XDelta * RotationSpeed;
-
-                float hpi = (float) Math.PI / 2.0f;
-                float pi = (float) Math.PI;
             }
         }
 
@@ -107,20 +104,21 @@ namespace GameRenderer
 
         public (vec3 start, vec3 dir) CastRay(float x1, float y1)
         {
-            float x = 2.0f * x1 / Width - 1.0f;
+            float x = (2.0f * x1) / Width - 1.0f;
             float y = 1.0f - (2.0f * y1) / Height;
-            float z = 0.0f;
+            float z = 1.0f;
 
             var rayNds = new vec3(x, y, z);
             var rayClip = new vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
             var rayEye =  glm.inverse(ProjectionMatrix) * rayClip;
             rayEye = new vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
-            var rayWor = glm.inverse(ViewMatrix) * rayEye;
+            var rayWor1 = glm.inverse(ViewMatrix) * rayEye;
+            vec3 rayWor = glm.normalize(new vec3(rayWor1.x, rayWor1.y, rayWor1.z));
 
-            var origin = y * Up + x * Right;
+            var origin = y * Up - x * Right;
             var start = new vec3( Position.x + origin.x, Position.y + origin.y, Position.z + origin.z);
-
-            return (start, new vec3(rayWor));
+            var end = new vec3(start.x + 1000.0f * rayWor.x, start.y + 1000.0f * rayWor.y, start.z + 1000.0f * rayWor.z);
+            return (start, glm.normalize(end - start));
         }
     }
 }

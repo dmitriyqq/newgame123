@@ -17,11 +17,15 @@ namespace GameRenderer
 
         protected List<Mesh> childs;
 
+        public Mesh()
+        {
+            
+        }
+        
         public Mesh(Geometry geometry, Material material)
         {
             Geometry = geometry;
             Material = material;
-            Scale = new vec3(1.0f, 1.0f, 1.0f);
         }
 
         public mat4 GetModelMatrix()

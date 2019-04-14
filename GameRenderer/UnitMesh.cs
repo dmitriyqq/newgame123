@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GameModel;
+using GameModel.Tasks;
 using GlmNet;
 
 namespace GameRenderer
@@ -19,8 +20,8 @@ namespace GameRenderer
         public UnitMesh(Geometry geometry, Material material, Unit unit) : base(geometry, material)
         {
             Unit = unit;
-
-            HitBoxMesh = new Mesh(new SphereGeometry(Unit.Radius, new vec4(1.0f, 0.5f, 0.4f, 0.3f)),
+            var color = new vec4(unit.Player.Color.ToGlm(), 1.0f);
+            HitBoxMesh = new Mesh(new SphereGeometry(Unit.Radius, color),
                 new ColorMaterial());
             
             TargetLineMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 1.0f, 0.4f, 1.0f)), new ColorMaterial());
@@ -35,12 +36,29 @@ namespace GameRenderer
 
         private void updateDebugInformation()
         {
-            if (Unit.Target != null)
+            Vector target = null;
+
+            if (Unit.CurrentTask is Follow follow)
             {
-                (TargetLineMesh.Geometry as LineGeometry)?.Update(Unit.Position.ToGlm(), Unit.Target.Position.ToGlm());
+                target = follow.Target.Position;
+            }
+
+            if (Unit.CurrentTask is Move move)
+            {
+                target = move.Target;
+            }
+
+            if (Unit.CurrentTask is Attack attack)
+            {
+                target = attack.Target.Position;
+            }
+
+            if (target != null)
+            {
+                (TargetLineMesh.Geometry as LineGeometry)?.Update(Unit.Position.ToGlm(), target.ToGlm());
             }
             
-            (OrientationMesh.Geometry as LineGeometry).Update(Unit.Position.ToGlm(), Unit.Position.ToGlm() + 3.0f * Unit.Orientation.ToGlm());
+            (OrientationMesh.Geometry as LineGeometry)?.Update(Unit.Position.ToGlm(), Unit.Position.ToGlm() + 3.0f * Unit.Orientation.ToGlm());
 
             HitBoxMesh.Position = Unit.Position.ToGlm();
         }

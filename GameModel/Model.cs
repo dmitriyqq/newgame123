@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameModel.Tasks;
 
 namespace GameModel
 {
@@ -25,21 +26,23 @@ namespace GameModel
                 unit.Update(deltaTime);
             }
 
-            if (Ticks % 100 == 5)
+            if (Ticks % 100 == 5 && units.Count < 5)
             {
                 var unit = new Unit();
-                AddUnit(unit);
                 unit.Player = players[0];
                 unit.Position = Vector.Random() * 25.0f - new Vector(25.0f, 0.0f, 25.0f);
                 unit.Orientation = Vector.Random();
-                unit.Velocity = 0.5f;
-                
-                unit = new Unit();
                 AddUnit(unit);
-                unit.Player = players[0];
-                unit.Position = Vector.Random() * 25.0f - new Vector(25.0f);
-                unit.Orientation = Vector.Random();
-                unit.Velocity = 0.5f;
+                
+                
+                var unit2 = new Unit();
+                unit2.Player = players[1];
+                unit2.Position = Vector.Random() * 25.0f - new Vector(25.0f);
+                unit2.Orientation = Vector.Random();
+                AddUnit(unit2);
+
+                unit.Do(new Attack(unit2));
+                unit2.Do(new Attack(unit));
             }
             
             Ticks++;

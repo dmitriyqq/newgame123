@@ -28,7 +28,7 @@ namespace GameModel
 
         public float dotProduct(Vector v)
         {
-            return (X * v.X + Y * v.Y + Z * v.Z) / (Length() * v.Length());
+            return X * v.X + Y * v.Y + Z * v.Z;
         }
 
         public static Vector operator +(Vector a, Vector b)

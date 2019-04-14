@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using Assimp;
 using GlmNet;
 using OpenTK.Graphics.OpenGL;
 
@@ -29,6 +30,16 @@ namespace GameModel
         public static Vector ToVector(this vec3 v)
         {
             return new Vector(v.x, v.y, v.z);
+        }
+
+        public static vec3 ToGlm(this Vector3D v)
+        {
+            return new vec3(v.X, v.Y, v.Z);
+        }
+        
+        public static vec4 ToGlm(this Color4D v)
+        {
+            return new vec4(v.R, v.G, v.B, v.A);
         }
     }
 }

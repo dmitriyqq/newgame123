@@ -41,13 +41,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
-      <HintPath>..\packages\OpenTK.3.0.1\lib\net20\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
+      <HintPath>..\packages\OpenTK.2.0.0\lib\net20\OpenTK.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
@@ -58,7 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
-    <Compile Include="Geometries\AssimpGeometry.cs" />
     <Compile Include="Geometries\AxiesGeometry.cs" />
     <Compile Include="Geometries\ColorVertex.cs" />
     <Compile Include="Geometries\ColorVertexGeometry.cs" />
@@ -67,7 +67,6 @@
     <Compile Include="Geometries\Geometry.cs" />
     <Compile Include="Geometries\GridGeometry.cs" />
     <Compile Include="Geometries\LineGeometry.cs" />
-    <Compile Include="Geometries\ModelGeometry.cs" />
     <Compile Include="Geometries\SphereGeometry.cs" />
     <Compile Include="Geometries\TextureVertex.cs" />
     <Compile Include="Geometries\TextureVertexGeometry.cs" />
@@ -76,10 +75,13 @@
     <Compile Include="Material\Material.cs" />
     <Compile Include="Material\TextureMaterial.cs" />
     <Compile Include="Mesh.cs" />
+    <Compile Include="ParticleEngine.cs" />
+    <Compile Include="Scene.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="ShaderProgram.cs" />
+    <Compile Include="Texture.cs" />
     <Compile Include="UnitMesh.cs" />
     <Compile Include="VectorHelper.cs" />
   </ItemGroup>
@@ -91,6 +93,10 @@
     <ProjectReference Include="..\GameModel\GameModel.csproj">
       <Project>{12bfeb17-280c-41dc-80aa-a88994a7be92}</Project>
       <Name>GameModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameUI\GameUI.csproj">
+      <Project>{681d10aa-7715-490c-ae9d-f792d5d71842}</Project>
+      <Name>GameUI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
