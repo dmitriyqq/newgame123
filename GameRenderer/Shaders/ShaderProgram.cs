@@ -15,7 +15,7 @@ namespace GameRenderer
             id = GL.CreateProgram();
             GL.AttachShader(id, vertShader.id);
             GL.AttachShader(id, fragShader.id);
-            GL.LinkProgram(id);    
+            GL.LinkProgram(id);
         }
 
         public void Use()
@@ -48,7 +48,7 @@ namespace GameRenderer
             GL.Uniform1(GL.GetUniformLocation(id, name), f);
         }
 
-        public void UniformCamera(Camera camera)
+        public virtual void UniformCamera(Camera camera)
         {
             UniformMat4("view", camera.ViewMatrix);
             UniformMat4("projection", camera.ProjectionMatrix);

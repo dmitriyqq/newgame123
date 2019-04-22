@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameRenderer", "GameRendere
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameUI", "GameUI\GameUI.csproj", "{681D10AA-7715-490C-AE9D-F792D5D71842}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameRenderer.Metadata", "GameRenderer.Metadata\GameRenderer.Metadata.csproj", "{77FB3200-7120-47AD-ACFA-51A127DFF120}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{681D10AA-7715-490C-AE9D-F792D5D71842}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{681D10AA-7715-490C-AE9D-F792D5D71842}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{681D10AA-7715-490C-AE9D-F792D5D71842}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77FB3200-7120-47AD-ACFA-51A127DFF120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77FB3200-7120-47AD-ACFA-51A127DFF120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77FB3200-7120-47AD-ACFA-51A127DFF120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77FB3200-7120-47AD-ACFA-51A127DFF120}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -7,10 +7,21 @@ namespace GameRenderer
 {
     public class Camera
     {
-        public vec3 Target { get; set; }
+        private vec3 target;
+        public vec3 Target
+        {
+            get => followObject?.Position ?? target;
+            set { target = value;
+                followObject = null;
+            }
+        }
+
         public float Radius { get; set; } = 10.0f;
         public float Theta { get; set; }
         public float Alpha { get; set; }
+
+        public IDrawable followObject;
+
         public vec3 Position
         {
             get
@@ -94,7 +105,11 @@ namespace GameRenderer
 
         public void OnMouseDown(MouseButtonEventArgs e)
         {
-            rotating = true;
+            var s = Keyboard.GetState();
+            if (s.IsKeyDown(Key.LShift))
+            {
+                rotating = true;                
+            }
         }
 
         public void OnMouseUp(MouseButtonEventArgs e)
@@ -119,6 +134,11 @@ namespace GameRenderer
             var start = new vec3( Position.x + origin.x, Position.y + origin.y, Position.z + origin.z);
             var end = new vec3(start.x + 1000.0f * rayWor.x, start.y + 1000.0f * rayWor.y, start.z + 1000.0f * rayWor.z);
             return (start, glm.normalize(end - start));
+        }
+
+        public void Follow(IDrawable d)
+        {
+            followObject = d;
         }
     }
 }

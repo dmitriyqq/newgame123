@@ -31,6 +31,11 @@ namespace GameModel
         {
             return new Vector(v.x, v.y, v.z);
         }
+        
+        public static OpenTK.Vector3 ToVector3(this vec3 v)
+        {
+            return new OpenTK.Vector3(v.x, v.y, v.z);
+        }
 
         public static vec3 ToGlm(this Vector3D v)
         {
@@ -40,6 +45,12 @@ namespace GameModel
         public static vec4 ToGlm(this Color4D v)
         {
             return new vec4(v.R, v.G, v.B, v.A);
+        }
+
+        public static mat4 GetModelMatrix(vec3 position, vec3 rotation, vec3 scale)
+        {
+            var c = glm.lookAt(position, position + rotation, new vec3(0.0f, 1.0f, 0.0f));
+            return c * glm.scale(new mat4(1), scale);
         }
     }
 }

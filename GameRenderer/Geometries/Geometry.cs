@@ -25,12 +25,14 @@ namespace GameRenderer
             Offset = offset;
             Count = count;
         }
+
+        protected void UseVao() =>  GL.BindVertexArray(vao);
         
-        public void Draw()
+        public virtual void Draw()
         {
             if (Count != 0)
             {
-                GL.BindVertexArray(vao);
+                UseVao();
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
                 GL.DrawArrays(Mode, Offset, Count);
             }

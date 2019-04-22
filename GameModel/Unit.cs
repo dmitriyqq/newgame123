@@ -7,7 +7,9 @@ namespace GameModel
 {
     public class Unit
     {
-        public Vector Position;
+        public float Health = 100.0f;
+        
+        public Vector Position = new Vector(0.0f, 0.0f, 0.0f);
 
         public Vector Orientation = Vector.Random().Normalize();
 
@@ -27,16 +29,22 @@ namespace GameModel
 
         private Stack<Task> tasks = new Stack<Task>();
 
-        public Weapon Weapon { get; set; } = new Weapon();
-        
+        protected List<Weapon> weapons = new List<Weapon>();
         public Task CurrentTask => tasks.Count != 0 ? tasks.Peek() : null;
+        public float MinimalShootingRange { get; private set; } = -1;
 
-        public void Update(float deltaTime)
+        protected Model model;
+
+        public Unit(Model model)
+        {
+            this.model = model;
+        }
+
+        public virtual void Update(float deltaTime)
         {
             Position += Orientation * Velocity * deltaTime;
             Velocity += Acceleration;
-            Weapon.UpdateInstance(deltaTime);
-            
+
             if (CurrentTask is Move move)
             {
                 moveTo(move.Target, 1.0f, deltaTime);
@@ -49,20 +57,39 @@ namespace GameModel
 
             if (CurrentTask is Attack attack)
             {
-                if (Position.Distance(attack.Target.Position) < Weapon.ShootingRange)
+                var distance = Position.Distance(attack.Target.Position);
+                if (distance < MinimalShootingRange)
                 {
-                    var orientation = attack.Target.Position - Position;
-                    Weapon.Shoot(Position, orientation, Player.Color);
-                }
-                else
+                    foreach (var weapon in weapons)
+                    {
+                        if (distance < weapon.ShootingRange)
+                        {
+                            var orientation = attack.Target.Position - Position;
+                            Console.WriteLine("Shoot!");
+                            weapon.Shoot(Position, orientation, Player);
+                        }
+
+                    }
+                } else
                 {
-                    Do(new Follow(attack.Target, Weapon.ShootingRange));
+                    Do(new Follow(attack.Target, MinimalShootingRange));
                 }
+
             }
-            
+
+            foreach (var weapon in weapons)
+            {
+                weapon.Update(deltaTime);
+            }
         }
 
-        public void Do(Task task)
+        public virtual void AddWeapon(Weapon w)
+        {
+            MinimalShootingRange = MinimalShootingRange < 0.0f ? w.ShootingRange : Math.Min(w.ShootingRange, MinimalShootingRange);
+            weapons.Add(w);
+        }
+        
+        public virtual void Do(Task task)
         {
             tasks.Push(task);
         }
@@ -72,7 +99,7 @@ namespace GameModel
             tasks.Pop();
         }
 
-        private void moveTo(Vector target, float range, float deltaTime)
+        protected void moveTo(Vector target, float range, float deltaTime)
         {
             if (Position.Distance(target) < range)
             {
@@ -136,6 +163,11 @@ namespace GameModel
         public bool SelectUnit(Unit u)
         {
             return false;
+        }
+
+        public void Heal(float healAmount)
+        {
+            Health += healAmount;
         }
     }
 }

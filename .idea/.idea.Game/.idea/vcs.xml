@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/QuickFont" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/SharpFont" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/gwen-nolegacy-opentk-renderer" vcs="Git" />
   </component>
 </project>

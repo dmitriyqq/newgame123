@@ -10,16 +10,16 @@ namespace GameModel
 
         public Vector Position;
 
-        public Vector Color;
+        public Player Player;
 
         public float Life = 4.0f;
 
-        public Bullet(Vector position, Vector direction, float damage, Vector color, float speed)
+        public Bullet(Vector position, Vector direction, float damage, Player player, float speed)
         {
             Position = position;
             Velocity = direction * speed;
             Damage = damage;
-            Color = color;
+            Player = player;
         }
     }
 }

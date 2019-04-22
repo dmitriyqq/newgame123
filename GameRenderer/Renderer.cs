@@ -16,27 +16,30 @@ namespace GameRenderer
     {
         private Model model;
 
-        private List<Mesh> rootMeshes = new List<Mesh>();
+        private UserInterface ui;
 
         private Camera camera;
 
-        private Mesh cameraDebug;
-
-        private Mesh gridGeometry;
-
-        private Mesh axiesGeometry;
-
-        private Mesh markerMesh;
-
         private UnitMesh selectedMesh;
+
+        // Debug 
+        private Mesh cameraDebug;
+        private Mesh gridGeometry;
+        private Mesh axiesGeometry;
+        private Mesh markerMesh;
+        private Mesh rayMesh;
 
         private readonly CubeGeometry cube;
 
-        private Mesh rayMesh;
+        private List<Mesh> pipeline = new List<Mesh>();
 
-        private ParticleEngine particlesEngine;
+        private Scene unitModel;
 
-        private UserInterface ui;
+        private Scene homeScene;
+
+        private Scene turretScene;
+        
+        private List<IDrawable> drawables = new List<IDrawable>();
 
         public Renderer(Model model) : base(
             800,
@@ -53,9 +56,8 @@ namespace GameRenderer
             camera = new Camera();
             cube = new CubeGeometry();
 
-            particlesEngine = new ParticleEngine();
             cameraDebug = new Mesh(new AxiesGeometry(camera.Target, camera.Forward, camera.Right, camera.Up), new ColorMaterial());
-            gridGeometry = new Mesh(new GridGeometry(100.0f, 1.0f, new vec4(1.0f, 1.0f, 1.0f, 0.4f)), new ColorMaterial());
+            gridGeometry = new Mesh(new GridGeometry(100.0f, 10.0f, new vec4(1.0f, 1.0f, 1.0f, 0.4f)), new ColorMaterial());
             axiesGeometry = new Mesh(new AxiesGeometry(
                 new vec3(0.0f), 
                 new vec3(0.0f, 0.0f, 1.0f),
@@ -65,60 +67,126 @@ namespace GameRenderer
             rayMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 0.0f, 0.0f, 1.0f),
                 new vec4(0.0f, 1.0f, 0.0f, 1.0f)), new ColorMaterial());
 
-            rootMeshes.Add(cameraDebug);
-            rootMeshes.Add(gridGeometry);
-            rootMeshes.Add(axiesGeometry);
-            rootMeshes.Add(markerMesh);
-            rootMeshes.Add(rayMesh);
+            drawables.Add(cameraDebug);
+            drawables.Add(gridGeometry);
+            drawables.Add(axiesGeometry);
+            drawables.Add(markerMesh);
+            drawables.Add(rayMesh);
 
-            model.OnAddUnit += registerMesh;
-            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            GL.Enable(EnableCap.Blend); 
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);  
+            foreach (var weaponType in model.weaponTypes)
+            {
+                drawables.Add(new BulletParticleEngine(weaponType.Bullets));
+            }
             
-            var tmp = new Scene("models/viper.obj");
+            model.OnAddUnit += registerMesh;
+            model.OnRemoveUnit += deleteMesh;
+            
+            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            GL.Enable(EnableCap.Blend);
+            GL.Enable(EnableCap.DepthTest); 
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);  
+
             ui = new UserInterface(Width, Height, this);
-            ui.Width = Width;
-            ui.Height = Height;
+            
+            model.Start();
+        }
+
+        private void constructPipeline()
+        {
+            pipeline = new List<Mesh>();
+            
+            foreach (var drawable in drawables)
+            {
+                var l = drawable.GetAllMeshes();
+                foreach (var mesh in l)
+                {
+                    pipeline.Add(mesh);
+                }
+                
+            }
+        }
+
+        private void deleteMesh(Unit unit)
+        {
+            foreach (var drawable in drawables)
+            {
+                if (drawable is UnitMesh um && um.Unit == unit)
+                {
+                    drawables.Remove(um);
+                    break;
+                }
+            }
+
+            constructPipeline();
         }
 
         private void registerMesh(Unit unit)
         {
+            if (unitModel == null || homeScene == null || turretScene == null)
+            {
+                loadModels();
+            }
+
             Console.WriteLine("new unit");
-            var t = new UnitMesh(cube, new TextureMaterial(), unit);
-            rootMeshes.Add(t);
+
+            Scene um;
+
+            if (unit is Home)
+            {
+                um = homeScene.Clone();
+                um.Scale = new vec3(0.8f, 0.8f, 0.8f);
+            } else if (unit is Turret)
+            {
+                um = turretScene.Clone();
+//                um.Scale = new vec3(0.01f, 0.01f, 0.01f);
+            }
+            else
+            {
+                um = unitModel.Clone();
+                um.Scale = new vec3(0.1f, 0.1f, 0.1f);
+            }
+            
+            var t = new UnitMesh(um, unit);
+            drawables.Add(t);
+            constructPipeline();
+        }
+
+        private void loadModels()
+        {
+            unitModel = new Scene("./models/viper", "viper.obj");
+            turretScene = new Scene("./models/turret", "turret.obj");
+            homeScene = new Scene("./models/home", "home.obj");
         }
 
         private void HandleMouseClick(float x, float y)
         {
             Console.WriteLine($"Mouse click at x: {x} y:{y}");
-            var ray = camera.CastRay(x, y);
-
-            var m = intersectMeshes(ray.start, ray.dir);
-            var p = intersectPlane(ray.start, ray.dir);
+            var (start, dir) = camera.CastRay(x, y);
+            
+            var m = intersectMeshes(start, dir);
+            var p = intersectPlane(start, dir);
 
             if (selectedMesh == null)
             {
                 SelectMesh(m);
+                return;
             }
-            else
+
+            if (m != null)
             {
-                if (m != null)
+                camera.Follow(m);
+                if (!selectedMesh.Unit.SelectUnit(m.Unit))
                 {
-                    if (!selectedMesh.Unit.SelectUnit(m.Unit))
-                    {
-                        SelectMesh(m);
-                    }
+                    SelectMesh(m);
                 }
-                else if(p.HasValue)
+            }
+            else if(p.HasValue)
+            {
+                if (!selectedMesh.Unit.SelectPosition(p.Value.ToVector()))
                 {
-                    if (!selectedMesh.Unit.SelectPosition(p.Value.ToVector()))
-                    {
-                        selectedMesh.Selected = false;
-                        selectedMesh = null;
-                    }
+                    selectedMesh.Selected = false;
+                    selectedMesh = null;
                 }
-                
             }
         }
 
@@ -133,6 +201,7 @@ namespace GameRenderer
             if (selectedMesh != null)
             {
                 selectedMesh.Selected = true;
+                ui.CreateDebugWindow(selectedMesh.Unit);
             }
         }
         
@@ -157,7 +226,7 @@ namespace GameRenderer
 
         private UnitMesh intersectMeshes(vec3 start, vec3 dir)
         {
-            foreach (var mesh in rootMeshes)
+            foreach (var mesh in drawables)
             {
                 if (mesh is UnitMesh unitMesh)
                 {
@@ -165,7 +234,6 @@ namespace GameRenderer
                     if (point != null)
                     {
                         Console.WriteLine($"Mesh selected");
-                        markerMesh.Position = point.ToGlm();
                         return unitMesh;
                     }
                 }
@@ -177,21 +245,25 @@ namespace GameRenderer
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-            UpdateCamera((float) e.Time);
+            float deltaTime = (float) e.Time; 
+            UpdateCamera(deltaTime);
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
+                foreach (var drawable in drawables)
+            {
+                drawable.Update(deltaTime);
+            }
+            
             foreach (var shader in GetAllShaders())
             {
                 shader.UniformCamera(camera);
             }
             
-            foreach (var mesh in rootMeshes)
+            foreach (var mesh in pipeline)
             {
                 mesh.Draw();
             }
-            
-            particlesEngine.Draw();
+
             ui.Draw();
             SwapBuffers();
         }
@@ -210,22 +282,20 @@ namespace GameRenderer
             cameraDebug.Rotation = new vec3(0.0f, 0.0f, -1.0f);
  
             camera.Move(Keyboard.GetState(), deltaTime);
-            
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-
-            model.Update((float) e.Time);
-            Weapon.Update((float) e.Time);
-            ui.Update((float)e.Time);
-            UpdateParticleEngine();
+            var deltaTime = (float) e.Time; 
+            
+            model.Update(deltaTime);
+            ui.Update(deltaTime);
         }
         
         public IEnumerable<Material> GetAllMaterials()
         {
-            return rootMeshes.Select(m => m.Material);
+            return pipeline.Select(m => m.Material);
         }
 
         public IEnumerable<ShaderProgram> GetAllShaders()
@@ -235,63 +305,54 @@ namespace GameRenderer
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
+            ui.MouseMove(e);
             camera.OnMouseMove(e);
             var ray = camera.CastRay(e.X, e.Y);
-            (rayMesh.Geometry as LineGeometry).Update(ray.start, ray.dir * 1000.0f);
+            (rayMesh.Geometry as LineGeometry)?.Update(ray.start, ray.dir * 1000.0f);
+
             base.OnMouseMove(e);
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
+            ui.MouseDown(e);
             camera.OnMouseDown(e);
-            
             HandleMouseClick(e.Mouse.X, e.Mouse.Y);
+
             base.OnMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
+            ui.MouseUp(e);
             camera.OnMouseUp(e);
             base.OnMouseUp(e);
         }
 
-        private void UpdateParticleEngine()
-        {
-            var list = Weapon.bullets;
-
-            var positions = new float[4 * list.Count];
-            var colors = new float[4 * list.Count];
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                var index = i * 4;
-                positions[index + 0] = list[i].Position.X;
-                positions[index + 1] = list[i].Position.Y;
-                positions[index + 2] = list[i].Position.Z;
-                positions[index + 3] = 1.0f;
-                
-                colors[index + 0] = list[i].Color.X;
-                colors[index + 1] = list[i].Color.Y;
-                colors[index + 2] = list[i].Color.Z;
-                colors[index + 3] = 1.0f;
-            }
-            
-            ParticleEngine.program.UniformCamera(camera);
-            ParticleEngine.program.UniformVec3("cameraUp", camera.Up);
-            ParticleEngine.program.UniformVec3("cameraRight", camera.Right);
-            
-            particlesEngine.Update(positions, colors, list.Count);
-        }
-        
         protected override void OnResize(EventArgs e)
         {
             GL.Viewport(0,0,Width, Height);
 
-            var _projectionMatrix = Matrix4.CreateTranslation(new Vector3(-Width / 2.0f, -Height / 2.0f, 0)) * Matrix4.CreateScale(new Vector3(1, -1, 1)) * Matrix4.CreateOrthographic(Width, Height, -1.0f, 1.0f);
+            var _projectionMatrix = Matrix4.CreateTranslation(
+                new Vector3(-Width / 2.0f, -Height / 2.0f, 0)) *
+                Matrix4.CreateScale(new Vector3(1, -1, 1)) *
+                Matrix4.CreateOrthographic(Width, Height, -1.0f, 1.0f);
 
             ui.Resize(_projectionMatrix, Width, Height);
             
             base.OnResize(e);
+        }
+
+        protected override void OnKeyUp(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            ui.KeyUp(e);
+        }
+
+        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            ui.KeyDown(e);
         }
     }
 }

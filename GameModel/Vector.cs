@@ -85,5 +85,10 @@ namespace GameModel
         {
             return Math.Abs((b - this).Length());
         }
+
+        public override string ToString()
+        {
+            return $"({X}, {Y}, {Z})";
+        }
     }
 }

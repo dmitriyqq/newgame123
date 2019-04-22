@@ -1,4 +1,5 @@
 using GlmNet;
+using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
 {
@@ -6,8 +7,6 @@ namespace GameRenderer
     {
         private static readonly ShaderProgram program;
         
-        public vec3 Color { get; set; }
-
         static TextureMaterial()
         {
             program = new ShaderProgram("shaders/texture.vert", "shaders/texture.frag");
@@ -20,8 +19,13 @@ namespace GameRenderer
 
         public override void Use()
         {
-//            program.UniformVec4("color", Color);
             program.Use();
+            DiffuseTexture?.Use(TextureUnit.Texture0);
+            SpecularTexture?.Use(TextureUnit.Texture1);
         }
+
+        public Texture DiffuseTexture { get; set; }
+        
+        public Texture SpecularTexture { get; set; }
     }
 }

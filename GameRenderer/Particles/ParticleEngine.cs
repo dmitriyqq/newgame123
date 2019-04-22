@@ -1,31 +1,26 @@
 using System;
+using System.Collections.Generic;
 using GlmNet;
 using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
 {
-    public class ParticleEngine
+    public abstract class ParticleEngine : Mesh
     {
-        public int Vao;
-
-        public int BillboardVbo;
-
-        public int ColorVbo;
-
-        public int PositionVbo;
-
-        public int ParticlesCount;
-
-        public int MaxParticles = 2000;
-
-        public static ShaderProgram program;
-
-        static ParticleEngine()
-        {
-            program = new ShaderProgram("shaders/particles.vert", "shaders/particles.frag");
-        }
         
-        public ParticleEngine()
+        public int Vao { get; private set; }
+
+        public int BillboardVbo { get; private set; }
+
+        public int ColorVbo { get; private set; }
+
+        public int PositionVbo { get; private set; }
+
+        public int ParticlesCount { get; private set; }
+
+        public int MaxParticles { get; private set; } = 2000;
+
+        public ParticleEngine() : base(null, new ParticleMaterial())
         {
             var vertexBufferData = new []{
                 -0.5f, -0.5f, 0.0f,
@@ -94,7 +89,7 @@ namespace GameRenderer
             GL.BindVertexArray(0);
         }
 
-        public void Update(float[] positions, float[] color, int count)
+        protected void Update(float[] positions, float[] color, int count)
         {
             GL.BindVertexArray(Vao);
             GL.BindBuffer(BufferTarget.ArrayBuffer, PositionVbo);
@@ -110,12 +105,22 @@ namespace GameRenderer
 
             ParticlesCount = count;
         }
-
-        public void Draw()
+        
+        public override void Draw()
         {
-            program.Use();
+            Material.Use();
             GL.BindVertexArray(Vao);
             GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, ParticlesCount);
+        }
+
+        public IEnumerable<Mesh> GetAllMeshes()
+        {
+            yield return this;
+        }
+
+        public IEnumerable<ShaderProgram> GetAllShaders()
+        {
+            yield return Material.Program;
         }
     }
 }
