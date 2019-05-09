@@ -38,9 +38,13 @@ namespace GameUI
 
         private Model model;
 
-        public UserInterface(GameWindow window, Model model)
+        private IPhysicsEngine engine;
+
+        public UserInterface(GameWindow window, Model model, IPhysicsEngine engine)
         {
             this.model = model;
+            this.engine = engine;
+            
             Logger = new Logger("UI");
             Logger.Info("Created ui");
             
@@ -67,7 +71,6 @@ namespace GameUI
         {
             renderer.Update(deltaTime);
         }
-
         public void AddMenu(object model, object renderer)
         {
             menu = new MenuStrip(canvas);
@@ -76,6 +79,8 @@ namespace GameUI
             debugMenu.Menu.AddItem("Model").SetAction((control, eventArgs) => CreateDebugWindow(model));
             debugMenu.Menu.AddItem("Renderer").SetAction((control, eventArgs) => CreateDebugWindow(renderer));
             debugMenu.Menu.AddItem("Interface").SetAction((control, eventArgs) => CreateDebugWindow(this));
+            debugMenu.Menu.AddItem("Physics").SetAction((control, eventArgs) => CreateDebugWindow(engine));
+
             debugMenu.Menu.AddItem("Settings").SetAction((control, eventArgs) => {CreateDebugWindow(new {settings="settings",x = 200, y = 300});});
 
             var tools = menu.AddItem("Tools");

@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArmyUnit.cs" />
+    <Compile Include="IPhysicsBody.cs" />
+    <Compile Include="Buggy.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Home.cs" />
     <Compile Include="IPhysicsEngine.cs" />
@@ -55,13 +57,16 @@
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Soldier.cs" />
+    <Compile Include="Tank.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="Tasks\Attack.cs" />
     <Compile Include="Tasks\Follow.cs" />
     <Compile Include="Tasks\Move.cs" />
+    <Compile Include="TempUnit.cs" />
     <Compile Include="Turret.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="Vector.cs" />
+    <Compile Include="Vehicle.cs" />
     <Compile Include="Weapon.cs" />
     <Compile Include="WeaponType.cs" />
   </ItemGroup>

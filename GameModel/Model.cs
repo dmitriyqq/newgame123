@@ -36,6 +36,11 @@ namespace GameModel
             players.Add(new Player("Human", new Vector(0.0f, 0.0f, 1.0f)));
             players.Add(new Player("Computer", new Vector(1.0f, 0.0f, 0.0f)));
 
+            engine.AddMap(Map);
+
+            OnAddUnit += this.engine.AddUnit;
+            OnRemoveUnit += this.engine.RemoveUnit;
+            
             weaponTypes.Add(new WeaponType());
         }
 
@@ -52,6 +57,15 @@ namespace GameModel
 
             home2 = new Home(this, new Vector(-25.0f, 0.0f, 0.0f), players[0]);
             AddUnit(home2);
+
+
+            for (int i = 0; i < 5; i++)
+            {
+                AddUnit(new TempUnit(this){Player = players[0]});
+                // AddUnit(new Buggy(this){Player = players[1]});
+                // AddUnit(new Tank(this){Player = players[0]});
+                // AddUnit(new Tank(this){Player = players[1]});
+            }
         }
 
         private void RemoveUnit(Unit unit)
@@ -108,50 +122,52 @@ namespace GameModel
             {
                 weapon.Update(deltaTime);
             }
-            
+
+            Logger.Info("Engine updating");
+            engine.Update(deltaTime);
             Ticks++;
         }
 
         private void doCollision()
         {
-            for (int i = 0; i < units.Count; i++)
-            {
-                var a = units[i];
-                for (int j = i + 1; j < units.Count; j++)
-                {
-                    
-                    var b = units[j];
-
-                    var diff = b.Position - a.Position;
-                    var l = diff.Length();
-                    var d = diff.Normalize();
-                    if (l < a.Radius + b.Radius)
-                    {
-                        a.Position += d * (-l / 4);
-                        b.Position += d * ( l / 4);
-                    }
-                }
-
-                foreach (var weapon in weaponTypes)
-                {
-                    var bullets = weapon.Bullets;
-                    for (var j = bullets.Count - 1; j >= 0; j--)
-                    {
-                        if (bullets[j].Player == a.Player)
-                        {
-                            continue;
-                        }
-
-                        var diff = bullets[j].Position - a.Position;
-                        if (diff.Length() < 0.1f)
-                        {
-                            a.Health -= 1.0f;
-                            bullets[j] = bullets[bullets.Count - 1];
-                            bullets.RemoveAt(bullets.Count - 1);
-                        }
-                    }
-                }
-            }
+//            for (int i = 0; i < units.Count; i++)
+//            {
+//                var a = units[i];
+//                for (int j = i + 1; j < units.Count; j++)
+//                {
+//                    
+//                    var b = units[j];
+//
+//                    var diff = b.Position - a.Position;
+//                    var l = diff.Length();
+//                    var d = diff.Normalize();
+//                    if (l < a.Radius + b.Radius)
+//                    {
+//                        a.Position += d * (-l / 4);
+//                        b.Position += d * ( l / 4);
+//                    }
+//                }
+//
+//                foreach (var weapon in weaponTypes)
+//                {
+//                    var bullets = weapon.Bullets;
+//                    for (var j = bullets.Count - 1; j >= 0; j--)
+//                    {
+//                        if (bullets[j].Player == a.Player)
+//                        {
+//                            continue;
+//                        }
+//
+//                        var diff = bullets[j].Position - a.Position;
+//                        if (diff.Length() < 0.1f)
+//                        {
+//                            a.Health -= 1.0f;
+//                            bullets[j] = bullets[bullets.Count - 1];
+//                            bullets.RemoveAt(bullets.Count - 1);
+//                        }
+//                    }
+//                }
+//            }
         }
         public void AddUnit(Unit u)
         {

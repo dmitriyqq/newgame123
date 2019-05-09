@@ -33,22 +33,18 @@ namespace GameRenderer
 
         private List<Mesh> pipeline = new List<Mesh>();
 
-        private Scene unitModel;
-
-        private Scene homeScene;
-
-        private Scene turretScene;
+        private Dictionary<string, Scene> scenes = new Dictionary<string, Scene>();
         
         private List<IDrawable> drawables = new List<IDrawable>();
 
         private Mesh skyBox;
-        
+
         private Mesh map;
 
         private DirectionalLight dirLight;
+
         private PointLight[] pointLights;
-        
-        
+
         public Logger Logger { get; private set; }
         
         public Renderer(Model model) : base(
@@ -142,7 +138,8 @@ namespace GameRenderer
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             createLights();
-            
+            loadModels();
+
             model.Start();
         }
 
@@ -198,33 +195,31 @@ namespace GameRenderer
 
         private void registerMesh(Unit unit)
         {
-            if (unitModel == null || homeScene == null || turretScene == null)
-            {
-                loadModels();
-            }
-
-            Console.WriteLine("new unit");
+            Logger.Info("Registering Mesh");
 
             Scene um;
 
             if (unit is Home)
             {
-                um = homeScene.Clone();
+                um = scenes["home"].Clone();
                 um.Scale = new vec3(0.8f, 0.8f, 0.8f);
             } else if (unit is Turret)
             {
-                um = turretScene.Clone();
-//                um.Scale = new vec3(0.01f, 0.01f, 0.01f);
+                um = scenes["turret"].Clone();
+            } else if (unit is Tank)
+            {
+                um = scenes["tank"].Clone();
+            } else if (unit is Buggy)
+            {
+                um = scenes["buggy"].Clone();
+            } else if(unit is Soldier)
+            {
+                um = scenes["soldier"].Clone();
+                um.Scale = new vec3(0.1f, 0.1f, 0.1f);
             }
-//            else if(unit is Soldier)
-//            {
-//                um = soldier.Clone();
-//                um.Scale = new vec3(0.1f, 0.1f, 0.1f);
-//            }
             else
             {
-                um = unitModel.Clone();
-//                um.Scale = new vec3(0.005f, 0.005f, 0.005f);
+                um = scenes["unit"].Clone();
                 um.Rotation = new vec3(1.0f, 0.0f, 0.0f);
             }
             
@@ -235,10 +230,11 @@ namespace GameRenderer
 
         private void loadModels()
         {
-            unitModel = new Scene("./models/trident", "trident3.obj");
-            turretScene = new Scene("./models/turret", "turret.obj");
-            homeScene = new Scene("./models/home", "home.obj");
-//            soldier = new Scene("./models/soldier", "soldier_ani.blend");
+            scenes["unit"] = new Scene("./models/trident", "trident3.obj");
+            scenes["turret"] = new Scene("./models/turret", "turret.obj");
+            scenes["home"] = new Scene("./models/home", "home.obj");
+            // scenes["buggy"] = new Scene("./models/lexus", "lexus.obj");
+            scenes["tank"] = new Scene("./models/tank", "tank.obj");
         }
 
         private void HandleMouseClick(float x, float y)

@@ -16,7 +16,7 @@ namespace GameRenderer
             }
         }
 
-        public float Radius { get; set; } = 100.0f;
+        public float Radius { get; set; } = 200.0f;
         public float Theta { get; set; }
         public float Alpha { get; set; }
 

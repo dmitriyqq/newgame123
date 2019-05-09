@@ -195,13 +195,15 @@ namespace GameRenderer
 
             if (mt.HasTextureDiffuse)
             {
-                var textureMaterial = new TextureMaterial();
+                var textureMaterial = new LightMaterial();
+                textureMaterial.shininess = 32;
                 if  (mt.HasTextureDiffuse) {
-                    textureMaterial.DiffuseTexture = loadTexture(mt.TextureDiffuse.FilePath);
+                    textureMaterial.diffuse = loadTexture(mt.TextureDiffuse.FilePath);
+                    textureMaterial.specular = loadTexture(mt.TextureDiffuse.FilePath);
                 }
                 if (mt.HasTextureSpecular)
                 {
-                    textureMaterial.SpecularTexture = loadTexture(mt.TextureSpecular.FilePath);
+                    textureMaterial.specular = loadTexture(mt.TextureSpecular.FilePath);
                 }
 
                 material = textureMaterial;

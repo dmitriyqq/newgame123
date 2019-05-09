@@ -11,12 +11,15 @@ namespace RunDesktop
             var physicsEngine = new PhysicsEngine.PhysicsEngine();
             var model = new Model(physicsEngine);
             var renderer = new Renderer(model);
-            var ui = new UserInterface(renderer, model);
+            var ui = new UserInterface(renderer, model, physicsEngine);
 
+            physicsEngine.AddMap(model.Map);
+            
             renderer.AddUserInterface(ui);
             
             var loggers = new[]
             {
+                physicsEngine.Logger,
                 model.Logger,
                 renderer.Logger,
                 ui.Logger

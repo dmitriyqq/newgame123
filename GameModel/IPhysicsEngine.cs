@@ -11,5 +11,7 @@ namespace GameModel
         void RemoveUnit(Unit unit);
         
         event Action<Unit, Unit> OnCollision;
+
+        void AddMap(Map map);
     }
 }
