@@ -1,0 +1,8 @@
+/models
+/textures
+/packages
+*.ttf
+*.png
+*.jpg
+/**/bin
+/**/obj

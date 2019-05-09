@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$USER_HOME$/.Rider2018.3/system/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.3/system/resharper-host/local/Transient/ReSharperHost/v183/SolutionCaches/_Game.-839702823.00" t="ExcludeRecursive" />
+    <e p="$PROJECT_DIR$" t="IncludeFlat">
+      <e p="Game.sln" t="IncludeFlat" />
+      <e p="GameModel" t="IncludeRecursive">
+        <e p="ArmyUnit.cs" t="Include" />
+        <e p="Bullet.cs" t="Include" />
+        <e p="GameModel.csproj" t="IncludeRecursive" />
+        <e p="Home.cs" t="Include" />
+        <e p="IPhysicsEngine.cs" t="Include" />
+        <e p="Logging" t="Include">
+          <e p="ConsoleLoggerSink.cs" t="Include" />
+          <e p="ILoggerSink.cs" t="Include" />
+          <e p="LogMessage.cs" t="Include" />
+          <e p="Logger.cs" t="Include" />
+        </e>
+        <e p="Map.cs" t="Include" />
+        <e p="Model.cs" t="Include" />
+        <e p="PerlinNoise.cs" t="Include" />
+        <e p="Player.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="Soldier.cs" t="Include" />
+        <e p="Task.cs" t="Include" />
+        <e p="Tasks" t="Include">
+          <e p="Attack.cs" t="Include" />
+          <e p="Follow.cs" t="Include" />
+          <e p="Move.cs" t="Include" />
+        </e>
+        <e p="Turret.cs" t="Include" />
+        <e p="Unit.cs" t="Include" />
+        <e p="Vector.cs" t="Include" />
+        <e p="Weapon.cs" t="Include" />
+        <e p="WeaponType.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+      </e>
+      <e p="GameRenderer" t="IncludeRecursive">
+        <e p="AnimatedMesh.cs" t="Include" />
+        <e p="Animation.cs" t="Include" />
+        <e p="Camera.cs" t="Include" />
+        <e p="CubemapTexture.cs" t="Include" />
+        <e p="GameRenderer.csproj" t="IncludeRecursive" />
+        <e p="Geometries" t="Include">
+          <e p="AxiesGeometry.cs" t="Include" />
+          <e p="ColorVertex.cs" t="Include" />
+          <e p="ColorVertexGeometry.cs" t="Include" />
+          <e p="ColorVertexHelper.cs" t="Include" />
+          <e p="CubeGeometry.cs" t="Include" />
+          <e p="Geometry.cs" t="Include" />
+          <e p="GridGeometry.cs" t="Include" />
+          <e p="IndexedColorGeometry.cs" t="Include" />
+          <e p="IndexedTextureGeometry.cs" t="Include" />
+          <e p="LineGeometry.cs" t="Include" />
+          <e p="MapGeometry.cs" t="Include" />
+          <e p="SphereGeometry.cs" t="Include" />
+          <e p="TextureVertex.cs" t="Include" />
+          <e p="TextureVertexGeometry.cs" t="Include" />
+          <e p="TextureVertexHelper.cs" t="Include" />
+        </e>
+        <e p="IDrawable.cs" t="Include" />
+        <e p="Material" t="Include">
+          <e p="ColorMaterial.cs" t="Include" />
+          <e p="ColorModelMaterial.cs" t="Include" />
+          <e p="CubemapMaterial.cs" t="Include" />
+          <e p="LightMaterial.cs" t="Include" />
+          <e p="Material.cs" t="Include" />
+          <e p="ParticleMaterial.cs" t="Include" />
+          <e p="TextureMaterial.cs" t="Include" />
+          <e p="TexturedParticlesMaterial.cs" t="Include" />
+        </e>
+        <e p="Mesh.cs" t="Include" />
+        <e p="MeshAnimation.cs" t="Include" />
+        <e p="NodeAnimation.cs" t="Include" />
+        <e p="OpenGL" t="Include">
+          <e p="ElementBuffer.cs" t="Include" />
+          <e p="Texture.cs" t="Include" />
+          <e p="VAO.cs" t="Include" />
+          <e p="VBO.cs" t="Include" />
+          <e p="VertexBuffer.cs" t="Include" />
+        </e>
+        <e p="OpenTK.dll.config" t="Include" />
+        <e p="Particles" t="Include">
+          <e p="BulletParticleEngine.cs" t="Include" />
+          <e p="ParticleEngine.cs" t="Include" />
+          <e p="TexturedParticleEngine.cs" t="Include" />
+        </e>
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="Renderer.cs" t="Include" />
+        <e p="Scene.cs" t="Include" />
+        <e p="Shaders" t="Include">
+          <e p="DirectionalLight.cs" t="Include" />
+          <e p="LightShader.cs" t="Include" />
+          <e p="ParticleShader.cs" t="Include" />
+          <e p="PointLight.cs" t="Include" />
+          <e p="Shader.cs" t="Include" />
+          <e p="ShaderProgram.cs" t="Include" />
+        </e>
+        <e p="SkyBoxMesh.cs" t="Include" />
+        <e p="UnitMesh.cs" t="Include" />
+        <e p="VectorHelper.cs" t="Include" />
+        <e p="WrapObjectEnumerable.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="packages.config" t="Include" />
+      </e>
+      <e p="GameUI" t="IncludeRecursive">
+        <e p="DebugCollectionWindow.cs" t="Include" />
+        <e p="DebugWindow.cs" t="Include" />
+        <e p="EventView.cs" t="Include" />
+        <e p="Explorer.cs" t="Include" />
+        <e p="GameUI.csproj" t="IncludeRecursive" />
+        <e p="InterfaceLayout.cs" t="Include" />
+        <e p="MapGenerator.cs" t="Include" />
+        <e p="MethodInvoker.cs" t="Include" />
+        <e p="OpenTK.dll.config" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="UserInterface.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="packages.config" t="Include" />
+      </e>
+      <e p="PhysicsEngine" t="IncludeRecursive">
+        <e p="PhysicsEngine.cs" t="Include" />
+        <e p="PhysicsEngine.csproj" t="IncludeRecursive" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="packages.config" t="Include" />
+      </e>
+      <e p="RunDesktop" t="IncludeRecursive">
+        <e p="OpenTK.dll.config" t="Include" />
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="RunDesktop.csproj" t="IncludeRecursive" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="packages.config" t="Include" />
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>
