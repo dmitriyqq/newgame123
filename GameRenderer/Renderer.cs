@@ -41,9 +41,19 @@ namespace GameRenderer
         
         private List<IDrawable> drawables = new List<IDrawable>();
 
+        private Mesh skyBox;
+        
+        private Mesh map;
+
+        private DirectionalLight dirLight;
+        private PointLight[] pointLights;
+        
+        
+        public Logger Logger { get; private set; }
+        
         public Renderer(Model model) : base(
-            800,
-            600,
+            1920,
+            1000,
             GraphicsMode.Default,
             "Game",
             GameWindowFlags.Default,
@@ -52,6 +62,10 @@ namespace GameRenderer
             5,
             GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug)
         {
+            Logger = new Logger("Render");
+            Logger.Info("Created renderer");
+            
+            
             this.model = model;
             camera = new Camera();
             cube = new CubeGeometry();
@@ -67,12 +81,53 @@ namespace GameRenderer
             rayMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 0.0f, 0.0f, 1.0f),
                 new vec4(0.0f, 1.0f, 0.0f, 1.0f)), new ColorMaterial());
 
+            var skyMaterial = new CubemapMaterial();
+            skyMaterial.Texture = new CubemapTexture(GetSkybox());
+            skyBox = new SkyBoxMesh(new CubeGeometry(), skyMaterial);
+            skyBox.Scale = new vec3(100.0f, 100.0f, 100.0f);
+
+            var mapMaterial = new LightMaterial();
+            map = new Mesh(new MapGeometry(model.Map), mapMaterial);
+
+            mapMaterial.diffuse = new Texture("textures/desert.jpeg");
+            mapMaterial.specular = new Texture("textures/desert.jpeg");
+            mapMaterial.shininess = 1.0f;
+
+            drawables.Add(skyBox);
             drawables.Add(cameraDebug);
             drawables.Add(gridGeometry);
             drawables.Add(axiesGeometry);
             drawables.Add(markerMesh);
             drawables.Add(rayMesh);
+            drawables.Add(map);
+            
+            var partEngine = new TexturedParticleEngine();
+            ((TexturedParticlesMaterial) partEngine.Material).Texture = new Texture("textures/particle.jpg");
 
+            float[] pos = new float[500 * 4];
+            float[] col = new float[500 * 4];
+
+            for (int i = 0; i < 500; i++)
+            {
+                var p = Vector.Random() * 5.0f;
+                var c = Vector.Random() * 5.0f;
+
+                var index = i * 4;
+
+                pos[index + 0] = p.X;
+                pos[index + 1] = p.Y;
+                pos[index + 2] = p.Z;
+                pos[index + 3] = 1.0f;
+                
+                col[index + 0] = p.X;
+                col[index + 1] = p.Y;
+                col[index + 2] = p.Z;
+                col[index + 3] = 0.8f;
+            }
+            
+            partEngine.Update2(pos, col, 500);
+            drawables.Add(partEngine);
+            
             foreach (var weaponType in model.weaponTypes)
             {
                 drawables.Add(new BulletParticleEngine(weaponType.Bullets));
@@ -84,11 +139,32 @@ namespace GameRenderer
             GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             GL.Enable(EnableCap.Blend);
             GL.Enable(EnableCap.DepthTest); 
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);  
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            ui = new UserInterface(Width, Height, this);
+            createLights();
             
             model.Start();
+        }
+
+        private void createLights()
+        {
+            dirLight = new DirectionalLight
+            {
+                Direction = glm.normalize(new vec3(0.5f, 1.0f, 0.3f)),
+                Ambient = new vec3(0.2f, 0.2f, 0.2f),
+                Diffuse = new vec3(0.8f, 0.8f, 0.8f),
+                Specular = new vec3(0.5f, 0.5f, 0.5f),
+                Program = new LightMaterial().Program,
+            };
+
+            dirLight.Uniform(new LightMaterial().Program);
+        }
+
+        public void AddUserInterface(UserInterface ui)
+        {
+            this.ui = ui; 
+            ui.AddMenu(model, this);
+            ui.OnMapGeneration += () => { (map.Geometry as MapGeometry)?.GenerateMap(); };
         }
 
         private void constructPipeline()
@@ -140,10 +216,16 @@ namespace GameRenderer
                 um = turretScene.Clone();
 //                um.Scale = new vec3(0.01f, 0.01f, 0.01f);
             }
+//            else if(unit is Soldier)
+//            {
+//                um = soldier.Clone();
+//                um.Scale = new vec3(0.1f, 0.1f, 0.1f);
+//            }
             else
             {
                 um = unitModel.Clone();
-                um.Scale = new vec3(0.1f, 0.1f, 0.1f);
+//                um.Scale = new vec3(0.005f, 0.005f, 0.005f);
+                um.Rotation = new vec3(1.0f, 0.0f, 0.0f);
             }
             
             var t = new UnitMesh(um, unit);
@@ -153,9 +235,10 @@ namespace GameRenderer
 
         private void loadModels()
         {
-            unitModel = new Scene("./models/viper", "viper.obj");
+            unitModel = new Scene("./models/trident", "trident3.obj");
             turretScene = new Scene("./models/turret", "turret.obj");
             homeScene = new Scene("./models/home", "home.obj");
+//            soldier = new Scene("./models/soldier", "soldier_ani.blend");
         }
 
         private void HandleMouseClick(float x, float y)
@@ -201,7 +284,7 @@ namespace GameRenderer
             if (selectedMesh != null)
             {
                 selectedMesh.Selected = true;
-                ui.CreateDebugWindow(selectedMesh.Unit);
+                ui.CreateDebugWindow(selectedMesh);
             }
         }
         
@@ -245,7 +328,8 @@ namespace GameRenderer
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-            float deltaTime = (float) e.Time; 
+            float deltaTime = (float) e.Time;
+
             UpdateCamera(deltaTime);
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -253,12 +337,12 @@ namespace GameRenderer
             {
                 drawable.Update(deltaTime);
             }
-            
+
             foreach (var shader in GetAllShaders())
             {
                 shader.UniformCamera(camera);
             }
-            
+
             foreach (var mesh in pipeline)
             {
                 mesh.Draw();
@@ -315,18 +399,21 @@ namespace GameRenderer
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
+            base.OnMouseDown(e);
+
             ui.MouseDown(e);
             camera.OnMouseDown(e);
-            HandleMouseClick(e.Mouse.X, e.Mouse.Y);
 
-            base.OnMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
+            base.OnMouseUp(e);
+
             ui.MouseUp(e);
             camera.OnMouseUp(e);
-            base.OnMouseUp(e);
+
+            HandleMouseClick(e.Mouse.X, e.Mouse.Y);
         }
 
         protected override void OnResize(EventArgs e)
@@ -338,7 +425,7 @@ namespace GameRenderer
                 Matrix4.CreateScale(new Vector3(1, -1, 1)) *
                 Matrix4.CreateOrthographic(Width, Height, -1.0f, 1.0f);
 
-            ui.Resize(_projectionMatrix, Width, Height);
+            ui?.Resize(_projectionMatrix, Width, Height);
             
             base.OnResize(e);
         }
@@ -353,6 +440,19 @@ namespace GameRenderer
         {
             base.OnKeyDown(e);
             ui.KeyDown(e);
+        }
+
+        public List<string> GetSkybox()
+        {
+            return new List<string>
+            {
+                "textures/skybox/front.jpg",
+                "textures/skybox/back.jpg",
+                "textures/skybox/top.jpg",
+                "textures/skybox/bottom.jpg",
+                "textures/skybox/right.jpg",
+                "textures/skybox/left.jpg",
+            };
         }
     }
 }

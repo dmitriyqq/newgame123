@@ -6,9 +6,9 @@ namespace GameRenderer
 {
     public abstract class Geometry
     {
-        protected int vao;
+        protected int vao = -1;
 
-        protected int vbo;
+        protected int vbo = -1;
 
         private bool data = false;
         public PrimitiveType Mode { get; set; } = PrimitiveType.Triangles;
@@ -61,9 +61,8 @@ namespace GameRenderer
         public void BufferData(float[] data)
         {
             GenerateVao();
-            GL.BufferData(BufferTarget.ArrayBuffer, data.Length * sizeof(float), data, BufferUsageHint.StaticDraw);
-
             DefineData();
+            GL.BufferData(BufferTarget.ArrayBuffer, data.Length * sizeof(float), data, BufferUsageHint.StaticDraw);
 
             GL.BindVertexArray(0);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -81,5 +80,18 @@ namespace GameRenderer
         public abstract void DefineData();
         
         public abstract int VertexSize();
+
+        ~Geometry()
+        {
+            if (vao != -1)
+            {
+//                GL.DeleteVertexArray(vao);
+            }
+
+            if (vbo != -1)
+            {
+//                GL.DeleteBuffer(vbo);
+            }
+        }
     }
 }

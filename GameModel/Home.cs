@@ -18,6 +18,10 @@ namespace GameModel
         {
             Radius = HealingRadius;
             Player = player;
+            
+            Acceleration = 0.0f;
+            Velocity = 0.0f;
+            MaxVelocity = 0.0f;
 
             Position = position;
 

@@ -4,7 +4,7 @@ namespace GameRenderer
 {
     public class IndexedTextureGeometry : TextureVertexGeometry
     {
-        private int Ebo;
+        private int Ebo = -1;
 
         private int count;
 
@@ -13,7 +13,8 @@ namespace GameRenderer
             UseVao();
             Ebo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, Ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indicies.Length * sizeof(int), indicies, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indicies.Length * sizeof(int), indicies,
+                BufferUsageHint.StaticDraw);
             count = indicies.Length;
         }
 
@@ -21,6 +22,14 @@ namespace GameRenderer
         {
             UseVao();
             GL.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, 0);
+        }
+
+        ~IndexedTextureGeometry()
+        {
+            if (Ebo != -1)
+            {
+//                GL.DeleteBuffer(Ebo);
+            }
         }
     }
 }

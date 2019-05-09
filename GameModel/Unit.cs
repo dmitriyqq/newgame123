@@ -15,9 +15,9 @@ namespace GameModel
 
         public float Velocity;
 
-        public float Acceleration = 0.0f;
+        public float Acceleration = 0.01f;
 
-        public float MaxVelocity = 10.0f;
+        public float MaxVelocity = 20.0f;
 
         public Player Player;
         
@@ -65,7 +65,6 @@ namespace GameModel
                         if (distance < weapon.ShootingRange)
                         {
                             var orientation = attack.Target.Position - Position;
-                            Console.WriteLine("Shoot!");
                             weapon.Shoot(Position, orientation, Player);
                         }
 
@@ -104,7 +103,7 @@ namespace GameModel
             if (Position.Distance(target) < range)
             {
                 CompleteTask();
-                Acceleration = 0.0f;
+//                Acceleration = 0.0f;
             }
 
             var targetOrientation = (target - Position).Normalize();
@@ -118,12 +117,12 @@ namespace GameModel
             
             if (Velocity < MaxVelocity)
             {
-                Acceleration = Math.Min(1.0f / diff.Length(), 0.01f);
+                Acceleration = Math.Min(1.0f / diff.Length(), 0.02f);
             }
 
             if (Position.Distance(target) <= range + 2.0f * Velocity)
             {
-                Acceleration = -0.01f;
+                Acceleration = -0.03f;
             }
         }
 

@@ -23,7 +23,6 @@ namespace GameModel
         {
             if (Pause <= 0.0f)
             {
-                Console.WriteLine("shoot");
                 Type.Add(new Bullet(position, direction, Damage, Player, Speed));
                 Pause = TimeToReload;
             }

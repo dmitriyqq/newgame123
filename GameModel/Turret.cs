@@ -14,7 +14,9 @@ namespace GameModel
 
         public Turret(Model model) : base(model)
         {
-            
+            Acceleration = 0.0f;
+            Velocity = 0.0f;
+            MaxVelocity = 0.0f;
         }
 
         public override void AddWeapon(Weapon w)
@@ -51,7 +53,6 @@ namespace GameModel
                         if (distance < weapon.ShootingRange)
                         {
                             var orientation = target.Position - Position;
-                            Console.WriteLine("Shoot!");
                             weapon.Shoot(Position, orientation, Player);
                         }
 

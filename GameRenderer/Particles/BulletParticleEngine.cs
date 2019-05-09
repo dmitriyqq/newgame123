@@ -34,6 +34,7 @@ namespace GameRenderer
                 colors[index + 1] = color.Y;
                 colors[index + 2] = color.Z;
                 colors[index + 3] = 1.0f;
+
             }
 
             base.Update(positions, colors, list.Count);

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GameModel</RootNamespace>
     <AssemblyName>GameModel</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -43,9 +44,17 @@
     <Compile Include="ArmyUnit.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Home.cs" />
+    <Compile Include="IPhysicsEngine.cs" />
+    <Compile Include="Logging\ConsoleLoggerSink.cs" />
+    <Compile Include="Logging\ILoggerSink.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LogMessage.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="PerlinNoise.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Soldier.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="Tasks\Attack.cs" />
     <Compile Include="Tasks\Follow.cs" />

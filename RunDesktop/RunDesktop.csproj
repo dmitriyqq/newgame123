@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RunDesktop</RootNamespace>
     <AssemblyName>RunDesktop</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,6 +58,10 @@
     <ProjectReference Include="..\GameUI\GameUI.csproj">
       <Project>{681d10aa-7715-490c-ae9d-f792d5d71842}</Project>
       <Name>GameUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhysicsEngine\PhysicsEngine.csproj">
+      <Project>{07bbcca4-338f-4e0d-a74d-93431c4d66a0}</Project>
+      <Name>PhysicsEngine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using Gwen.Control;
 using Gwen.Control.Property;
@@ -8,7 +10,9 @@ using OpenTK.Input;
 using Color = System.Drawing.Color;
 using Font = Gwen.Font;
 using System.Reflection;
+using GameModel;
 using Gwen;
+using Base = Gwen.Control.Base;
 using Key = OpenTK.Input.Key;
 
 
@@ -24,19 +28,34 @@ namespace GameUI
 
         private bool altDown;
 
-        public UserInterface(int width, int height, GameWindow window)
-        {
-            renderer = new Gwen.Renderer.OpenTK();
+        private Menu menu;
 
+        private InterfaceLayout layout;
+        
+        public Logger Logger { get; private set; }
+
+        public event Action OnMapGeneration;
+
+        private Model model;
+
+        public UserInterface(GameWindow window, Model model)
+        {
+            this.model = model;
+            Logger = new Logger("UI");
+            Logger.Info("Created ui");
+            
+            renderer = new Gwen.Renderer.OpenTK();
             var skin = new Gwen.Skin.TexturedBase(renderer, "DefaultSkin.png");
             skin.DefaultFont = new Font(renderer, "Hack", 9);
 
             canvas = new Canvas(skin);
-            canvas.SetSize (width, height);
+            canvas.SetSize (window.Width, window.Height);
             canvas.ShouldDrawBackground = false;
 
             input = new Gwen.Input.OpenTK(window);
             input.Initialize(canvas);
+            
+            layout = new InterfaceLayout(canvas, Logger);
         }
  
         public void Draw()
@@ -49,6 +68,26 @@ namespace GameUI
             renderer.Update(deltaTime);
         }
 
+        public void AddMenu(object model, object renderer)
+        {
+            menu = new MenuStrip(canvas);
+            var debugMenu = menu.AddItem("Debug");
+
+            debugMenu.Menu.AddItem("Model").SetAction((control, eventArgs) => CreateDebugWindow(model));
+            debugMenu.Menu.AddItem("Renderer").SetAction((control, eventArgs) => CreateDebugWindow(renderer));
+            debugMenu.Menu.AddItem("Interface").SetAction((control, eventArgs) => CreateDebugWindow(this));
+            debugMenu.Menu.AddItem("Settings").SetAction((control, eventArgs) => {CreateDebugWindow(new {settings="settings",x = 200, y = 300});});
+
+            var tools = menu.AddItem("Tools");
+            tools.Menu.AddItem("Map Generator").SetAction((control, eventArgs) => { createMapGeneratorWindow();});
+        }
+
+        private void createMapGeneratorWindow()
+        {
+            var window = new MapGenerator(canvas, model.Map, Logger);
+            window.OnMapGeneration += OnMapGeneration;
+        }
+        
         // Event handlers
         public void Resize(Matrix4 projMatrix, int width, int height)
         {
@@ -97,41 +136,34 @@ namespace GameUI
             return input.ProcessMouseMessage(args);
         }
 
-        public void CreateDebugWindow(Object o)
+        public void CreateDebugWindow(object o)
         {
-            var fields = o.GetType().GetFields();
-            
-            var objectWindow = new WindowControl(canvas, "Properties " + o.GetType().Name, true);
-            objectWindow.SetSize(200, 400);
+            var window = new DebugWindow(canvas, o, Logger);
+            RegisterExplorer(window);
+        }
+        
+        public void CreateArrayWindowWindow(IEnumerable collection)
+        {
+            var window = new DebugCollectionWindow(canvas, collection, Logger);
+            RegisterExplorer(window);
+        }
 
-            var props = new Properties(objectWindow);
-            props.SetBounds(10, 10, 150, 300);
-            props.SetPosition(0, 50);
+        public void CreateMethodInvoker(object o, MethodInfo info)
+        {
+            var window = new MethodInvoker(canvas, o, info, Logger);
+            RegisterExplorer(window);
+        }
 
-            var closeButton = new Button(objectWindow) {Text = "Close"};
-            closeButton.Clicked += (control, args) => objectWindow.Close();
-            closeButton.SetSize(180, 50);
-            closeButton.SetPosition(0, 0);
-            closeButton.Alignment = Pos.Center;
-
-            Console.WriteLine($"Total Fields {fields.Length}");
-
-            foreach (var field in fields)
-            {
-                var value = field.GetValue(o).ToString();
-                props.Add(field.Name, value: value);
-
-                Console.WriteLine($"Field: {field.Name}");
-            }
-
-            props.ValueChanged += (control, args) =>
-            {
-                PropertyRow row = control as PropertyRow;
-                
-                o.GetType().GetField(row.Name).SetValue(o, row.Value);
-                
-                Console.WriteLine(o);
-            };
+        private void RegisterExplorer(Explorer explorer)
+        {
+            explorer.OnOpenBrowser += CreateDebugWindow;
+            explorer.OnOpenArrayBrowser += CreateArrayWindowWindow;
+            explorer.OnOpenMethodInvoker += CreateMethodInvoker;
+        }
+        
+        public ILoggerSink CreateLoggerSink()
+        {
+            return layout.TextOutput;
         }
     }
 }

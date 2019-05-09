@@ -6,10 +6,12 @@ namespace GameRenderer
 {
     public class Mesh : IDrawable
     {
-        public bool Visible { get; set; } = true;
-        public Geometry Geometry { get; set; }
+        public string Name { get; set; }
         public IDrawable Parent { get; set; }
-        public Material Material { get; set; }
+        public bool Visible { get; set; } = true;
+        public bool UseParentTransform { get; set; } = true;
+        public Geometry Geometry { get; set; }
+        public Material Material { get; set; }      
         public virtual vec3 Position { get; set; } = new vec3(0.0f, 0.0f, 0.0f);
         public virtual vec3 Rotation { get; set; } = new vec3(0.0f, 1.0f, 0.0f);
         public virtual vec3 Scale { get; set; } = new vec3(1.0f, 1.0f, 1.0f);
@@ -25,6 +27,7 @@ namespace GameRenderer
         public void Update(float deltaTime)
         {
             // Do nothing
+            // Method should be implemented because Mesh is IDrawable
         }
 
         public Mesh(Geometry geometry, Material material)
@@ -37,7 +40,8 @@ namespace GameRenderer
         {
             if (Visible)
             {
-                var matrix = Parent?.GetModelMatrix() ?? GetModelMatrix();
+                var matrix = UseParentTransform && Parent != null ? 
+                    GetModelMatrix() * Parent.GetModelMatrix(): GetModelMatrix();
                 Material.Program.UniformMat4("model", matrix);
                 Material?.Use();
                 Geometry?.Draw();

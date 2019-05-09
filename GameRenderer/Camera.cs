@@ -16,7 +16,7 @@ namespace GameRenderer
             }
         }
 
-        public float Radius { get; set; } = 10.0f;
+        public float Radius { get; set; } = 100.0f;
         public float Theta { get; set; }
         public float Alpha { get; set; }
 
@@ -86,12 +86,13 @@ namespace GameRenderer
                 Radius += Speed * deltaTime;
             }
 
-            if (velocity.x != 0.0f || velocity.z != 0.0f)
+            if (velocity.x > 0.0f || velocity.z > 0.0f)
             {
                 velocity = glm.normalize(velocity);
+                Target +=  velocity * deltaTime * Speed;
             }
 
-            Target +=  velocity * deltaTime * Speed;
+            
         }
         
         public void OnMouseMove(MouseMoveEventArgs e)

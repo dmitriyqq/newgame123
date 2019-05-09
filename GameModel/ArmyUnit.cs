@@ -40,7 +40,6 @@ namespace GameModel.Tasks
                         if (distance < weapon.ShootingRange)
                         {
                             var orientation = attack.Target.Position - Position;
-                            Console.WriteLine("Shoot!");
                             weapon.Shoot(Position, orientation, Player);
                         }
 

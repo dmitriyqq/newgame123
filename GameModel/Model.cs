@@ -9,16 +9,30 @@ namespace GameModel
     {
         public event Action<Unit> OnAddUnit;
         public event Action<Unit> OnRemoveUnit;
+
+        private IPhysicsEngine engine;
+        
         private List<Unit> units { get; } = new List <Unit>();
         private List<Player> players { get; } = new List <Player>();
         public List<WeaponType> weaponTypes { get; private set; } = new List<WeaponType>(); 
         public int Ticks { get; private set; }
 
+        public Logger Logger { get; private set; }
+
         private Home home1;
         private Home home2;
 
-        public Model()
+        public Map Map;
+
+        public Model(IPhysicsEngine engine)
         {
+            Logger = new Logger("Model");
+            Logger.Info("Created model");
+
+            this.engine = engine;
+            
+            Map = new Map(200);
+
             players.Add(new Player("Human", new Vector(0.0f, 0.0f, 1.0f)));
             players.Add(new Player("Computer", new Vector(1.0f, 0.0f, 0.0f)));
 
@@ -113,7 +127,6 @@ namespace GameModel
                     var d = diff.Normalize();
                     if (l < a.Radius + b.Radius)
                     {
-                        Console.WriteLine("Collision");
                         a.Position += d * (-l / 4);
                         b.Position += d * ( l / 4);
                     }
@@ -135,7 +148,6 @@ namespace GameModel
                             a.Health -= 1.0f;
                             bullets[j] = bullets[bullets.Count - 1];
                             bullets.RemoveAt(bullets.Count - 1);
-                            Console.WriteLine("hit");
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 ﻿using GameModel;
 using GameRenderer;
+using GameUI;
 
 namespace RunDesktop
 {
@@ -7,8 +8,33 @@ namespace RunDesktop
     {
         public static void Main(string[] args)
         {
-            var model = new Model();
+            var physicsEngine = new PhysicsEngine.PhysicsEngine();
+            var model = new Model(physicsEngine);
             var renderer = new Renderer(model);
+            var ui = new UserInterface(renderer, model);
+
+            renderer.AddUserInterface(ui);
+            
+            var loggers = new[]
+            {
+                model.Logger,
+                renderer.Logger,
+                ui.Logger
+            };
+
+            var sinks = new[]
+            {
+                new ConsoleLoggerSink(),
+                ui.CreateLoggerSink(),
+            };
+
+            foreach (var logger in loggers)
+            {
+                foreach (var sink in sinks)
+                {
+                    sink.Subscribe(logger);
+                }
+            }
             
             renderer.Run(60, 60);
         }

@@ -48,6 +48,12 @@ namespace GameRenderer
             GL.Uniform1(GL.GetUniformLocation(id, name), f);
         }
 
+        public void UniformInt(string name, int i)
+        {
+            Use();
+            GL.Uniform1(GL.GetUniformLocation(id, name), i);
+        }
+        
         public virtual void UniformCamera(Camera camera)
         {
             UniformMat4("view", camera.ViewMatrix);

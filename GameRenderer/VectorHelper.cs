@@ -52,5 +52,12 @@ namespace GameModel
             var c = glm.lookAt(position, position + rotation, new vec3(0.0f, 1.0f, 0.0f));
             return c * glm.scale(new mat4(1), scale);
         }
+
+        public static vec3 Normal(vec3 a, vec3 b, vec3 c)
+        {
+            var dir = glm.cross(b - a, c - a);
+            var norm = glm.normalize(dir);
+            return norm;
+        }
     }
 }

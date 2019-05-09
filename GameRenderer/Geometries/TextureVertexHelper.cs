@@ -10,7 +10,7 @@ namespace GameRenderer
 
             for (int i = 0; i < l.Count; i++)
             {
-                var index = i * ColorVertex.FloatSize;
+                var index = i * TextureVertex.FloatSize;
                 data[index + 0] = l[i].Position.x;
                 data[index + 1] = l[i].Position.y;
                 data[index + 2] = l[i].Position.z;

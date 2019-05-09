@@ -4,7 +4,7 @@ namespace GameRenderer
 {
     public class IndexedColorGeometry : ColorVertexGeometry
     {
-        private int Ebo;
+        private int Ebo = -1;
 
         private int count;
 
@@ -21,6 +21,14 @@ namespace GameRenderer
         {
             UseVao();
             GL.DrawElements(PrimitiveType.Quads, count, DrawElementsType.UnsignedInt, 0);
+        }
+
+        ~IndexedColorGeometry()
+        {
+            if (Ebo != -1)
+            {
+//                GL.DeleteBuffer(Ebo);
+            }
         }
     }
 }
