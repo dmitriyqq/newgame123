@@ -6,12 +6,10 @@ namespace GameModel
     {
         void Update(float deltaTime);
 
-        void AddUnit(Unit unit);
+        void AddGameObject(GameObject gameObject);
 
-        void RemoveUnit(Unit unit);
+        void RemoveGameObject(GameObject gameObject);
         
-        event Action<Unit, Unit> OnCollision;
-
-        void AddMap(Map map);
+        event Action<GameObject, GameObject> OnCollision;
     }
 }

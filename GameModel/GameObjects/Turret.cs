@@ -4,15 +4,15 @@ using GameModel.Tasks;
 
 namespace GameModel
 {
-    public class Turret : Unit
+    public class Turret : GameObject
     {
-        public Unit target = null;
+        public GameObject target = null;
 
         public float restTime;
 
         public float RestTime = 1.5f;
 
-        public Turret(Model model) : base(model)
+        public Turret()
         {
             Acceleration = 0.0f;
             Velocity = 0.0f;
@@ -38,7 +38,7 @@ namespace GameModel
             // get new target
             if (target == null && restTime < 0.0f)
             {
-                target = model.Units.FirstOrDefault(u => u.Player != Player && u.Position.Distance(Position) < MinimalShootingRange);
+                target = Model.GameObjects.FirstOrDefault(u => u.Player != Player && u.Position.Distance(Position) < MinimalShootingRange);
                 restTime = RestTime;
             } 
             

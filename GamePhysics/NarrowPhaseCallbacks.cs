@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
-using BepuUtilities.Collections;
-using BepuUtilities.Memory;
 using GameModel;
-using GameRenderer;
-using Vector = GameModel.Vector;
 
-namespace PhysicsEngine
+namespace GamePhysics
 {
-     unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
+unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
      { 
         private Logger logger;
 
@@ -78,8 +71,6 @@ namespace PhysicsEngine
                 //The engine does not define any per-body material properties. Instead, all material lookup and blending operations are handled by the callbacks.
                 //For the purposes of this demo, we'll use the same settings for all pairs.
                 //(Note that there's no bounciness property! See here for more details: https://github.com/bepu/bepuphysics2/issues/3)
-                
-                
                 
                 pairMaterial.FrictionCoefficient = 1f;
                 pairMaterial.MaximumRecoveryVelocity = 2f;
@@ -146,160 +137,4 @@ namespace PhysicsEngine
             {
             }
         }
-
-        //Note that the engine does not require any particular form of gravity- it, like all the contact callbacks, is managed by a callback.
-        public struct PoseIntegratorCallbacks : IPoseIntegratorCallbacks
-        {
-            public Vector3 Gravity;
-            Vector3 gravityDt;
-
-            private Logger logger;
-            
-            /// <summary>
-            /// Gets how the pose integrator should handle angular velocity integration.
-            /// </summary>
-            public AngularIntegrationMode AngularIntegrationMode => AngularIntegrationMode.Nonconserving; //Don't care about fidelity in this demo!
-
-            public PoseIntegratorCallbacks(Vector3 gravity, Logger logger) : this()
-            {
-                this.logger = logger;
-                logger.Info("Pose Integrator Callback");
-                Gravity = gravity;
-            }
-
-            /// <summary>
-            /// Called prior to integrating the simulation's active bodies. When used with a substepping timestepper, this could be called multiple times per frame with different time step values.
-            /// </summary>
-            /// <param name="dt">Current time step duration.</param>
-            public void PrepareForIntegration(float dt)
-            {
-                logger.Info("Prepare for integration");
-                //No reason to recalculate gravity * dt for every body; just cache it ahead of time.
-                gravityDt = Gravity * dt;
-            }
-
-            /// <summary>
-            /// Callback called for each active body within the simulation during body integration.
-            /// </summary>
-            /// <param name="bodyIndex">Index of the body being visited.</param>
-            /// <param name="pose">Body's current pose.</param>
-            /// <param name="localInertia">Body's current local inertia.</param>
-            /// <param name="workerIndex">Index of the worker thread processing this body.</param>
-            /// <param name="velocity">Reference to the body's current velocity to integrate.</param>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void IntegrateVelocity(int bodyIndex, in RigidPose pose, in BodyInertia localInertia, int workerIndex, ref BodyVelocity velocity)
-            {
-                logger.Info("Integrate velocity");
-                //Note that we avoid accelerating kinematics. Kinematics are any body with an inverse mass of zero (so a mass of ~infinity). No force can move them.
-                if (localInertia.InverseMass > 0)
-                {
-                    velocity.Linear += gravityDt;
-                }
-            }
-
-        }
-
-
-    
-    public class PhysicsEngine : IPhysicsEngine
-    {
-        private Vector3 getVertexInPosition(int i, int j)
-        {
-            float z = map.data[i, j];
-            float x = (i - map.Size / 2) * map.Resolution;
-            float y = (j - map.Size / 2) * map.Resolution;
-
-            return new Vector3(x, z, y);
-        }
-
-        private QuickList<Vector3> ConstructData()
-        {
-            var points = new QuickList<Vector3>(map.Size * map.Size * 2, bufferPool);
-            
-            for (int i = 0; i < map.Size; i++)
-            {
-                for (int j = 0; j < map.Size; j++)
-                {
-                    var p1 = getVertexInPosition(i, j);
-                    points.AllocateUnsafely() = p1;
-                }
-            }
-
-            return points;
-        }
-
-        public Logger Logger;
-        
-        private TypedIndex mapShapeIndex;
-        private int mapBodyIndex;
-        private Simulation simulation;
-        private ConvexHull mapHull;
-        private Map map;
-        private BufferPool bufferPool;
-        private HullData hullData;
-        public PhysicsEngine()
-        {
-            Logger = new Logger("Physics");
-            Logger.Info("Created physics engine");
-
-            bufferPool = new BufferPool();
-            simulation = Simulation.Create(bufferPool, new NarrowPhaseCallbacks(Logger), new PoseIntegratorCallbacks(new Vector3(0.0f, -10.0f, 0.0f), Logger));
-        }
-        
-        public void AddMap(Map map) {
-//            try
-//            {
-//                Logger.Info("Adding map");
-//                this.map = map;
-//                mapHull = new ConvexHull();
-//
-//                var pointsBuffer = ConstructData().Span.Slice(0, map.Size * map.Size);            
-//                ConvexHullHelper.CreateShape(pointsBuffer, bufferPool, out hullData, out Vector3 tmp, out mapHull);
-//
-//                mapShapeIndex = simulation.Shapes.Add(mapHull);
-//                var mapBodyDescription = new StaticDescription(new Vector3(0, 0, 0), new CollidableDescription(mapShapeIndex, 0.1f));
-//                mapBodyIndex = simulation.Statics.Add(mapBodyDescription);
-//            }
-//            catch (Exception e)
-//            {
-//                Logger.Error(e);
-//                throw;
-//            }
-        }
-
-        public void Update(float deltaTime)
-        {
-            simulation.Timestep(deltaTime);
-        }
-
-        public void AddUnit(Unit unit)
-        {
-            if (unit is TempUnit tu)
-            {
-                var shape = new Sphere(2.0f);
-                var idx = simulation.Shapes.Add(shape);
-
-                var rp = new RigidPose(new Vector3(20.0f, 150.0f, 39.0f));
-                shape.ComputeInertia(50.0f, out var bodyInertia);
-                
-                var cd = new CollidableDescription(idx, 0.0f);
-                var bad = new BodyActivityDescription();
-                var bd = BodyDescription.CreateDynamic(rp, bodyInertia, cd, bad);
-                
-                var adaptor = new BodyAdaptor(bd);
-                adaptor.Handle = simulation.Bodies.Add(bd);
-                tu.body = adaptor;
-            }   
-        }
-
-        public void RemoveUnit(Unit unit)
-        {
-            if (unit is TempUnit tu)
-            {
-                simulation.Bodies.Remove((tu.body as BodyAdaptor)?.Handle ?? 0);
-            }
-        }
-
-        public event Action<Unit, Unit> OnCollision;
-    }
 }

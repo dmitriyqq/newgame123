@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{12BFEB17-280C-41DC-80AA-A88994A7BE92}</ProjectGuid>
+    <ProjectGuid>{07BBCCA4-338F-4E0D-A74D-93431C4D66A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GameModel</RootNamespace>
-    <AssemblyName>GameModel</AssemblyName>
+    <RootNamespace>PhysicsEngine</RootNamespace>
+    <AssemblyName>GamePhysics</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>7.3</LangVersion>
@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,48 +32,50 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BepuPhysics, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\BepuPhysics.2.0.0\lib\netstandard2.0\BepuPhysics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="BepuUtilities, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\BepuUtilities.2.0.0\lib\netstandard2.0\BepuUtilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bullet.cs" />
-    <Compile Include="GameObjects\ArmyGameObject.cs" />
-    <Compile Include="GameObjects\Buggy.cs" />
-    <Compile Include="GameObjects\Home.cs" />
-    <Compile Include="GameObjects\Map.cs" />
-    <Compile Include="GameObjects\Soldier.cs" />
-    <Compile Include="GameObjects\Tank.cs" />
-    <Compile Include="GameObjects\TempGameObject.cs" />
-    <Compile Include="GameObjects\Turret.cs" />
-    <Compile Include="GameObjects\GameObject.cs" />
-    <Compile Include="GameObjects\Vehicle.cs" />
-    <Compile Include="IPhysicsBody.cs" />
-    <Compile Include="IPhysicsEngine.cs" />
-    <Compile Include="Logging\ConsoleLoggerSink.cs" />
-    <Compile Include="Logging\ILoggerSink.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LogMessage.cs" />
-    <Compile Include="Model.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="BodyAdaptor.cs" />
+    <Compile Include="IntegratorCallbacks.cs" />
+    <Compile Include="NarrowPhaseCallbacks.cs" />
+    <Compile Include="PhysicsEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Task.cs" />
-    <Compile Include="Tasks\Attack.cs" />
-    <Compile Include="Tasks\Follow.cs" />
-    <Compile Include="Tasks\Move.cs" />
-    <Compile Include="Vector.cs" />
-    <Compile Include="Weapon.cs" />
-    <Compile Include="WeaponType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GameUtils\GameUtils.csproj">
-      <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>
-      <Name>GameUtils</Name>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GameModel\GameModel.csproj">
+      <Project>{12bfeb17-280c-41dc-80aa-a88994a7be92}</Project>
+      <Name>GameModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameRenderer\GameRenderer.csproj">
+      <Project>{d01d9186-62d3-4e32-8edf-ac589cf27acf}</Project>
+      <Name>GameRenderer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

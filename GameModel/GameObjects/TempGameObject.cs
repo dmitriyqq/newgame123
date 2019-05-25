@@ -1,8 +1,8 @@
 namespace GameModel
 {
-    public class TempUnit : Unit
+    public class TempGameObject : GameObject
     {
-        public TempUnit(Model model) : base(model)
+        public TempGameObject(Model model)
         {
             
         }

@@ -5,7 +5,7 @@ using GameModel.Tasks;
 
 namespace GameModel
 {
-    public class Unit
+    public class GameObject
     {
         public float Health = 100.0f;
         
@@ -33,12 +33,7 @@ namespace GameModel
         public Task CurrentTask => tasks.Count != 0 ? tasks.Peek() : null;
         public float MinimalShootingRange { get; private set; } = -1;
 
-        protected Model model;
-
-        public Unit(Model model)
-        {
-            this.model = model;
-        }
+        public Model Model { get; set; }
 
         public virtual void Update(float deltaTime)
         {
@@ -159,7 +154,7 @@ namespace GameModel
             return false;
         }
 
-        public bool SelectUnit(Unit u)
+        public bool SelectUnit(GameObject u)
         {
             return false;
         }

@@ -39,8 +39,6 @@ namespace GameRenderer
 
         private Mesh skyBox;
 
-        private Mesh map;
-
         private DirectionalLight dirLight;
 
         private PointLight[] pointLights;
@@ -82,20 +80,12 @@ namespace GameRenderer
             skyBox = new SkyBoxMesh(new CubeGeometry(), skyMaterial);
             skyBox.Scale = new vec3(100.0f, 100.0f, 100.0f);
 
-            var mapMaterial = new LightMaterial();
-            map = new Mesh(new MapGeometry(model.Map), mapMaterial);
-
-            mapMaterial.diffuse = new Texture("textures/desert.jpeg");
-            mapMaterial.specular = new Texture("textures/desert.jpeg");
-            mapMaterial.shininess = 1.0f;
-
             drawables.Add(skyBox);
             drawables.Add(cameraDebug);
             drawables.Add(gridGeometry);
             drawables.Add(axiesGeometry);
             drawables.Add(markerMesh);
             drawables.Add(rayMesh);
-            drawables.Add(map);
             
             var partEngine = new TexturedParticleEngine();
             ((TexturedParticlesMaterial) partEngine.Material).Texture = new Texture("textures/particle.jpg");
@@ -129,8 +119,8 @@ namespace GameRenderer
                 drawables.Add(new BulletParticleEngine(weaponType.Bullets));
             }
             
-            model.OnAddUnit += registerMesh;
-            model.OnRemoveUnit += deleteMesh;
+            model.OnAddGameObject += registerMesh;
+            model.OnRemoveGameObject += DeleteMesh;
             
             GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             GL.Enable(EnableCap.Blend);
@@ -161,10 +151,9 @@ namespace GameRenderer
         {
             this.ui = ui; 
             ui.AddMenu(model, this);
-            ui.OnMapGeneration += () => { (map.Geometry as MapGeometry)?.GenerateMap(); };
         }
 
-        private void constructPipeline()
+        private void ConstructPipeline()
         {
             pipeline = new List<Mesh>();
             
@@ -179,43 +168,53 @@ namespace GameRenderer
             }
         }
 
-        private void deleteMesh(Unit unit)
+        private void DeleteMesh(GameObject gameObject)
         {
             foreach (var drawable in drawables)
             {
-                if (drawable is UnitMesh um && um.Unit == unit)
+                if (drawable is UnitMesh um && um.GameObject == gameObject)
                 {
                     drawables.Remove(um);
                     break;
                 }
             }
 
-            constructPipeline();
+            ConstructPipeline();
         }
 
-        private void registerMesh(Unit unit)
+        private void registerMesh(GameObject gameObject)
         {
             Logger.Info("Registering Mesh");
 
-            Scene um;
+            IDrawable um;
 
-            if (unit is Home)
+            if (gameObject is Home)
             {
                 um = scenes["home"].Clone();
                 um.Scale = new vec3(0.8f, 0.8f, 0.8f);
-            } else if (unit is Turret)
+            } else if (gameObject is Turret)
             {
                 um = scenes["turret"].Clone();
-            } else if (unit is Tank)
+            } else if (gameObject is Tank)
             {
                 um = scenes["tank"].Clone();
-            } else if (unit is Buggy)
+            } else if (gameObject is Buggy)
             {
                 um = scenes["buggy"].Clone();
-            } else if(unit is Soldier)
+            } else if(gameObject is Soldier)
             {
                 um = scenes["soldier"].Clone();
                 um.Scale = new vec3(0.1f, 0.1f, 0.1f);
+            }
+            else if (gameObject is Map map)
+            {
+                var mapMaterial = new LightMaterial();
+
+                mapMaterial.diffuse = new Texture("textures/desert.jpeg");
+                mapMaterial.specular = new Texture("textures/desert.jpeg");
+                mapMaterial.shininess = 1.0f;
+                
+                um = new Mesh(new MapGeometry(map), mapMaterial);
             }
             else
             {
@@ -223,9 +222,9 @@ namespace GameRenderer
                 um.Rotation = new vec3(1.0f, 0.0f, 0.0f);
             }
             
-            var t = new UnitMesh(um, unit);
+            var t = new UnitMesh(um, gameObject);
             drawables.Add(t);
-            constructPipeline();
+            ConstructPipeline();
         }
 
         private void loadModels()
@@ -254,14 +253,14 @@ namespace GameRenderer
             if (m != null)
             {
                 camera.Follow(m);
-                if (!selectedMesh.Unit.SelectUnit(m.Unit))
+                if (!selectedMesh.GameObject.SelectUnit(m.GameObject))
                 {
                     SelectMesh(m);
                 }
             }
             else if(p.HasValue)
             {
-                if (!selectedMesh.Unit.SelectPosition(p.Value.ToVector()))
+                if (!selectedMesh.GameObject.SelectPosition(p.Value.ToVector()))
                 {
                     selectedMesh.Selected = false;
                     selectedMesh = null;
@@ -309,7 +308,7 @@ namespace GameRenderer
             {
                 if (mesh is UnitMesh unitMesh)
                 {
-                    var point = unitMesh.Unit.IsIntersect(start.ToVector(), dir.ToVector());
+                    var point = unitMesh.GameObject.IsIntersect(start.ToVector(), dir.ToVector());
                     if (point != null)
                     {
                         Console.WriteLine($"Mesh selected");

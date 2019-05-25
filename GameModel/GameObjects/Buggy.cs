@@ -4,7 +4,7 @@ namespace GameModel
 {
     public class Buggy : Vehicle
     {
-        public Buggy(Model model) : base(model)
+        public Buggy() 
         {
             Radius = 2.0f;
         }

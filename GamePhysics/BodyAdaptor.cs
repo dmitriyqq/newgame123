@@ -2,7 +2,7 @@ using System.Numerics;
 using BepuPhysics;
 using GameModel;
 
-namespace PhysicsEngine
+namespace GamePhysics
 {
     public class BodyAdaptor : IPhysicsBody
     {

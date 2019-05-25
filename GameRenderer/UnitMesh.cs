@@ -8,9 +8,9 @@ using OpenTK;
 
 namespace GameRenderer
 {
-    public class UnitMesh : IDrawable
+    public class     UnitMesh : IDrawable
     {
-        public Unit Unit;
+        public GameObject GameObject;
 
         private IDrawable Drawable;
         
@@ -37,19 +37,15 @@ namespace GameRenderer
         private Mesh OrientationMesh;
 
         private List<Mesh> childs;
+        
+        public vec4 color => GameObject?.Player == null ? new vec4(1.0f) : new vec4(GameObject.Player.Color.ToGlm(), 0.3f); 
 
-        public UnitMesh(IDrawable drawable, Unit unit)
+        public UnitMesh(IDrawable drawable, GameObject gameObject)
         {
             Drawable = drawable;
-            Unit = unit;
+            GameObject = gameObject;
 
-            if (unit.Player == null)
-            {
-                throw new Exception("No player for mesh");
-            }
-            
-            var color = new vec4(unit.Player.Color.ToGlm(), 0.3f);
-            HitBoxMesh = new Mesh(new SphereGeometry(Unit.Radius, color),
+            HitBoxMesh = new Mesh(new SphereGeometry(GameObject.Radius, color),
                 new ColorMaterial());
             
             TargetLineMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 1.0f, 0.4f, 1.0f)), new ColorMaterial());
@@ -73,40 +69,40 @@ namespace GameRenderer
         {
             Vector target = null;
 
-            if (Unit.CurrentTask is Follow follow)
+            if (GameObject.CurrentTask is Follow follow)
             {
                 target = follow.Target.Position;
             }
 
-            if (Unit.CurrentTask is Move move)
+            if (GameObject.CurrentTask is Move move)
             {
                 target = move.Target;
             }
 
-            if (Unit.CurrentTask is Attack attack)
+            if (GameObject.CurrentTask is Attack attack)
             {
                 target = attack.Target.Position;
             }
 
             if (target != null)
             {
-                (TargetLineMesh.Geometry as LineGeometry)?.Update(Unit.Position.ToGlm(), target.ToGlm());
+                (TargetLineMesh.Geometry as LineGeometry)?.Update(GameObject.Position.ToGlm(), target.ToGlm());
             }
             
-            (OrientationMesh.Geometry as LineGeometry)?.Update(Unit.Position.ToGlm(), Unit.Position.ToGlm() + 3.0f * Unit.Orientation.ToGlm());
+            (OrientationMesh.Geometry as LineGeometry)?.Update(GameObject.Position.ToGlm(), GameObject.Position.ToGlm() + 3.0f * GameObject.Orientation.ToGlm());
 
-            HitBoxMesh.Position = Unit.Position.ToGlm();
+            HitBoxMesh.Position = GameObject.Position.ToGlm();
         }
 
         public vec3 Position
         {
-            get => Unit.Position.ToGlm();
+            get => GameObject.Position.ToGlm();
             set {}
         }
 
         public vec3 Rotation
         {
-            get => Unit.Orientation.ToGlm(); 
+            get => GameObject.Orientation.ToGlm(); 
             set {}
         }
 

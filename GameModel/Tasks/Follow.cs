@@ -4,11 +4,11 @@ namespace GameModel.Tasks
 {
     public class Follow : Task
     {
-        public Unit Target;
+        public GameObject Target;
 
         public float Range;
 
-        public Follow(Unit target, float range)
+        public Follow(GameObject target, float range)
         {
             Target = target;
             Range = range;

@@ -3,13 +3,10 @@ using System.Linq;
 
 namespace GameModel.Tasks
 {
-    public class ArmyUnit : Unit
+    public class ArmyGameObject : GameObject
     {
-        public ArmyUnit(Model model) : base(model)
-        {
-        }
-        
-        public virtual void Update(float deltaTime)
+
+        public override void Update(float deltaTime)
         {
             if (CurrentTask is Move move)
             {
@@ -28,7 +25,7 @@ namespace GameModel.Tasks
                 if (target != null && (target.Health < 0 || target.Position.Distance(Position) > MinimalShootingRange))
                 {
                     CompleteTask();
-                    var t = model.Units.FirstOrDefault(u => u.Player != Player);
+                    var t = Model.GameObjects.FirstOrDefault(u => u.Player != Player);
                     Do(new Attack(t));
                 }
                 

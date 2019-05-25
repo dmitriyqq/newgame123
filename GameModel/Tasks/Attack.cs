@@ -2,9 +2,9 @@ namespace GameModel.Tasks
 {
     public class Attack : Task
     {
-        public Unit Target;
+        public GameObject Target;
 
-        public Attack(Unit target)
+        public Attack(GameObject target)
         {
             Target = target; 
         }

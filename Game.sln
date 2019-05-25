@@ -8,7 +8,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameRenderer", "GameRendere
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameUI", "GameUI\GameUI.csproj", "{681D10AA-7715-490C-AE9D-F792D5D71842}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsEngine", "PhysicsEngine\PhysicsEngine.csproj", "{07BBCCA4-338F-4E0D-A74D-93431C4D66A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamePhysics", "GamePhysics\GamePhysics.csproj", "{07BBCCA4-338F-4E0D-A74D-93431C4D66A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameUtils", "GameUtils\GameUtils.csproj", "{0D954A09-B8C1-4FD6-B979-88A035595B3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelLoader", "ModelLoader\ModelLoader.csproj", "{9A29D470-E064-42B8-9E1E-121C23840D12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +40,13 @@ Global
 		{07BBCCA4-338F-4E0D-A74D-93431C4D66A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07BBCCA4-338F-4E0D-A74D-93431C4D66A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07BBCCA4-338F-4E0D-A74D-93431C4D66A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D954A09-B8C1-4FD6-B979-88A035595B3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D954A09-B8C1-4FD6-B979-88A035595B3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D954A09-B8C1-4FD6-B979-88A035595B3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D954A09-B8C1-4FD6-B979-88A035595B3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A29D470-E064-42B8-9E1E-121C23840D12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A29D470-E064-42B8-9E1E-121C23840D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A29D470-E064-42B8-9E1E-121C23840D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A29D470-E064-42B8-9E1E-121C23840D12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

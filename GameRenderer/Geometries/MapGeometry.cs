@@ -15,6 +15,7 @@ namespace GameRenderer
         {
             this.map = map;
 
+            map.OnUpdate += GenerateMap;
             Mode = PrimitiveType.Triangles;
 
             GenerateMap();

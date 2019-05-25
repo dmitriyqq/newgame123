@@ -2,7 +2,7 @@ namespace GameModel
 {
     public class Tank : Vehicle
     {
-        public Tank(Model model) : base(model)
+        public Tank()
         {
             Radius = 2.0f;
         }

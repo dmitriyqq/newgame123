@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Gwen.Control;
 using Gwen.Control.Property;
 using OpenTK;
@@ -20,13 +21,13 @@ namespace GameUI
 {
     public class UserInterface
     {
-        private Canvas canvas;
+        private readonly Canvas canvas;
 
-        private Gwen.Renderer.OpenTK renderer;
+        private readonly Gwen.Renderer.OpenTK renderer;
 
-        private Gwen.Input.OpenTK input;
+        private readonly Gwen.Input.OpenTK input;
 
-        private bool altDown;
+        private bool _altDown;
 
         private Menu menu;
 
@@ -49,17 +50,26 @@ namespace GameUI
             Logger.Info("Created ui");
             
             renderer = new Gwen.Renderer.OpenTK();
-            var skin = new Gwen.Skin.TexturedBase(renderer, "DefaultSkin.png");
-            skin.DefaultFont = new Font(renderer, "Hack", 9);
+            try
+            {
+                var skin = new Gwen.Skin.TexturedBase(renderer, "DefaultSkin.png");
+                
+                skin.DefaultFont = new Font(renderer, "Hack", 9);
 
-            canvas = new Canvas(skin);
-            canvas.SetSize (window.Width, window.Height);
-            canvas.ShouldDrawBackground = false;
+                canvas = new Canvas(skin);
+                canvas.SetSize (window.Width, window.Height);
+                canvas.ShouldDrawBackground = false;
 
-            input = new Gwen.Input.OpenTK(window);
-            input.Initialize(canvas);
+                input = new Gwen.Input.OpenTK(window);
+                input.Initialize(canvas);
             
-            layout = new InterfaceLayout(canvas, Logger);
+                layout = new InterfaceLayout(canvas, Logger);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+
         }
  
         public void Draw()
@@ -84,13 +94,18 @@ namespace GameUI
             debugMenu.Menu.AddItem("Settings").SetAction((control, eventArgs) => {CreateDebugWindow(new {settings="settings",x = 200, y = 300});});
 
             var tools = menu.AddItem("Tools");
-            tools.Menu.AddItem("Map Generator").SetAction((control, eventArgs) => { createMapGeneratorWindow();});
+            tools.Menu.AddItem("Map Generator").SetAction((control, eventArgs) => { CreateMapGeneratorWindow();});
         }
 
-        private void createMapGeneratorWindow()
+        private void CreateMapGeneratorWindow()
         {
-            var window = new MapGenerator(canvas, model.Map, Logger);
-            window.OnMapGeneration += OnMapGeneration;
+            
+            var mapGameObject = model.GameObjects.FirstOrDefault(go => go is Map);
+            if (mapGameObject is Map map)
+            {
+                var window = new MapGenerator(canvas,map , Logger);
+                window.OnMapGeneration += OnMapGeneration;    
+            }
         }
         
         // Event handlers
@@ -109,7 +124,7 @@ namespace GameUI
             
             if (e.Key == Key.AltLeft)
             {
-                altDown = true;
+                _altDown = true;
             }
 
             return input.ProcessKeyDown(e);
@@ -117,7 +132,7 @@ namespace GameUI
         
         public bool KeyUp(KeyboardKeyEventArgs e)
         {
-            altDown = false;
+            _altDown = false;
             return input.ProcessKeyUp(e);
         }
 

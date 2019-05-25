@@ -51,6 +51,10 @@
       <Project>{12bfeb17-280c-41dc-80aa-a88994a7be92}</Project>
       <Name>GameModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GamePhysics\GamePhysics.csproj">
+      <Project>{07bbcca4-338f-4e0d-a74d-93431c4d66a0}</Project>
+      <Name>GamePhysics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameRenderer\GameRenderer.csproj">
       <Project>{d01d9186-62d3-4e32-8edf-ac589cf27acf}</Project>
       <Name>GameRenderer</Name>
@@ -59,9 +63,9 @@
       <Project>{681d10aa-7715-490c-ae9d-f792d5d71842}</Project>
       <Name>GameUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PhysicsEngine\PhysicsEngine.csproj">
-      <Project>{07bbcca4-338f-4e0d-a74d-93431c4d66a0}</Project>
-      <Name>PhysicsEngine</Name>
+    <ProjectReference Include="..\ModelLoader\ModelLoader.csproj">
+      <Project>{9a29d470-e064-42b8-9e1e-121c23840d12}</Project>
+      <Name>ModelLoader</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{12BFEB17-280C-41DC-80AA-A88994A7BE92}</ProjectGuid>
+    <ProjectGuid>{0D954A09-B8C1-4FD6-B979-88A035595B3A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GameModel</RootNamespace>
-    <AssemblyName>GameModel</AssemblyName>
+    <RootNamespace>GameUtils</RootNamespace>
+    <AssemblyName>GameUtils</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,44 +35,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bullet.cs" />
-    <Compile Include="GameObjects\ArmyGameObject.cs" />
-    <Compile Include="GameObjects\Buggy.cs" />
-    <Compile Include="GameObjects\Home.cs" />
-    <Compile Include="GameObjects\Map.cs" />
-    <Compile Include="GameObjects\Soldier.cs" />
-    <Compile Include="GameObjects\Tank.cs" />
-    <Compile Include="GameObjects\TempGameObject.cs" />
-    <Compile Include="GameObjects\Turret.cs" />
-    <Compile Include="GameObjects\GameObject.cs" />
-    <Compile Include="GameObjects\Vehicle.cs" />
-    <Compile Include="IPhysicsBody.cs" />
-    <Compile Include="IPhysicsEngine.cs" />
-    <Compile Include="Logging\ConsoleLoggerSink.cs" />
-    <Compile Include="Logging\ILoggerSink.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LogMessage.cs" />
-    <Compile Include="Model.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="PerlinNoise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Task.cs" />
-    <Compile Include="Tasks\Attack.cs" />
-    <Compile Include="Tasks\Follow.cs" />
-    <Compile Include="Tasks\Move.cs" />
-    <Compile Include="Vector.cs" />
-    <Compile Include="Weapon.cs" />
-    <Compile Include="WeaponType.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GameUtils\GameUtils.csproj">
-      <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>
-      <Name>GameUtils</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

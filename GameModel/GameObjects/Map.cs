@@ -1,6 +1,8 @@
+using System;
+
 namespace GameModel
 {
-    public class Map
+    public class Map : GameObject
     {
         public float[,] data { get; private set; }
         public int Size  { get; set; } 
@@ -9,11 +11,17 @@ namespace GameModel
         private int octaves = 5;
         public int Octaves  { get; set; } = 5;
         public float Persistence { get; set; } = 1.83f;
+
+        public event Action OnUpdate;
         
-        public Map(int size)
+        public Map(int size) : base()
         {
             Size = size;
             CreateMap();
+        }
+
+        public override void Update(float deltaTime)
+        {
         }
 
         public void CreateMap()
@@ -44,6 +52,8 @@ namespace GameModel
                     data[i, j] -= averageHeight;
                 }
             }
+
+            OnUpdate?.Invoke();
         }
     }
 }
