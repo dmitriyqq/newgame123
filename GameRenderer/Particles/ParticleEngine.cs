@@ -115,12 +115,12 @@ namespace GameRenderer
             GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, ParticlesCount);
         }
 
-        public IEnumerable<Mesh> GetAllMeshes()
+        public override IEnumerable<Mesh> GetAllMeshes()
         {
             yield return this;
         }
 
-        public IEnumerable<ShaderProgram> GetAllShaders()
+        public override IEnumerable<ShaderProgram> GetAllShaders()
         {
             yield return Material.Program;
         }

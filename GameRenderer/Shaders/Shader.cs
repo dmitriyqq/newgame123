@@ -7,23 +7,21 @@ namespace GameRenderer
 {
     public class Shader
     {
-        public int id { get; }
-
-        private int length;
+        public int Id { get; }
 
         public Shader(string filename, ShaderType shaderType)
         {
             var sr = new StreamReader(filename);
             var source = sr.ReadToEnd();
             
-            id = GL.CreateShader(shaderType);
+            Id = GL.CreateShader(shaderType);
             
-            GL.ShaderSource(id, 1, new [] {source}, new []{source.Length});
-            GL.CompileShader(id);
+            GL.ShaderSource(Id, 1, new [] {source}, new []{source.Length});
+            GL.CompileShader(Id);
 
             //Error checking
-            var infolog = GL.GetShaderInfoLog(id);
-            Console.WriteLine($"Infolog for shader id={id}: {infolog}");
+            var infolog = GL.GetShaderInfoLog(Id);
+            Console.WriteLine($"Infolog for shader id={Id}: {infolog}");
         }
     }
 }

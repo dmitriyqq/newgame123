@@ -43,7 +43,7 @@ namespace GameRenderer
         public float Width { get; set; }
         public float Height { get; set; }
 
-        public float Speed { get; set; } = 5.5f;
+        public float Speed => Radius / 5;
         
         public float RotationSpeed { get; set; } = 0.005f;
 

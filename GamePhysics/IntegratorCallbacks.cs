@@ -23,7 +23,6 @@ namespace GamePhysics
             public PoseIntegratorCallbacks(Vector3 gravity, Logger logger) : this()
             {
                 this.logger = logger;
-                logger.Info("Pose Integrator Callback");
                 Gravity = gravity;
             }
 
@@ -33,7 +32,6 @@ namespace GamePhysics
             /// <param name="dt">Current time step duration.</param>
             public void PrepareForIntegration(float dt)
             {
-                logger.Info("Prepare for integration");
                 //No reason to recalculate gravity * dt for every body; just cache it ahead of time.
                 gravityDt = Gravity * dt;
             }
@@ -49,7 +47,6 @@ namespace GamePhysics
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void IntegrateVelocity(int bodyIndex, in RigidPose pose, in BodyInertia localInertia, int workerIndex, ref BodyVelocity velocity)
             {
-                logger.Info("Integrate velocity");
                 //Note that we avoid accelerating kinematics. Kinematics are any body with an inverse mass of zero (so a mass of ~infinity). No force can move them.
                 if (localInertia.InverseMass > 0)
                 {

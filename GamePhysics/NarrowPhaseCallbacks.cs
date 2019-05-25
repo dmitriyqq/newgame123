@@ -135,6 +135,7 @@ unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
             /// </summary>
             public void Dispose()
             {
+                logger.Info("Dispose");
             }
         }
 }

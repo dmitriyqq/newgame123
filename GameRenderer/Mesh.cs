@@ -24,7 +24,7 @@ namespace GameRenderer
 
             return m;
         }
-        public void Update(float deltaTime)
+        public virtual void Update(float deltaTime)
         {
             // Do nothing
             // Method should be implemented because Mesh is IDrawable
@@ -48,17 +48,17 @@ namespace GameRenderer
             }
         }
 
-        public IEnumerable<Mesh> GetAllMeshes()
+        public virtual IEnumerable<Mesh> GetAllMeshes()
         {
             yield return this;
         }
 
-        public IEnumerable<ShaderProgram> GetAllShaders()
+        public virtual IEnumerable<ShaderProgram> GetAllShaders()
         {
             yield return Material.Program;
         }
 
-        public Mesh Clone()
+        public virtual Mesh Clone()
         {
             return MemberwiseClone() as Mesh;
         }

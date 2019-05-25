@@ -64,7 +64,7 @@ namespace GameModel
 
             if (target != null)
             {
-                Orientation = (target.Position - Position).Normalize();
+//                Orientation = (target.Position - Position).Normalize();
             }
              
         }

@@ -32,7 +32,7 @@ namespace GameModel
             
             Turret1.AddWeapon(Model.weaponTypes[0].GetInstance());
             Turret2.AddWeapon(Model.weaponTypes[0].GetInstance());
-            Orientation = new Vector(1.0f, 0.0f, 0.0f);
+//            Orientation = new Vector(1.0f, 0.0f, 0.0f);
 
             Model.AddGameObject(Turret1);
             Model.AddGameObject(Turret2);

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Security.Cryptography;
 using GameModel.Tasks;
+using Quaternion = BepuUtilities.Quaternion;
 
 namespace GameModel
 {
@@ -11,7 +13,7 @@ namespace GameModel
         
         public Vector Position = new Vector(0.0f, 0.0f, 0.0f);
 
-        public Vector Orientation = Vector.Random().Normalize();
+        public BepuUtilities.Quaternion Orientation = QuaternionHelper.Random();
 
         public float Velocity;
 
@@ -28,8 +30,9 @@ namespace GameModel
         public float RotationSpeed = 0.4f;
 
         private Stack<Task> tasks = new Stack<Task>();
-
+        
         protected List<Weapon> weapons = new List<Weapon>();
+
         public Task CurrentTask => tasks.Count != 0 ? tasks.Peek() : null;
         public float MinimalShootingRange { get; private set; } = -1;
 
@@ -37,7 +40,7 @@ namespace GameModel
 
         public virtual void Update(float deltaTime)
         {
-            Position += Orientation * Velocity * deltaTime;
+//            Position += Orientation * Velocity * deltaTime;
             Velocity += Acceleration;
 
             if (CurrentTask is Move move)
@@ -101,24 +104,24 @@ namespace GameModel
 //                Acceleration = 0.0f;
             }
 
-            var targetOrientation = (target - Position).Normalize();
-            var diff = (targetOrientation - Orientation).Normalize();
+//            var targetOrientation = (target - Position).Normalize();
+//            var diff = (targetOrientation - Orientation).Normalize();
 
-            if (diff.Length() > 0.1f)
-            {
-                var c = Math.Min(RotationSpeed * deltaTime, diff.Length());
-                Orientation += diff * c;
-            }
+//            if (diff.Length() > 0.1f)
+//            {
+//                var c = Math.Min(RotationSpeed * deltaTime, diff.Length());
+//                Orientation += diff * c;
+//            }
             
-            if (Velocity < MaxVelocity)
-            {
-                Acceleration = Math.Min(1.0f / diff.Length(), 0.02f);
-            }
+//            if (Velocity < MaxVelocity)
+//            {
+//                Acceleration = Math.Min(1.0f / diff.Length(), 0.02f);
+//            }
 
-            if (Position.Distance(target) <= range + 2.0f * Velocity)
-            {
-                Acceleration = -0.03f;
-            }
+//            if (Position.Distance(target) <= range + 2.0f * Velocity)
+//            {
+//                Acceleration = -0.03f;
+//            }
         }
 
         public Vector IsIntersect(Vector start, Vector direction)
@@ -134,7 +137,7 @@ namespace GameModel
 
             // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 
             if (c > 0.0f && b > 0.0f) return null; 
-            var discr = b*b - c; 
+            var discr = b * b - c; 
 
             // A negative discriminant corresponds to ray missing sphere 
             if (discr < 0.0f) return null; 

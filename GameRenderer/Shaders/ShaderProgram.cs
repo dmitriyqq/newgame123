@@ -13,8 +13,8 @@ namespace GameRenderer
             Shader fragShader = new Shader(fragmentShaderPath, ShaderType.FragmentShader);
 
             id = GL.CreateProgram();
-            GL.AttachShader(id, vertShader.id);
-            GL.AttachShader(id, fragShader.id);
+            GL.AttachShader(id, vertShader.Id);
+            GL.AttachShader(id, fragShader.Id);
             GL.LinkProgram(id);
         }
 

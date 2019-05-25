@@ -89,7 +89,7 @@ namespace GameRenderer
                 (TargetLineMesh.Geometry as LineGeometry)?.Update(GameObject.Position.ToGlm(), target.ToGlm());
             }
             
-            (OrientationMesh.Geometry as LineGeometry)?.Update(GameObject.Position.ToGlm(), GameObject.Position.ToGlm() + 3.0f * GameObject.Orientation.ToGlm());
+//            (OrientationMesh.Geometry as LineGeometry)?.Update(GameObject.Position.ToGlm(), GameObject.Position.ToGlm() + 3.0f * GameObject.Orientation.ToGlm());
 
             HitBoxMesh.Position = GameObject.Position.ToGlm();
         }
@@ -102,7 +102,7 @@ namespace GameRenderer
 
         public vec3 Rotation
         {
-            get => GameObject.Orientation.ToGlm(); 
+            get => new vec3(1.0f, 0.0f, 0.0f); 
             set {}
         }
 

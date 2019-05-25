@@ -7,10 +7,8 @@ namespace GameModel
         public float[,] data { get; private set; }
         public int Size  { get; set; } 
         public float Resolution  { get; set; } = 1.0f;
-
-        private int octaves = 5;
-        public int Octaves  { get; set; } = 5;
-        public float Persistence { get; set; } = 1.83f;
+        public int Octaves  { get; set; } = 3;
+        public float Persistence { get; set; } = 3.83f;
 
         public event Action OnUpdate;
         

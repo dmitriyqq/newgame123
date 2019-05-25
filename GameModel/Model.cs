@@ -17,6 +17,8 @@ namespace GameModel
         private List<Player> players { get; } = new List <Player>();
         public List<WeaponType> weaponTypes { get; private set; } = new List<WeaponType>(); 
         public int Ticks { get; private set; }
+        public int NumObjects => gameObjects.Count;
+        public float Time { get; private set; }
         public Logger Logger { get; private set; }
 
         public IEnumerable<GameObject> GameObjects => gameObjects;
@@ -71,6 +73,7 @@ namespace GameModel
 
         public void Update(float deltaTime)
         {
+            Time += deltaTime;
             for (int i = gameObjects.Count - 1; i >= 0; i--)
             {
                 var unit = gameObjects[i];
@@ -95,7 +98,7 @@ namespace GameModel
                 var unit = new ArmyGameObject();
                 unit.Player = players[0];
                 unit.Position = Vector.Random() * 25.0f - new Vector(25.0f, 0.0f, 25.0f);
-                unit.Orientation = Vector.Random();
+                unit.Orientation = QuaternionHelper.Random();
                 unit.AddWeapon(weaponType.GetInstance());
                 AddGameObject(unit);
                 
@@ -103,7 +106,7 @@ namespace GameModel
                 var unit2 = new ArmyGameObject();
                 unit2.Player = players[1];
                 unit2.Position = Vector.Random() * 25.0f - new Vector(-25.0f, 0.0f, 25.0f);
-                unit2.Orientation = Vector.Random();
+                unit2.Orientation = QuaternionHelper.Random();
                 unit2.AddWeapon(weaponType.GetInstance());
                 AddGameObject(unit2);
 
@@ -117,7 +120,6 @@ namespace GameModel
                 weapon.Update(deltaTime);
             }
 
-            Logger.Info("Engine updating");
             engine.Update(deltaTime);
             Ticks++;
         }

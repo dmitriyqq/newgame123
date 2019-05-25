@@ -12,7 +12,7 @@ using OpenTK.Input;
 
 namespace GameRenderer
 {
-    public class Renderer : GameWindow
+    public class Renderer : GameWindow, IGameLoop
     {
         private Model model;
 
@@ -21,6 +21,8 @@ namespace GameRenderer
         private Camera camera;
 
         private UnitMesh selectedMesh;
+        
+        public Toggle IsPlaying { get; set; } = new Toggle();
 
         // Debug 
         private Mesh cameraDebug;
@@ -40,8 +42,6 @@ namespace GameRenderer
         private Mesh skyBox;
 
         private DirectionalLight dirLight;
-
-        private PointLight[] pointLights;
 
         public Logger Logger { get; private set; }
         
@@ -366,9 +366,13 @@ namespace GameRenderer
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-            var deltaTime = (float) e.Time; 
-            
-            model.Update(deltaTime);
+            var deltaTime = (float) e.Time;
+
+            if (IsPlaying)
+            {
+                model.Update(deltaTime);
+            }
+
             ui.Update(deltaTime);
         }
         
@@ -449,5 +453,7 @@ namespace GameRenderer
                 "textures/skybox/left.jpg",
             };
         }
+
+        
     }
 }

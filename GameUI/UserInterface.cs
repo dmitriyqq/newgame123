@@ -1,19 +1,12 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Gwen.Control;
-using Gwen.Control.Property;
 using OpenTK;
 using OpenTK.Input;
-using Color = System.Drawing.Color;
 using Font = Gwen.Font;
 using System.Reflection;
 using GameModel;
-using Gwen;
-using Base = Gwen.Control.Base;
 using Key = OpenTK.Input.Key;
 
 
@@ -32,20 +25,14 @@ namespace GameUI
         private Menu menu;
 
         private InterfaceLayout layout;
-        
         public Logger Logger { get; private set; }
-
-        public event Action OnMapGeneration;
 
         private Model model;
 
         private IPhysicsEngine engine;
 
-        public UserInterface(GameWindow window, Model model, IPhysicsEngine engine)
+        public UserInterface(GameWindow window)
         {
-            this.model = model;
-            this.engine = engine;
-            
             Logger = new Logger("UI");
             Logger.Info("Created ui");
             
@@ -63,7 +50,7 @@ namespace GameUI
                 input = new Gwen.Input.OpenTK(window);
                 input.Initialize(canvas);
             
-                layout = new InterfaceLayout(canvas, Logger);
+               
             }
             catch (Exception e)
             {
@@ -81,8 +68,10 @@ namespace GameUI
         {
             renderer.Update(deltaTime);
         }
-        public void AddMenu(object model, object renderer)
+        public void AddMenu(Model model, IGameLoop renderer)
         {
+            this.model = model;
+
             menu = new MenuStrip(canvas);
             var debugMenu = menu.AddItem("Debug");
 
@@ -95,16 +84,17 @@ namespace GameUI
 
             var tools = menu.AddItem("Tools");
             tools.Menu.AddItem("Map Generator").SetAction((control, eventArgs) => { CreateMapGeneratorWindow();});
+            
+            layout = new InterfaceLayout(canvas, Logger, renderer, model);
         }
 
         private void CreateMapGeneratorWindow()
         {
-            
+            // Search for map game object
             var mapGameObject = model.GameObjects.FirstOrDefault(go => go is Map);
             if (mapGameObject is Map map)
             {
                 var window = new MapGenerator(canvas,map , Logger);
-                window.OnMapGeneration += OnMapGeneration;    
             }
         }
         

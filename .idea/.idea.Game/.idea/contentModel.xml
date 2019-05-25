@@ -20,6 +20,7 @@
           <e p="Turret.cs" t="Include" />
           <e p="Vehicle.cs" t="Include" />
         </e>
+        <e p="IGameLoop.cs" t="Include" />
         <e p="IPhysicsBody.cs" t="Include" />
         <e p="IPhysicsEngine.cs" t="Include" />
         <e p="Logging" t="Include">
@@ -33,6 +34,7 @@
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
+        <e p="QuaternionHelper.cs" t="Include" />
         <e p="Task.cs" t="Include" />
         <e p="Tasks" t="Include">
           <e p="Attack.cs" t="Include" />
@@ -44,6 +46,7 @@
         <e p="WeaponType.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive" />
+        <e p="packages.config" t="Include" />
       </e>
       <e p="GamePhysics" t="IncludeRecursive">
         <e p="BodyAdaptor.cs" t="Include" />
@@ -138,10 +141,12 @@
         <e p="InterfaceLayout.cs" t="Include" />
         <e p="MapGenerator.cs" t="Include" />
         <e p="MethodInvoker.cs" t="Include" />
+        <e p="ModelControls.cs" t="Include" />
         <e p="OpenTK.dll.config" t="Include" />
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
+        <e p="ToggleButton.cs" t="Include" />
         <e p="UserInterface.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive" />
@@ -153,6 +158,7 @@
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
+        <e p="Toggle.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive" />
       </e>

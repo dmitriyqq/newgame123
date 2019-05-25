@@ -9,10 +9,17 @@ namespace RunDesktop
     {
         public static void Main(string[] args)
         {
+            
             var modelLoader = new ModelLoader.ModelLoader();
+
+            // Get model with initial state
             var model = modelLoader.CreateEmptyModelWithMap();
+
+            // Renderer contains game loop
             var renderer = new Renderer(model);
-            var ui = new UserInterface(renderer, model, model.engine);
+
+            var ui = new UserInterface(renderer);
+
             renderer.AddUserInterface(ui);
 
             var loggers = new[]
