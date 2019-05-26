@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using GameModel;
 using GameUI;
 using GlmNet;
+using ModelLoader;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -14,39 +15,24 @@ namespace GameRenderer
 {
     public class Renderer : GameWindow, IGameLoop
     {
-        private Model model;
-
-        private UserInterface ui;
-
-        private Camera camera;
-
-        private UnitMesh selectedMesh;
+        private readonly Model _model;
+        private UserInterface _ui;
         
         public Toggle IsPlaying { get; set; } = new Toggle();
 
         // Debug 
-        private Mesh cameraDebug;
-        private Mesh gridGeometry;
-        private Mesh axiesGeometry;
-        private Mesh markerMesh;
-        private Mesh rayMesh;
-        private Mesh sphere;
+        private readonly Mesh _cameraDebug;
+        private readonly Mesh _rayMesh;
 
-        private readonly CubeGeometry cube;
+        private readonly DrawablesFactory _factory;
+        private List<Mesh> _pipeline = new List<Mesh>();
+        private readonly List<IDrawable> _drawables = new List<IDrawable>();
+        private DirectionalLight _dirLight;
 
-        private List<Mesh> pipeline = new List<Mesh>();
-
-        private Dictionary<string, Scene> scenes = new Dictionary<string, Scene>();
-        
-        private List<IDrawable> drawables = new List<IDrawable>();
-
-        private Mesh skyBox;
-
-        private DirectionalLight dirLight;
-
+        public Camera Camera { get; }
         public Logger Logger { get; private set; }
         
-        public Renderer(Model model) : base(
+        public Renderer(Model model, AssetStore store) : base(
             1920,
             1000,
             GraphicsMode.Default,
@@ -61,66 +47,32 @@ namespace GameRenderer
             Logger.Info("Created renderer");
             
             
-            this.model = model;
-            camera = new Camera();
-            cube = new CubeGeometry();
+            _model = model;
+            Camera = new Camera();
 
-            cameraDebug = new Mesh(new AxiesGeometry(camera.Target, camera.Forward, camera.Right, camera.Up), new ColorMaterial());
-            gridGeometry = new Mesh(new GridGeometry(100.0f, 10.0f, new vec4(1.0f, 1.0f, 1.0f, 0.4f)), new ColorMaterial());
-            axiesGeometry = new Mesh(new AxiesGeometry(
-                new vec3(0.0f), 
-                new vec3(0.0f, 0.0f, 1.0f),
-                new vec3(1.0f, 0.0f, 0.0f),
-                new vec3(0.0f, 1.0f, 0.0f), 10.0f), new ColorMaterial());
-            markerMesh = new Mesh(cube, new TextureMaterial());
-            rayMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 0.0f, 0.0f, 1.0f),
+            _cameraDebug = new Mesh(new AxiesGeometry(Camera.Target, Camera.Forward, Camera.Right, Camera.Up), new ColorMaterial());
+            var gridGeometry = new Mesh(new GridGeometry(100.0f, 10.0f, new vec4(1.0f, 1.0f, 1.0f, 0.4f)), new ColorMaterial());
+            var axisGeometry = new Mesh(new AxiesGeometry(new vec3(0.0f),new vec3(0.0f, 0.0f, 1.0f),new vec3(1.0f, 0.0f, 0.0f), new vec3(0.0f, 1.0f, 0.0f), 10.0f), new ColorMaterial());
+            _rayMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 0.0f, 0.0f, 1.0f),
                 new vec4(0.0f, 1.0f, 0.0f, 1.0f)), new ColorMaterial());
 
-            var skyMaterial = new CubemapMaterial();
-            skyMaterial.Texture = new CubemapTexture(GetSkybox());
-            skyBox = new SkyBoxMesh(new CubeGeometry(), skyMaterial);
-            skyBox.Scale = new vec3(100.0f, 100.0f, 100.0f);
+            var skyMaterial = new CubemapMaterial {Texture = new CubemapTexture(GetSkybox())};
+            Mesh skyBox = new SkyBoxMesh(new CubeGeometry(), skyMaterial) {Scale = new vec3(100.0f, 100.0f, 100.0f)};
 
-            drawables.Add(skyBox);
-            drawables.Add(cameraDebug);
-            drawables.Add(gridGeometry);
-            drawables.Add(axiesGeometry);
-            drawables.Add(markerMesh);
-            drawables.Add(rayMesh);
+            _factory = new DrawablesFactory(store);
             
-            var partEngine = new TexturedParticleEngine();
-            ((TexturedParticlesMaterial) partEngine.Material).Texture = new Texture("textures/particle.jpg");
-
-            float[] pos = new float[500 * 4];
-            float[] col = new float[500 * 4];
-
-            for (int i = 0; i < 500; i++)
-            {
-                var p = Vector3Helper.Random() * 5.0f;
-                var c = Vector3Helper.Random() * 5.0f;
-
-                var index = i * 4;
-
-                pos[index + 0] = p.X;
-                pos[index + 1] = p.Y;
-                pos[index + 2] = p.Z;
-                pos[index + 3] = 1.0f;
-                
-                col[index + 0] = p.X;
-                col[index + 1] = p.Y;
-                col[index + 2] = p.Z;
-                col[index + 3] = 0.8f;
-            }
-            
-            partEngine.Update2(pos, col, 500);
-            drawables.Add(partEngine);
+            _drawables.Add(skyBox);
+            _drawables.Add(_cameraDebug);
+            _drawables.Add(gridGeometry);
+            _drawables.Add(axisGeometry);
+            _drawables.Add(_rayMesh);
             
             foreach (var weaponType in model.WeaponTypes)
             {
-                drawables.Add(new BulletParticleEngine(weaponType.Bullets));
+                _drawables.Add(new BulletParticleEngine(weaponType.Bullets));
             }
             
-            model.OnAddGameObject += registerMesh;
+            model.OnAddGameObject += RegisterMesh;
             model.OnRemoveGameObject += DeleteMesh;
             
             GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -129,53 +81,51 @@ namespace GameRenderer
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             CreateLights();
-            LoadModels();
 
             model.Start();
         }
 
         private void CreateLights()
         {
-            dirLight = new DirectionalLight
+            _dirLight = new DirectionalLight
             {
                 Direction = glm.normalize(new vec3(0.5f, 1.0f, 0.3f)),
-                Ambient = new vec3(0.2f, 0.2f, 0.2f),
-                Diffuse = new vec3(0.8f, 0.8f, 0.8f),
-                Specular = new vec3(0.5f, 0.5f, 0.5f),
+                Ambient = new vec3(0.05f, 0.05f, 0.05f),
+                Diffuse = new vec3(0.7f, 0.7f, 0.7f),
+                Specular = new vec3(0.4f, 0.4f, 0.4f),
                 Program = new LightMaterial().Program,
             };
 
-            dirLight.Uniform(new LightMaterial().Program);
+            _dirLight.Uniform(new LightMaterial().Program);
         }
 
         public void AddUserInterface(UserInterface ui)
         {
-            this.ui = ui; 
-            ui.AddMenu(model, this);
+            _ui = ui; 
+            ui.AddRendererMenu(this);
         }
 
         private void ConstructPipeline()
         {
-            pipeline = new List<Mesh>();
+            _pipeline = new List<Mesh>();
             
-            foreach (var drawable in drawables)
+            foreach (var drawable in _drawables)
             {
                 var l = drawable.GetAllMeshes();
                 foreach (var mesh in l)
                 {
-                    pipeline.Add(mesh);
+                    _pipeline.Add(mesh);
                 }
-                
             }
         }
 
         private void DeleteMesh(GameObject gameObject)
         {
-            foreach (var drawable in drawables)
+            foreach (var drawable in _drawables)
             {
                 if (drawable is UnitMesh um && um.GameObject == gameObject)
                 {
-                    drawables.Remove(um);
+                    _drawables.Remove(um);
                     break;
                 }
             }
@@ -183,186 +133,74 @@ namespace GameRenderer
             ConstructPipeline();
         }
 
-        private void registerMesh(GameObject gameObject)
+        private void RegisterMesh(GameObject gameObject)
         {
             Logger.Info("Registering Mesh");
 
             IDrawable um;
-
-//            if (gameObject is Home)
-//            {
-//                um = scenes["home"].Clone();
-//                um.Scale = new vec3(0.8f, 0.8f, 0.8f);
-//            } else if (gameObject is Turret)
-//            {
-//                um = scenes["turret"].Clone();
-//            } else if (gameObject is Tank)
-//            {
-//                um = scenes["tank"].Clone();
-//            } else if (gameObject is Buggy)
-//            {
-//                um = scenes["buggy"].Clone();
-//            } else if(gameObject is Soldier)
-//            {
-//                um = scenes["soldier"].Clone();
-//                um.Scale = new vec3(0.1f, 0.1f, 0.1f);
-//            }
-             if (gameObject is Map map)
+            if (gameObject is Map map)
             {
-                var mapMaterial = new LightMaterial();
+                var mapMaterial = new LightMaterial
+                {
+                    diffuse = new Texture("textures/desert.jpeg"),
+                    specular = new Texture("textures/desert.jpeg"),
+                    shininess = 1.0f
+                };
 
-                mapMaterial.diffuse = new Texture("textures/desert.jpeg");
-                mapMaterial.specular = new Texture("textures/desert.jpeg");
-                mapMaterial.shininess = 1.0f;
-                
                 um = new Mesh(new MapGeometry(map), mapMaterial);
             }
             else
-             {
-                um = sphere.Clone(); //scenes["unit"].Clone();
+            {
+                um = _factory.CreateDrawableForGameObject(gameObject);
                 um.Rotation = new vec3(1.0f, 0.0f, 0.0f);
             }
             
             var t = new UnitMesh(um, gameObject);
-            drawables.Add(t);
+            _drawables.Add(t);
             ConstructPipeline();
         }
 
-        private void LoadModels()
-        {
-            scenes["unit"] = new Scene("./models/trident", "trident3.obj");
-            scenes["turret"] = new Scene("./models/turret", "turret.obj");
-            scenes["home"] = new Scene("./models/home", "home.obj");
-            // scenes["buggy"] = new Scene("./models/lexus", "lexus.obj");
-            scenes["tank"] = new Scene("./models/tank", "tank.obj");
-            sphere = new Mesh(new SphereGeometry(1.1f, new vec4(1.0f, 0.0f, 0.0f, 1.0f)), new ColorMaterial());
-        }
-
-        private void HandleMouseClick(float x, float y)
-        {
-            Console.WriteLine($"Mouse click at x: {x} y:{y}");
-            var (start, dir) = camera.CastRay(x, y);
-            
-            var m = intersectMeshes(start, dir);
-            var p = intersectPlane(start, dir);
-
-            if (selectedMesh == null)
-            {
-                SelectMesh(m);
-                return;
-            }
-
-            if (m != null)
-            {
-                camera.Follow(m);
-                if (!selectedMesh.GameObject.SelectUnit(m.GameObject))
-                {
-                    SelectMesh(m);
-                }
-            }
-            else if(p.HasValue)
-            {
-                if (!selectedMesh.GameObject.SelectPosition(p.Value.ToVector3()))
-                {
-                    selectedMesh.Selected = false;
-                    selectedMesh = null;
-                }
-            }
-        }
-
-        private void SelectMesh(UnitMesh m)
-        {
-            if (selectedMesh != null)
-            {
-                selectedMesh.Selected = false;
-            }
-
-            selectedMesh = m;
-            if (selectedMesh != null)
-            {
-                selectedMesh.Selected = true;
-                ui.CreateDebugWindow(selectedMesh);
-            }
-        }
-        
-        private vec3? intersectPlane(vec3 start, vec3 dir)
-        {
-            // assuming vectors are all normalized
-            var n = new vec3(0.0f, -1.0f, 0.0f);
-            var p0 = new vec3(0.0f, 0.0f, 0.0f);
-            
-            float denom = glm.dot(n, dir); 
-            if (denom > 1e-6) { 
-                vec3 p0l0 = p0 - start; 
-                float t = glm.dot(p0l0, n) / denom;
-
-                var p = start + t * dir;
-//                markerMesh.Position = p;
-                return p; 
-            } 
- 
-            return null; 
-        }
-
-        private UnitMesh intersectMeshes(vec3 start, vec3 dir)
-        {
-            foreach (var mesh in drawables)
-            {
-                if (mesh is UnitMesh unitMesh)
-                {
-                    var point = unitMesh.GameObject.IsIntersect(start.ToVector3(), dir.ToVector3());
-                    if (point != null)
-                    {
-                        Console.WriteLine($"Mesh selected");
-                        return unitMesh;
-                    }
-                }
-            }
-
-            return null;
-        }
-        
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-            float deltaTime = (float) e.Time;
+            var deltaTime = (float) e.Time;
 
             UpdateCamera(deltaTime);
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-                foreach (var drawable in drawables)
+                foreach (var drawable in _drawables)
             {
                 drawable.Update(deltaTime);
             }
 
             foreach (var shader in GetAllShaders())
             {
-                shader.UniformCamera(camera);
+                shader.UniformCamera(Camera);
             }
 
-            foreach (var mesh in pipeline)
+            foreach (var mesh in _pipeline)
             {
                 mesh.Draw();
             }
 
-            ui.Draw();
+            _ui.Draw();
             SwapBuffers();
         }
 
         private void UpdateCamera(float deltaTime)
         {
-            camera.Width = Width;
-            camera.Height = Height;
+            Camera.Width = Width;
+            Camera.Height = Height;
 
-            if (cameraDebug.Geometry is AxiesGeometry g)
+            if (_cameraDebug.Geometry is AxiesGeometry g)
             {
-                g.Update( camera.Target, camera.Forward, camera.Right, camera.Up);
+                g.Update( Camera.Target, Camera.Forward, Camera.Right, Camera.Up);
             }
 
-            cameraDebug.Position = new vec3(0.0f);
-            cameraDebug.Rotation = new vec3(0.0f, 0.0f, -1.0f);
+            _cameraDebug.Position = new vec3(0.0f);
+            _cameraDebug.Rotation = new vec3(0.0f, 0.0f, -1.0f);
  
-            camera.Move(Keyboard.GetState(), deltaTime);
+            Camera.Move(Keyboard.GetState(), deltaTime);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -372,28 +210,28 @@ namespace GameRenderer
 
             if (IsPlaying)
             {
-                model.Update(deltaTime);
+                _model.Update(deltaTime);
             }
 
-            ui.Update(deltaTime);
-        }
-        
-        public IEnumerable<Material> GetAllMaterials()
-        {
-            return pipeline.Select(m => m.Material);
+            _ui.Update(deltaTime);
         }
 
-        public IEnumerable<ShaderProgram> GetAllShaders()
+        private IEnumerable<Material> GetAllMaterials()
+        {
+            return _pipeline.Select(m => m.Material);
+        }
+
+        private IEnumerable<ShaderProgram> GetAllShaders()
         {
             return GetAllMaterials().Select(m => m.Program).Distinct();
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-            ui.MouseMove(e);
-            camera.OnMouseMove(e);
-            var ray = camera.CastRay(e.X, e.Y);
-            (rayMesh.Geometry as LineGeometry)?.Update(ray.start, ray.dir * 1000.0f);
+            _ui.MouseMove(e);
+            Camera.OnMouseMove(e);
+            var (start, dir) = Camera.CastRay(e.X, e.Y);
+            (_rayMesh.Geometry as LineGeometry)?.Update(start.ToGlm(), (dir * 1000.0f).ToGlm());
 
             base.OnMouseMove(e);
         }
@@ -402,31 +240,28 @@ namespace GameRenderer
         {
             base.OnMouseDown(e);
 
-            ui.MouseDown(e);
-            camera.OnMouseDown(e);
+            _ui.MouseDown(e);
+            Camera.OnMouseDown(e);
 
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             base.OnMouseUp(e);
-
-            ui.MouseUp(e);
-            camera.OnMouseUp(e);
-
-            HandleMouseClick(e.Mouse.X, e.Mouse.Y);
+            _ui.MouseUp(e);
+            Camera.OnMouseUp(e);
         }
 
         protected override void OnResize(EventArgs e)
         {
             GL.Viewport(0,0,Width, Height);
 
-            var _projectionMatrix = Matrix4.CreateTranslation(
+            var projectionMatrix = Matrix4.CreateTranslation(
                 new Vector3(-Width / 2.0f, -Height / 2.0f, 0)) *
                 Matrix4.CreateScale(new Vector3(1, -1, 1)) *
                 Matrix4.CreateOrthographic(Width, Height, -1.0f, 1.0f);
 
-            ui?.Resize(_projectionMatrix, Width, Height);
+            _ui?.Resize(projectionMatrix, Width, Height);
             
             base.OnResize(e);
         }
@@ -434,13 +269,13 @@ namespace GameRenderer
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
         {
             base.OnKeyUp(e);
-            ui.KeyUp(e);
+            _ui.KeyUp(e);
         }
 
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
             base.OnKeyDown(e);
-            ui.KeyDown(e);
+            _ui.KeyDown(e);
         }
 
         public List<string> GetSkybox()

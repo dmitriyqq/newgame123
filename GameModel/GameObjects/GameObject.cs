@@ -11,23 +11,26 @@ namespace GameModel
     public class GameObject
     {
         public float Health = 100.0f;
-
         public RigidTransform Transform;
-
         public int Handle;
-
         public Player Player;
-
         public float Radius = 1.1f;
+        public bool Static;
 
-        private Stack<Task> tasks = new Stack<Task>();
-
-        protected List<Weapon> weapons = new List<Weapon>();
+        private readonly Stack<Task> tasks = new Stack<Task>();
+        private readonly List<Weapon> weapons = new List<Weapon>();
 
         public Task CurrentTask => tasks.Count != 0 ? tasks.Peek() : null;
         public float MinimalShootingRange { get; private set; } = -1;
-        public Model Model { get; set; }
+        public Model Model { private get; set; }
 
+        public object Asset;
+
+        public GameObject()
+        {
+            Transform = new RigidTransform {Orientation = Quaternion.Identity};
+        }
+        
         public virtual void Update(float deltaTime)
         {
             Transform = Model.Engine.GetTransform(Handle);

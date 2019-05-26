@@ -30,9 +30,9 @@ namespace GameRenderer
         {
             float y = map.data[i, j];
             float x = (i - map.Size / 2) * map.Resolution;
-            float z = (j - map.Size / 2) * map.Resolution;
+            float z = -(j - map.Size / 2) * map.Resolution;
 
-            return new vec3(x, y, z);
+            return new vec3(z, y, x);
         }
 
         public void ConstructData()

@@ -15,10 +15,10 @@ namespace GameModel
         public IPhysicsEngine Engine { get; set; }
         
         private readonly List<GameObject> _gameObjects = new List <GameObject>();
-        private List<GameObject> InitialState { get; }
+        private List<GameObject> InitialState { get; set; }
         private List<Player> Players { get; } = new List <Player>();
-        public List<WeaponType> WeaponTypes { get; private set; } = new List<WeaponType>(); 
-        public int Ticks { get; private set; }
+        public List<WeaponType> WeaponTypes { get; private set; } = new List<WeaponType>();
+        public int Ticks { get; private set; } = -1;
         public int NumObjects => _gameObjects.Count;
         public float Time { get; private set; }
         public Logger Logger { get; private set; }
@@ -27,7 +27,7 @@ namespace GameModel
 
         public Model(List<GameObject> initialState)
         {
-            this.InitialState = initialState;
+            InitialState = initialState;
 
             Logger = new Logger("Model");
             Logger.Info("Created model");
@@ -54,14 +54,26 @@ namespace GameModel
                 return;
             }
 
+            Ticks = 0;
             foreach (var go in InitialState)
             {
                 AddGameObject(go);
             }
+
+            InitialState = null;
         }
 
         public void AddGameObject(GameObject u)
         {
+            Logger.Info("AddGameObject");
+            if (Ticks == -1)
+            {
+                Logger.Info("Add to initial state");
+                InitialState.Add(u);
+                return;
+            }
+            
+            Logger.Info("Add at run");
             u.Model = this;
             OnAddGameObject?.Invoke(u);
             _gameObjects.Add(u);
@@ -73,6 +85,9 @@ namespace GameModel
             _gameObjects.Remove(gameObject);
         }
 
+        public GameObject GameObjectByHandle(int handle) =>
+            _gameObjects.FirstOrDefault(go => go.Static == false && go.Handle == handle);
+        
         public void Update(float deltaTime)
         {
             Time += deltaTime;
@@ -92,30 +107,6 @@ namespace GameModel
                 }
 
             }
-
-            if (_gameObjects.Count < 200)
-            {
-                var weaponType = WeaponTypes.First();
-                
-                var unit = new ArmyGameObject();
-                unit.Player = Players[0];
-                // unit.Position = Vector.Random() * 25.0f - new Vector(25.0f, 0.0f, 25.0f);
-                // unit.Orientation = QuaternionHelper.Random();
-                unit.AddWeapon(weaponType.GetInstance());
-                AddGameObject(unit);
-                
-                
-                var unit2 = new ArmyGameObject();
-                unit2.Player = Players[1];
-//                unit2.Position = Vector.Random() * 25.0f - new Vector(-25.0f, 0.0f, 25.0f);
-//                unit2.Orientation = QuaternionHelper.Random();
-                unit2.AddWeapon(weaponType.GetInstance());
-                AddGameObject(unit2);
-
-                unit.Do(new Attack(unit2));
-                unit2.Do(new Attack(unit));
-            }
-            
 
             foreach (var weapon in WeaponTypes)
             {

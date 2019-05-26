@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Assimp;
 using GameModel;
 using GlmNet;
@@ -11,16 +12,15 @@ namespace GameRenderer
     {
         public IDrawable Parent { get; set; }
 
-        private Assimp.Scene scene;
+        private readonly Assimp.Scene _scene;
 
-        private List<Mesh> childs;
+        private readonly List<Mesh> _children;
 
-        private Dictionary<string, Texture> Textures = new Dictionary<string, Texture>();
+        private readonly Dictionary<string, Texture> Textures = new Dictionary<string, Texture>();
         
         private Dictionary<string, Animation> Animations = new Dictionary<string, Animation>();
 
         private Animation currentAnimation = null;
-
         private bool repeatAnimation = false;
         
         public vec3 Position { get; set; } = new vec3(0.0f, 0.0f, 0.0f);
@@ -54,14 +54,14 @@ namespace GameRenderer
             currentAnimation.Start();
         }
         
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
-        public string Directory { get; set; }
+        public string Directory { get; private set; }
 
         public string Path => $"{Directory}/{Name}";
         
 
-        private Texture loadTexture(string filepath)
+        private Texture LoadTexture(string filepath)
         {
             var f = $"{Directory}/{filepath}";
             if (Textures.ContainsKey(f))
@@ -75,46 +75,31 @@ namespace GameRenderer
         }
         
         // Create copy of the scene
-        protected Scene(List<Mesh> childs, Assimp.Scene scene)
+        private Scene(List<Mesh> children, Assimp.Scene scene)
         {
-            this.childs = childs;
-            this.scene = scene;
+            _children = children;
+            _scene = scene;
 
-            foreach (var child in childs)
+            foreach (var child in children)
             {
                 child.Parent = this;
             }
         }
-        public Scene(string directory, string name)
+        public Scene(string path)
         {
-            childs = new List<Mesh>();
-            Name = name;
-            Directory = directory;
+            _children = new List<Mesh>();
+            var segments = new List<string>(path.Split('/'));
+            Name = segments[segments.Count - 1]; 
+            segments.RemoveAt(segments.Count - 1);
+            Directory = string.Join("/", segments);
+            
             using (var context = new AssimpContext())
             {
-                scene = context.ImportFile(Path,PostProcessSteps.Triangulate | PostProcessSteps.FlipUVs);
-                processNode(scene, scene.RootNode);
+                _scene = context.ImportFile(Path,PostProcessSteps.Triangulate | PostProcessSteps.FlipUVs);
+                ProcessNode(_scene, _scene.RootNode);
 
-                if (scene.HasAnimations)
+                if (_scene.HasAnimations)
                 {
-//                    foreach (var animation in scene.Animations)
-//                    {
-//                        var a = new Animation();
-//                        a.Name = animation.Name;
-//                        
-//                        if (animation.HasMeshAnimations)
-//                        {
-////                            foreach (var VARIABLE in animation.)
-//                            {
-//                                   
-//                            }
-//                        }
-//
-//                        if (animation.HasNodeAnimations)
-//                        {
-//                            
-//                        }
-//                    }
                 }
             }
         }
@@ -125,7 +110,7 @@ namespace GameRenderer
 
         public IEnumerable<Mesh> GetAllMeshes()
         {
-            return childs;
+            return _children;
         }
 
         public IEnumerable<ShaderProgram> GetAllShaders()
@@ -133,14 +118,14 @@ namespace GameRenderer
             yield return new TextureMaterial().Program;
         }
 
-        private void processNode(Assimp.Scene scene, Node node)
+        private void ProcessNode(Assimp.Scene scene, Node node)
         {
             if (node.HasMeshes)
             {
                 foreach (var meshIndex in node.MeshIndices)
                 {
                     var mesh = scene.Meshes[meshIndex];
-                    processMesh(mesh);
+                    ProcessMesh(mesh);
                 }
             }
             
@@ -148,16 +133,16 @@ namespace GameRenderer
             {
                 foreach (var child in node.Children)
                 {
-                    processNode(scene, child);
+                    ProcessNode(scene, child);
                 }
             }
         }
 
-        private void processMesh(Assimp.Mesh mesh)
+        private void ProcessMesh(Assimp.Mesh mesh)
         {
             Mesh m;
 
-            var mt = scene.Materials[mesh.MaterialIndex];
+            var mt = _scene.Materials[mesh.MaterialIndex];
 
            
 
@@ -198,12 +183,12 @@ namespace GameRenderer
                 var textureMaterial = new LightMaterial();
                 textureMaterial.shininess = 32;
                 if  (mt.HasTextureDiffuse) {
-                    textureMaterial.diffuse = loadTexture(mt.TextureDiffuse.FilePath);
-                    textureMaterial.specular = loadTexture(mt.TextureDiffuse.FilePath);
+                    textureMaterial.diffuse = LoadTexture(mt.TextureDiffuse.FilePath);
+                    textureMaterial.specular = LoadTexture(mt.TextureDiffuse.FilePath);
                 }
                 if (mt.HasTextureSpecular)
                 {
-                    textureMaterial.specular = loadTexture(mt.TextureSpecular.FilePath);
+                    textureMaterial.specular = LoadTexture(mt.TextureSpecular.FilePath);
                 }
 
                 material = textureMaterial;
@@ -216,24 +201,22 @@ namespace GameRenderer
 
             geometry.UpdateIndicies(indices.ToArray());
             geometry.Mode = PrimitiveType.Triangles;
-            m = new Mesh(geometry, material);
-            m.Name = mesh.Name;
+            m = new Mesh(geometry, material) {Name = mesh.Name, Parent = this};
 
-            m.Parent = this;
-            childs.Add(m);
+            _children.Add(m);
         }
 
         public Scene Clone()
         {
             var l = new List<Mesh>();
-            foreach (var child in childs)
+            foreach (var child in _children)
             {
                 var m = child.Clone();
                 l.Add(m);
                 m.Parent = this;
             }
             
-            return new Scene(l, scene);
+            return new Scene(l, _scene);
         }
     }
 }

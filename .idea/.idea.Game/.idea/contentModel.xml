@@ -46,7 +46,9 @@
       </e>
       <e p="GamePhysics" t="IncludeRecursive">
         <e p="GamePhysics.csproj" t="IncludeRecursive" />
+        <e p="HitHandler.cs" t="Include" />
         <e p="IntegratorCallbacks.cs" t="Include" />
+        <e p="MapHitHandler.cs" t="Include" />
         <e p="NarrowPhaseCallbacks.cs" t="Include" />
         <e p="PhysicsEngine.cs" t="Include" />
         <e p="PhysicsObjectsFactory.cs" t="Include" />
@@ -62,6 +64,7 @@
         <e p="Animation.cs" t="Include" />
         <e p="Camera.cs" t="Include" />
         <e p="CubemapTexture.cs" t="Include" />
+        <e p="DrawablesFactory.cs" t="Include" />
         <e p="GameRenderer.csproj" t="IncludeRecursive" />
         <e p="Geometries" t="Include">
           <e p="AxiesGeometry.cs" t="Include" />
@@ -129,6 +132,8 @@
         <e p="packages.config" t="Include" />
       </e>
       <e p="GameUI" t="IncludeRecursive">
+        <e p="Constructor.cs" t="Include" />
+        <e p="CursorObject.cs" t="Include" />
         <e p="DebugCollectionWindow.cs" t="Include" />
         <e p="DebugWindow.cs" t="Include" />
         <e p="EventView.cs" t="Include" />
@@ -136,6 +141,7 @@
         <e p="GameUI.csproj" t="IncludeRecursive" />
         <e p="InterfaceLayout.cs" t="Include" />
         <e p="MapGenerator.cs" t="Include" />
+        <e p="MapTools.cs" t="Include" />
         <e p="MethodInvoker.cs" t="Include" />
         <e p="ModelControls.cs" t="Include" />
         <e p="OpenTK.dll.config" t="Include" />
@@ -150,6 +156,7 @@
       </e>
       <e p="GameUtils" t="IncludeRecursive">
         <e p="GameUtils.csproj" t="IncludeRecursive" />
+        <e p="IRayCaster.cs" t="Include" />
         <e p="PerlinNoise.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
@@ -160,11 +167,14 @@
         <e p="packages.config" t="Include" />
       </e>
       <e p="ModelLoader" t="IncludeRecursive">
+        <e p="Asset.cs" t="Include" />
+        <e p="AssetStore.cs" t="Include" />
         <e p="ModelLoader.cs" t="Include" />
         <e p="ModelLoader.csproj" t="IncludeRecursive" />
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
+        <e p="SimpleAsset.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive" />
         <e p="packages.config" t="Include" />

@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gwen, Version=3.0.6001.172, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Gwen.3.0.6001.172\lib\net40\Gwen.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MathFloat, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\MathFloat.1.0.1.0\lib\net20\MathFloat.dll</HintPath>
       <Private>True</Private>
@@ -68,6 +72,10 @@
     <ProjectReference Include="..\GameUI\GameUI.csproj">
       <Project>{681d10aa-7715-490c-ae9d-f792d5d71842}</Project>
       <Name>GameUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameUtils\GameUtils.csproj">
+      <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>
+      <Name>GameUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\ModelLoader\ModelLoader.csproj">
       <Project>{9a29d470-e064-42b8-9e1e-121c23840d12}</Project>

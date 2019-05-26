@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BepuUtilities, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\BepuUtilities.2.0.0\lib\netstandard2.0\BepuUtilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Gwen, Version=3.0.6001.172, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Gwen.3.0.6001.172\lib\net40\Gwen.dll</HintPath>
       <Private>True</Private>
@@ -67,18 +71,29 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CursorObject.cs" />
     <Compile Include="DebugCollectionWindow.cs" />
     <Compile Include="DebugWindow.cs" />
     <Compile Include="EventView.cs" />
     <Compile Include="Explorer.cs" />
     <Compile Include="InterfaceLayout.cs" />
     <Compile Include="MapGenerator.cs" />
+    <Compile Include="MapTools.cs" />
     <Compile Include="MethodInvoker.cs" />
     <Compile Include="ModelControls.cs" />
+    <Compile Include="Constructor.cs" />
     <Compile Include="ToggleButton.cs" />
     <Compile Include="UserInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,13 +107,13 @@
       <Project>{12bfeb17-280c-41dc-80aa-a88994a7be92}</Project>
       <Name>GameModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GameRenderer.Metadata\GameRenderer.Metadata.csproj">
-      <Project>{77fb3200-7120-47ad-acfa-51a127dff120}</Project>
-      <Name>GameRenderer.Metadata</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GameUtils\GameUtils.csproj">
       <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>
       <Name>GameUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelLoader\ModelLoader.csproj">
+      <Project>{9a29d470-e064-42b8-9e1e-121c23840d12}</Project>
+      <Name>ModelLoader</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

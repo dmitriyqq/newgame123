@@ -75,6 +75,7 @@
     <Compile Include="Animation.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CubemapTexture.cs" />
+    <Compile Include="DrawablesFactory.cs" />
     <Compile Include="Geometries\AxiesGeometry.cs" />
     <Compile Include="Geometries\ColorVertex.cs" />
     <Compile Include="Geometries\ColorVertexGeometry.cs" />
@@ -144,6 +145,10 @@
     <ProjectReference Include="..\GameUtils\GameUtils.csproj">
       <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>
       <Name>GameUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelLoader\ModelLoader.csproj">
+      <Project>{9a29d470-e064-42b8-9e1e-121c23840d12}</Project>
+      <Name>ModelLoader</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfAsset xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Asset xsi:type="SimpleAsset">
+    <GameObjectType>GameModel.GameObjects.ArmyGameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
+    <Name>Test Asset</Name>
+    <Scene>./models/trident/trident3.obj</Scene>
+    <Radius>1</Radius>
+  </Asset>
+  <Asset>
+    <GameObjectType>GameModel.Map, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
+    <Name>Base</Name>
+  </Asset>
+</ArrayOfAsset>

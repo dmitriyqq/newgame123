@@ -5,6 +5,9 @@ namespace GameModel
 {
     public class Vehicle : ArmyGameObject
     {
- 
+        public Vehicle()
+        {
+            Radius = 2.0f;
+        }
     }
 }

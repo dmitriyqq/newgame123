@@ -1,60 +1,66 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using BepuPhysics;
 using BepuPhysics.Collidables;
-using BepuPhysics.CollisionDetection;
-using BepuPhysics.Constraints;
 using BepuUtilities;
-using BepuUtilities.Collections;
 using BepuUtilities.Memory;
 using GameModel;
-using GameRenderer;
 
 namespace GamePhysics
 {
     public class PhysicsEngine : IPhysicsEngine
     {
-        public Logger Logger;
-        private int mapBodyIndex;
-        private Simulation simulation;
-        private BufferPool bufferPool;
-        private HullData hullData;
-        private PhysicsObjectsFactory factory; 
+        public readonly Logger Logger;
+        private readonly Simulation _simulation;
+        private readonly PhysicsObjectsFactory _factory;
+        private BufferPool _bufferPool;
         public PhysicsEngine()
         {
             Logger = new Logger("Physics");
             Logger.Info("Created physics engine");
 
-            bufferPool = new BufferPool();
-            simulation = Simulation.Create(bufferPool, new NarrowPhaseCallbacks(Logger), 
+            _bufferPool = new BufferPool();
+            _simulation = Simulation.Create(_bufferPool, new NarrowPhaseCallbacks(Logger), 
                 new IntegratorCallbacks.PoseIntegratorCallbacks(new Vector3(0.0f, -10.0f, 0.0f), Logger));
-            factory = new PhysicsObjectsFactory(simulation, bufferPool, Logger);
+            _factory = new PhysicsObjectsFactory(_simulation, _bufferPool, Logger);
         }
 
         public void Update(float deltaTime)
         {
-            simulation.Timestep(deltaTime);
+            _simulation.Timestep(deltaTime);
         }
 
         public void AddGameObject(GameObject gameObject)
         {
-            var handle = factory.CreatePhysicsBody(gameObject);
+            var handle = _factory.CreatePhysicsBody(gameObject);
             gameObject.Handle = handle;
         }
 
         public void RemoveGameObject(GameObject gameObject)
         {
-            simulation.Bodies.Remove(gameObject.Handle);
+            _simulation.Bodies.Remove(gameObject.Handle);
         }
 
         public RigidTransform GetTransform(int handle)
         {
-            simulation.Bodies.GetDescription(handle, out var description);
+            _simulation.Bodies.GetDescription(handle, out var description);
             return new RigidTransform(description.Pose.Position, description.Pose.Orientation);
         }
 
+        public Vector3? IntersectMap(Map map, Vector3 start, Vector3 dir)
+        {
+            var handler = new MapHitHandler(map);
+            _simulation.RayCast(start, dir, 1000.0f, ref handler);
+            return handler.Collision;
+        }
+        
+        public int? IntersectGameObjects(Vector3 start, Vector3 dir)
+        {
+            var handler = new HitHandler();
+            _simulation.RayCast(start, dir, 1000.0f, ref handler);
+            return handler.CollidableReference?.Handle;
+        }
+        
         public event Action<GameObject, GameObject> OnCollision;
     }
 }

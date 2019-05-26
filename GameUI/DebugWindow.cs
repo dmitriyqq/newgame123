@@ -25,12 +25,12 @@ namespace GameUI
         private Properties propertiesProps;
 
         private GroupBox root;
-        private BindingFlags flags => BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
-        private FieldInfo[] fields => type.GetFields(flags);
-        private PropertyInfo[] properties => type.GetProperties(flags);
+        private static BindingFlags flags => BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
+        private IEnumerable<FieldInfo> Fields => type.GetFields(flags);
+        private IEnumerable<PropertyInfo> Properties => type.GetProperties(flags);
         
-        private Dictionary<PropertyInfo, string> propValues = new Dictionary<PropertyInfo, string>();
-        private Dictionary<FieldInfo, string> fieldValues = new Dictionary<FieldInfo, string>();
+        private readonly Dictionary<PropertyInfo, string> _propValues = new Dictionary<PropertyInfo, string>();
+        private readonly Dictionary<FieldInfo, string> _fieldValues = new Dictionary<FieldInfo, string>();
         
         private Logger logger;
 
@@ -88,7 +88,7 @@ namespace GameUI
         {
             try
             {
-                foreach (var prop in propValues)
+                foreach (var prop in _propValues)
                 {
                     var property = prop.Key;
                     var str = prop.Value;
@@ -125,14 +125,14 @@ namespace GameUI
                 logger.Error(e);
             }
             
-            propValues.Clear();
+            _propValues.Clear();
         }
         
         private void UpdateFields()
         {
             try
             {
-                foreach (var prop in fieldValues)
+                foreach (var prop in _fieldValues)
                 {
                     var field = prop.Key;
                     var strValue = prop.Value;
@@ -169,7 +169,7 @@ namespace GameUI
                 logger.Error(e);
             }
             
-            fieldValues.Clear();
+            _fieldValues.Clear();
         }
 
         private Properties CreateGroup(string name, int position)
@@ -192,7 +192,7 @@ namespace GameUI
 
             try
             {
-                foreach (var field in fields)
+                foreach (var field in Fields)
                 {
                     var value = field.GetValue(o);
 
@@ -306,7 +306,7 @@ namespace GameUI
             {
                 propertiesProps = CreateGroup("Properties", 1);
 
-                foreach (var property in properties)
+                foreach (var property in Properties)
                 {
                     if (property.CanRead)
                     {
@@ -350,7 +350,7 @@ namespace GameUI
 
             if (o is FieldInfo field)
             {
-                fieldValues[field] = row.Value;    
+                _fieldValues[field] = row.Value;    
             }
             else
             {
@@ -375,7 +375,7 @@ namespace GameUI
 
             if (o is PropertyInfo property)
             {
-                propValues[property] = row.Value;    
+                _propValues[property] = row.Value;    
             }
             else
             {

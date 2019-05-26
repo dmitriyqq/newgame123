@@ -64,7 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HitHandler.cs" />
     <Compile Include="IntegratorCallbacks.cs" />
+    <Compile Include="MapHitHandler.cs" />
     <Compile Include="NarrowPhaseCallbacks.cs" />
     <Compile Include="PhysicsEngine.cs" />
     <Compile Include="PhysicsObjectsFactory.cs" />
@@ -77,10 +79,6 @@
     <ProjectReference Include="..\GameModel\GameModel.csproj">
       <Project>{12bfeb17-280c-41dc-80aa-a88994a7be92}</Project>
       <Name>GameModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameRenderer\GameRenderer.csproj">
-      <Project>{d01d9186-62d3-4e32-8edf-ac589cf27acf}</Project>
-      <Name>GameRenderer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,6 +15,7 @@ namespace GameModel
         public Map(int size) : base()
         {
             Size = size;
+            Static = true;
             CreateMap();
         }
 

@@ -6,22 +6,24 @@ namespace ModelLoader
 {
     public class ModelLoader
     {
-        private Model buildModel()
+        private (Model, Map) buildModel()
         {
             var physicsEngine = new PhysicsEngine();
             var map = new Map(100);
+
             var initialState = new List<GameObject> { map };
             var model = new Model(initialState);
+
             model.Use(physicsEngine);
-            return model;
+            return (model, map);
         }
 
-        public Model CreateEmptyModelWithMap()
+        public (Model, Map) CreateEmptyModelWithMap()
         {
             return buildModel();
         }
 
-        public Model LoadModel(string path)
+        public (Model, Map) LoadModel(string path)
         {
             return buildModel();
         }

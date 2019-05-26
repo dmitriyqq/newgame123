@@ -1,11 +1,12 @@
 using System;
+using System.Numerics;
 using GameModel;
 using GlmNet;
 using OpenTK.Input;
 
 namespace GameRenderer
 {
-    public class Camera
+    public class Camera : IRayCaster
     {
         private vec3 target;
         public vec3 Target
@@ -118,7 +119,7 @@ namespace GameRenderer
             rotating = false;
         }
 
-        public (vec3 start, vec3 dir) CastRay(float x1, float y1)
+        public (Vector3 start, Vector3 dir) CastRay(int x1, int y1)
         {
             float x = (2.0f * x1) / Width - 1.0f;
             float y = 1.0f - (2.0f * y1) / Height;
@@ -134,7 +135,7 @@ namespace GameRenderer
             var origin = y * Up - x * Right;
             var start = new vec3( Position.x + origin.x, Position.y + origin.y, Position.z + origin.z);
             var end = new vec3(start.x + 1000.0f * rayWor.x, start.y + 1000.0f * rayWor.y, start.z + 1000.0f * rayWor.z);
-            return (start, glm.normalize(end - start));
+            return (start.ToVector3(), glm.normalize(end - start).ToVector3());
         }
 
         public void Follow(IDrawable d)

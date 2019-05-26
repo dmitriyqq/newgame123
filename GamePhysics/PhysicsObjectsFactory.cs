@@ -116,11 +116,11 @@ namespace GamePhysics
             var shape = new Sphere(r);
             var idx = _simulation.Shapes.Add(shape);
             shape.ComputeInertia(50.0f, out var bodyInertia);
-            var rp = new RigidPose(Vector3Helper.Random() * 10.0f + new Vector3(50.0f, 50.0f, 50.0f));
-            var cd = new CollidableDescription(idx, 0.0f);
-            var bad = new BodyActivityDescription(0.01f);
-            var bd = BodyDescription.CreateDynamic(rp, bodyInertia, cd, bad);
-            var handle = _simulation.Bodies.Add(bd);
+            var rigidPose = new RigidPose(gameObject.Transform.Position, gameObject.Transform.Orientation);
+            var collidableDescription = new CollidableDescription(idx, 0.0f);
+            var bodyActivityDescription = new BodyActivityDescription(0.01f);
+            var bodyDescription = BodyDescription.CreateDynamic(rigidPose, bodyInertia, collidableDescription, bodyActivityDescription);
+            var handle = _simulation.Bodies.Add(bodyDescription);
             return handle;
         }
     }
