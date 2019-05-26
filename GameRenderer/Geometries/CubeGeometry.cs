@@ -6,7 +6,7 @@ namespace GameRenderer
     {
         public CubeGeometry()
         {
-            UpdateData(new List<TextureVertex>
+            UpdateData(new TextureVertex[]
             {
                 new TextureVertex(-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f),
                 new TextureVertex(0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f),

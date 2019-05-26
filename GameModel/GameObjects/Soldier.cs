@@ -1,3 +1,4 @@
+using GameModel.GameObjects;
 using GameModel.Tasks;
 
 namespace GameModel

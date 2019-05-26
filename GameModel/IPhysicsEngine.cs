@@ -1,4 +1,5 @@
 using System;
+using BepuUtilities;
 
 namespace GameModel
 {
@@ -9,6 +10,8 @@ namespace GameModel
         void AddGameObject(GameObject gameObject);
 
         void RemoveGameObject(GameObject gameObject);
+
+        RigidTransform GetTransform(int handle);
         
         event Action<GameObject, GameObject> OnCollision;
     }

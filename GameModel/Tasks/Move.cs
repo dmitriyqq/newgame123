@@ -1,7 +1,9 @@
+using System.Numerics;
+
 namespace GameModel.Tasks
 {
     public class Move : Task
     {
-        public Vector Target;
+        public Vector3 Target;
     }
 }

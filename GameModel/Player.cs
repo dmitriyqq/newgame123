@@ -6,9 +6,9 @@ namespace GameModel
     {
         public string Name { get; set; }
         
-        public Vector Color { get; set; }
+        public Vector3 Color { get; set; }
 
-        public Player(string name, Vector color)
+        public Player(string name, Vector3 color)
         {
             Color = color;
             Name = name;

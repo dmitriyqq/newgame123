@@ -67,11 +67,11 @@ namespace GameRenderer
 
         private void updateDebugInformation()
         {
-            Vector target = null;
+            System.Numerics.Vector3? target = null;
 
             if (GameObject.CurrentTask is Follow follow)
             {
-                target = follow.Target.Position;
+                target = follow.Target.Transform.Position;
             }
 
             if (GameObject.CurrentTask is Move move)
@@ -81,22 +81,22 @@ namespace GameRenderer
 
             if (GameObject.CurrentTask is Attack attack)
             {
-                target = attack.Target.Position;
+                target = attack.Target.Transform.Position;
             }
 
-            if (target != null)
+            if (target.HasValue)
             {
-                (TargetLineMesh.Geometry as LineGeometry)?.Update(GameObject.Position.ToGlm(), target.ToGlm());
+                (TargetLineMesh.Geometry as LineGeometry)?.Update(GameObject.Transform.Position.ToGlm(), target.Value.ToGlm());
             }
             
 //            (OrientationMesh.Geometry as LineGeometry)?.Update(GameObject.Position.ToGlm(), GameObject.Position.ToGlm() + 3.0f * GameObject.Orientation.ToGlm());
 
-            HitBoxMesh.Position = GameObject.Position.ToGlm();
+            HitBoxMesh.Position = GameObject.Transform.Position.ToGlm();
         }
 
         public vec3 Position
         {
-            get => GameObject.Position.ToGlm();
+            get => GameObject.Transform.Position.ToGlm();
             set {}
         }
 

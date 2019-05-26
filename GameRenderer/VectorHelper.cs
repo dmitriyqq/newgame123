@@ -13,11 +13,6 @@ namespace GameModel
             return new vec3(v.X, v.Y, v.Z);
         }
         
-        public static vec3 ToGlm(this Vector v)
-        {
-            return new vec3(v.X, v.Y, v.Z);
-        }
-        
         public static vec3 Polar2Cartesian (float radius, float theta, float alpha)
         {
             return new vec3(
@@ -27,21 +22,16 @@ namespace GameModel
             );
         }
 
-        public static Vector ToVector(this vec3 v)
+        public static Vector3 ToVector3(this vec3 v)
         {
-            return new Vector(v.x, v.y, v.z);
-        }
-        
-        public static OpenTK.Vector3 ToVector3(this vec3 v)
-        {
-            return new OpenTK.Vector3(v.x, v.y, v.z);
+            return new Vector3(v.x, v.y, v.z);
         }
 
         public static vec3 ToGlm(this Vector3D v)
         {
             return new vec3(v.X, v.Y, v.Z);
         }
-        
+
         public static vec4 ToGlm(this Color4D v)
         {
             return new vec4(v.R, v.G, v.B, v.A);

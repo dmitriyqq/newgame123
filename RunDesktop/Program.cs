@@ -24,7 +24,7 @@ namespace RunDesktop
 
             var loggers = new[]
             {
-                (model.engine as PhysicsEngine)?.Logger,
+                (model.Engine as PhysicsEngine)?.Logger,
                 model.Logger,
                 renderer.Logger,
                 ui.Logger

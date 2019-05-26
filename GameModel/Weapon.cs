@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace GameModel
 {
@@ -19,7 +20,7 @@ namespace GameModel
             Type = weapon;
         }
 
-        public void Shoot(Vector position, Vector direction, Player Player)
+        public void Shoot(Vector3 position, Vector3 direction, Player Player)
         {
             if (Pause <= 0.0f)
             {

@@ -30,6 +30,7 @@ namespace GameRenderer
         private Mesh axiesGeometry;
         private Mesh markerMesh;
         private Mesh rayMesh;
+        private Mesh sphere;
 
         private readonly CubeGeometry cube;
 
@@ -95,8 +96,8 @@ namespace GameRenderer
 
             for (int i = 0; i < 500; i++)
             {
-                var p = Vector.Random() * 5.0f;
-                var c = Vector.Random() * 5.0f;
+                var p = Vector3Helper.Random() * 5.0f;
+                var c = Vector3Helper.Random() * 5.0f;
 
                 var index = i * 4;
 
@@ -114,7 +115,7 @@ namespace GameRenderer
             partEngine.Update2(pos, col, 500);
             drawables.Add(partEngine);
             
-            foreach (var weaponType in model.weaponTypes)
+            foreach (var weaponType in model.WeaponTypes)
             {
                 drawables.Add(new BulletParticleEngine(weaponType.Bullets));
             }
@@ -127,13 +128,13 @@ namespace GameRenderer
             GL.Enable(EnableCap.DepthTest); 
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            createLights();
-            loadModels();
+            CreateLights();
+            LoadModels();
 
             model.Start();
         }
 
-        private void createLights()
+        private void CreateLights()
         {
             dirLight = new DirectionalLight
             {
@@ -188,25 +189,25 @@ namespace GameRenderer
 
             IDrawable um;
 
-            if (gameObject is Home)
-            {
-                um = scenes["home"].Clone();
-                um.Scale = new vec3(0.8f, 0.8f, 0.8f);
-            } else if (gameObject is Turret)
-            {
-                um = scenes["turret"].Clone();
-            } else if (gameObject is Tank)
-            {
-                um = scenes["tank"].Clone();
-            } else if (gameObject is Buggy)
-            {
-                um = scenes["buggy"].Clone();
-            } else if(gameObject is Soldier)
-            {
-                um = scenes["soldier"].Clone();
-                um.Scale = new vec3(0.1f, 0.1f, 0.1f);
-            }
-            else if (gameObject is Map map)
+//            if (gameObject is Home)
+//            {
+//                um = scenes["home"].Clone();
+//                um.Scale = new vec3(0.8f, 0.8f, 0.8f);
+//            } else if (gameObject is Turret)
+//            {
+//                um = scenes["turret"].Clone();
+//            } else if (gameObject is Tank)
+//            {
+//                um = scenes["tank"].Clone();
+//            } else if (gameObject is Buggy)
+//            {
+//                um = scenes["buggy"].Clone();
+//            } else if(gameObject is Soldier)
+//            {
+//                um = scenes["soldier"].Clone();
+//                um.Scale = new vec3(0.1f, 0.1f, 0.1f);
+//            }
+             if (gameObject is Map map)
             {
                 var mapMaterial = new LightMaterial();
 
@@ -217,8 +218,8 @@ namespace GameRenderer
                 um = new Mesh(new MapGeometry(map), mapMaterial);
             }
             else
-            {
-                um = scenes["unit"].Clone();
+             {
+                um = sphere.Clone(); //scenes["unit"].Clone();
                 um.Rotation = new vec3(1.0f, 0.0f, 0.0f);
             }
             
@@ -227,13 +228,14 @@ namespace GameRenderer
             ConstructPipeline();
         }
 
-        private void loadModels()
+        private void LoadModels()
         {
             scenes["unit"] = new Scene("./models/trident", "trident3.obj");
             scenes["turret"] = new Scene("./models/turret", "turret.obj");
             scenes["home"] = new Scene("./models/home", "home.obj");
             // scenes["buggy"] = new Scene("./models/lexus", "lexus.obj");
             scenes["tank"] = new Scene("./models/tank", "tank.obj");
+            sphere = new Mesh(new SphereGeometry(1.1f, new vec4(1.0f, 0.0f, 0.0f, 1.0f)), new ColorMaterial());
         }
 
         private void HandleMouseClick(float x, float y)
@@ -260,7 +262,7 @@ namespace GameRenderer
             }
             else if(p.HasValue)
             {
-                if (!selectedMesh.GameObject.SelectPosition(p.Value.ToVector()))
+                if (!selectedMesh.GameObject.SelectPosition(p.Value.ToVector3()))
                 {
                     selectedMesh.Selected = false;
                     selectedMesh = null;
@@ -308,7 +310,7 @@ namespace GameRenderer
             {
                 if (mesh is UnitMesh unitMesh)
                 {
-                    var point = unitMesh.GameObject.IsIntersect(start.ToVector(), dir.ToVector());
+                    var point = unitMesh.GameObject.IsIntersect(start.ToVector3(), dir.ToVector3());
                     if (point != null)
                     {
                         Console.WriteLine($"Mesh selected");

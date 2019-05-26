@@ -39,7 +39,6 @@ unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
         {
             //Before creating a narrow phase pair, the broad phase asks this callback whether to bother with a given pair of objects.
             //This can be used to implement arbitrary forms of collision filtering. See the RagdollDemo or NewtDemo for examples.
-            logger.Info("Allow contact generaton");
             return true;
         }
 
@@ -61,7 +60,6 @@ unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
             //subpairs between children in parent shapes. 
             //This only gets called in pairs that involve at least one shape type that can contain multiple children, like a Compound.
             
-            logger.Info("Allow contact generation 2");
             return true;
         }
 
@@ -91,8 +89,6 @@ unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public unsafe bool ConfigureContactManifold(int workerIndex, CollidablePair pair, NonconvexContactManifold* manifold, out PairMaterialProperties pairMaterial)
             {
-                logger.Info("Configure contact manifold");
-                
                 ConfigureMaterial(out pairMaterial);
                 return true;
             }
@@ -108,7 +104,6 @@ unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public unsafe bool ConfigureContactManifold(int workerIndex, CollidablePair pair, ConvexContactManifold* manifold, out PairMaterialProperties pairMaterial)
             {
-                logger.Info("Configure contact manifold 2");
                 ConfigureMaterial(out pairMaterial);
                 return true;
             }
@@ -126,7 +121,6 @@ unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool ConfigureContactManifold(int workerIndex, CollidablePair pair, int childIndexA, int childIndexB, ConvexContactManifold* manifold)
             {
-                logger.Info("Configure contact manifold 3");
                 return true;
             }
 

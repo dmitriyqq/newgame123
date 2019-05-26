@@ -43,6 +43,10 @@
       <HintPath>..\packages\BepuUtilities.2.0.0\lib\netstandard2.0\BepuUtilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MathFloat, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MathFloat.1.0.1.0\lib\net20\MathFloat.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,13 +60,14 @@
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BodyAdaptor.cs" />
     <Compile Include="IntegratorCallbacks.cs" />
     <Compile Include="NarrowPhaseCallbacks.cs" />
     <Compile Include="PhysicsEngine.cs" />
+    <Compile Include="PhysicsObjectsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

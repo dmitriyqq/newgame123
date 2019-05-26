@@ -179,7 +179,7 @@ namespace GameRenderer
                 list.Add(new TextureVertex(v.X, v.Y, v.Z, n.X, n.Z, n.Y, t.x, t.y));
             }
             
-            geometry.UpdateData(list.ToRawArray());
+            geometry.UpdateData(list.ToArray().ToRawArray());
             var indices = new List<int>();
             for(var i = 0; i < mesh.FaceCount; i++)
             {

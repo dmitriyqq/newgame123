@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Security.Cryptography;
+using BepuUtilities;
 using GameModel.Tasks;
 using Quaternion = BepuUtilities.Quaternion;
 
@@ -10,74 +11,64 @@ namespace GameModel
     public class GameObject
     {
         public float Health = 100.0f;
-        
-        public Vector Position = new Vector(0.0f, 0.0f, 0.0f);
 
-        public BepuUtilities.Quaternion Orientation = QuaternionHelper.Random();
+        public RigidTransform Transform;
 
-        public float Velocity;
-
-        public float Acceleration = 0.01f;
-
-        public float MaxVelocity = 20.0f;
+        public int Handle;
 
         public Player Player;
-        
-        public float Mass;
 
         public float Radius = 1.1f;
 
-        public float RotationSpeed = 0.4f;
-
         private Stack<Task> tasks = new Stack<Task>();
-        
+
         protected List<Weapon> weapons = new List<Weapon>();
 
         public Task CurrentTask => tasks.Count != 0 ? tasks.Peek() : null;
         public float MinimalShootingRange { get; private set; } = -1;
-
         public Model Model { get; set; }
 
         public virtual void Update(float deltaTime)
         {
-//            Position += Orientation * Velocity * deltaTime;
-            Velocity += Acceleration;
-
-            if (CurrentTask is Move move)
-            {
-                moveTo(move.Target, 1.0f, deltaTime);
-            }
-
-            if (CurrentTask is Follow follow)
-            {
-                moveTo(follow.Target.Position, follow.Range, deltaTime);
-            }
-
-            if (CurrentTask is Attack attack)
-            {
-                var distance = Position.Distance(attack.Target.Position);
-                if (distance < MinimalShootingRange)
-                {
-                    foreach (var weapon in weapons)
-                    {
-                        if (distance < weapon.ShootingRange)
-                        {
-                            var orientation = attack.Target.Position - Position;
-                            weapon.Shoot(Position, orientation, Player);
-                        }
-
-                    }
-                } else
-                {
-                    Do(new Follow(attack.Target, MinimalShootingRange));
-                }
-
-            }
-
-            foreach (var weapon in weapons)
-            {
-                weapon.Update(deltaTime);
-            }
+            Transform = Model.Engine.GetTransform(Handle);
+            
+//            if (CurrentTask is Move move)
+//            {
+//                moveTo(move.Target, 1.0f, deltaTime);
+//            }
+//
+//            if (CurrentTask is Follow follow)
+//            {
+//                var targetPosition = follow.Target.Transform.Position;
+//                moveTo(targetPosition, follow.Range, deltaTime);
+//            }
+//
+//            if (CurrentTask is Attack attack)
+//            {
+//                var targetPosition = attack.Target.Transform.Position;
+//                var distance = Vector3.Distance(Transform.Position, targetPosition);
+//                if (distance < MinimalShootingRange)
+//                {
+//                    foreach (var weapon in weapons)
+//                    {
+//                        if (distance < weapon.ShootingRange)
+//                        {
+//                            var orientation = targetPosition - Transform.Position;
+//                            weapon.Shoot(Transform.Position, orientation, Player);
+//                        }
+//
+//                    }
+//                } else
+//                {
+//                    Do(new Follow(attack.Target, MinimalShootingRange));
+//                }
+//
+//            }
+//
+//            foreach (var weapon in weapons)
+//            {
+//                weapon.Update(deltaTime);
+//            }
         }
 
         public virtual void AddWeapon(Weapon w)
@@ -96,13 +87,13 @@ namespace GameModel
             tasks.Pop();
         }
 
-        protected void moveTo(Vector target, float range, float deltaTime)
+        protected void moveTo(Vector3 target, float range, float deltaTime)
         {
-            if (Position.Distance(target) < range)
-            {
-                CompleteTask();
+//            if (Position.Distance(target) < range)
+//            {
+//                CompleteTask();
 //                Acceleration = 0.0f;
-            }
+//            }
 
 //            var targetOrientation = (target - Position).Normalize();
 //            var diff = (targetOrientation - Orientation).Normalize();
@@ -124,16 +115,16 @@ namespace GameModel
 //            }
         }
 
-        public Vector IsIntersect(Vector start, Vector direction)
+        public Vector3? IsIntersect(Vector3 start, Vector3 direction)
         {
             // sc = Position
             // p = start
             // d = direction
             // sr = radius
 
-            var m = start - Position; 
-            var b = m.dotProduct(direction); 
-            var c = m.dotProduct(m) - Radius * Radius; 
+            var m = start - Transform.Position; 
+            var b = Vector3.Dot(m, direction); 
+            var c =  Vector3.Dot(m, m) - Radius * Radius; 
 
             // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 
             if (c > 0.0f && b > 0.0f) return null; 
@@ -152,7 +143,7 @@ namespace GameModel
             return q;
         }
 
-        public bool SelectPosition(Vector position)
+        public bool SelectPosition(Vector3 position)
         {
             return false;
         }

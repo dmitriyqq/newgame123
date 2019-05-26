@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
 {
-    public class MapGeometry : TextureVertexGeometry
+    public class MapGeometry : IndexedTextureGeometry
     {
         private Map map;
 
@@ -23,48 +23,82 @@ namespace GameRenderer
 
         public void GenerateMap()
         {
-            UpdateData(ConstructData());
+            ConstructData();
         }
 
-        private vec3 getVertexInPosition(int i, int j)
+        private vec3 GetVertexInPosition(int i, int j)
         {
-            float z = map.data[i, j];
+            float y = map.data[i, j];
             float x = (i - map.Size / 2) * map.Resolution;
-            float y = (j - map.Size / 2) * map.Resolution;
+            float z = (j - map.Size / 2) * map.Resolution;
 
-            return new vec3(x, z, y);
+            return new vec3(x, y, z);
         }
 
-        public float[] ConstructData()
+        public void ConstructData()
         {
-            List<TextureVertex> vertices = new List<TextureVertex>();
-            for (int i = 0; i < map.Size - 1; i++)
+            var vertices = new TextureVertex[map.Size * map.Size];
+            var width = map.Size;
+            var height = map.Size;
+
+            for (int i = 0; i < width; ++i)
             {
-                for (int j = 0; j < map.Size - 1; j++)
+                for (int j = 0; j < height; ++j)
                 {
-                    var p1 = getVertexInPosition(i, j);
-                    var p2 = getVertexInPosition(i+1, j);
-                    var p3 = getVertexInPosition(i, j+1);
-                    var p4 = getVertexInPosition(i+1, j+1);
-
-                    var n1 = VectorHelper.Normal(p1, p2, p3);
-                    var n2 = -1 * VectorHelper.Normal(p2, p3, p4);
-                    
-                    var trUv = new vec2(0.0f, 1.0f);
-                    var tlUv = new vec2(1.0f, 1.0f);
-                    var brUv = new vec2(0.0f, 0.0f);
-                    var blUv = new vec2(1.0f, 0.0f);
-
-                    vertices.Add(new TextureVertex(p1, n1, tlUv));
-                    vertices.Add(new TextureVertex(p2, n1, trUv));
-                    vertices.Add(new TextureVertex(p3, n1, blUv));
-                    vertices.Add(new TextureVertex(p2, n2, trUv));
-                    vertices.Add(new TextureVertex(p3, n2, blUv));
-                    vertices.Add(new TextureVertex(p4, n2, brUv));
+                    vertices[width * j + i] = new TextureVertex(GetVertexInPosition(i, j));
                 }
             }
 
-            return vertices.ToRawArray();
+            var quadWidth = width - 1;
+            var quadHeight = height - 1;
+            var triangleCount = quadWidth * quadHeight * 2;
+
+            var trUv = new vec2(0.0f, 1.0f);
+            var tlUv = new vec2(1.0f, 1.0f);
+            var brUv = new vec2(0.0f, 0.0f);
+            var blUv = new vec2(1.0f, 0.0f);
+            
+            var indicies = new int[triangleCount * 3];
+            for (int i = 0; i < quadWidth; ++i)
+            {
+                for (int j = 0; j < quadHeight; ++j)
+                {
+                    var triangleIndex = (j * quadWidth + i) * 2;
+                    var v00 = width * j + i;
+                    var v01 = width * j + i + 1;
+                    var v10 = width * (j + 1) + i;
+                    var v11 = width * (j + 1) + i + 1;
+
+                    var vv00 = vertices[v00];
+                    var vv01 = vertices[v01];
+                    var vv10 = vertices[v10];
+                    var vv11 = vertices[v11];
+
+                    var n1 = VectorHelper.Normal(vv00.Position, vv01.Position, vv10.Position);
+//                    var n2 = -1 * VectorHelper.Normal(vv01.Position, vv10.Position, vv11.Position);
+                    
+                    vv00.Texture = tlUv;
+                    vv01.Texture = trUv;
+                    vv10.Texture = blUv;
+                    vv11.Texture = brUv;
+                    
+                    vv00.Normal = n1;
+                    vv01.Normal = n1;
+                    vv10.Normal = n1;
+                    vv11.Normal = n1;
+                    
+                    indicies[3 * triangleIndex] = v00;
+                    indicies[3 * triangleIndex + 1] = v01;
+                    indicies[3 * triangleIndex + 2] = v10;
+                    
+                    indicies[3 * triangleIndex + 3] = v01;
+                    indicies[3 * triangleIndex + 4] = v11;
+                    indicies[3 * triangleIndex + 5] = v10;
+                }
+            }
+
+            UpdateData(vertices.ToRawArray());
+            UpdateIndicies(indicies);
         }
     }
 }

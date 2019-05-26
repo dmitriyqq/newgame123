@@ -21,7 +21,7 @@ namespace GameRenderer
             Texture = new vec2(u, v);
         }
         
-        public TextureVertex(vec3 pos, vec3 norm, vec2 uv)
+        public TextureVertex(vec3 pos, vec3 norm = new vec3(), vec2 uv = new vec2())
         {
             Position = pos;
             Normal = norm;

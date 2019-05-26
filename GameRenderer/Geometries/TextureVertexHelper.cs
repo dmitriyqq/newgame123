@@ -4,11 +4,11 @@ namespace GameRenderer
 {
     public static class TextureVertexHelper
     {
-        public static float[] ToRawArray(this List<TextureVertex> l)
+        public static float[] ToRawArray(this TextureVertex[] l)
         {
-            float[] data = new float[l.Count * TextureVertex.FloatSize];
+            float[] data = new float[l.Length * TextureVertex.FloatSize];
 
-            for (int i = 0; i < l.Count; i++)
+            for (int i = 0; i < l.Length; i++)
             {
                 var index = i * TextureVertex.FloatSize;
                 data[index + 0] = l[i].Position.x;

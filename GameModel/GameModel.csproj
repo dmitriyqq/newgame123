@@ -37,6 +37,10 @@
       <HintPath>..\packages\BepuUtilities.2.0.0\lib\netstandard2.0\BepuUtilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MathFloat, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MathFloat.1.0.1.0\lib\net20\MathFloat.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,22 +54,19 @@
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bullet.cs" />
     <Compile Include="GameObjects\ArmyGameObject.cs" />
     <Compile Include="GameObjects\Buggy.cs" />
-    <Compile Include="GameObjects\Home.cs" />
     <Compile Include="GameObjects\Map.cs" />
     <Compile Include="GameObjects\Soldier.cs" />
     <Compile Include="GameObjects\Tank.cs" />
-    <Compile Include="GameObjects\TempGameObject.cs" />
-    <Compile Include="GameObjects\Turret.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\Vehicle.cs" />
     <Compile Include="IGameLoop.cs" />
-    <Compile Include="IPhysicsBody.cs" />
     <Compile Include="IPhysicsEngine.cs" />
     <Compile Include="Logging\ConsoleLoggerSink.cs" />
     <Compile Include="Logging\ILoggerSink.cs" />
