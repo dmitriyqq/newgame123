@@ -7,6 +7,7 @@ using OpenTK.Input;
 using Font = Gwen.Font;
 using System.Reflection;
 using GameModel;
+using GameModel.GameObjects;
 using Key = OpenTK.Input.Key;
 
 
@@ -14,18 +15,17 @@ namespace GameUI
 {
     public class UserInterface
     {
-        private Canvas _canvas;
         private Gwen.Renderer.OpenTK _renderer;
         private Gwen.Input.OpenTK _input;
         private Menu _menu;
         public event Action<MouseButtonEventArgs> OnMouseDown;
         public event Action<MouseMoveEventArgs> OnMouseMove;
-        
+        public event Action<MouseButtonEventArgs> OnMouseUp;
         public InterfaceLayout Layout { get; private set; }
         public Logger Logger { get; }
         public CursorObject CursorObject { get; }
         public Model Model { get; }
-
+        public Canvas Canvas { get; private set; }
         public UserInterface(GameWindow window, Model model)
         {
             Model = model;
@@ -50,16 +50,16 @@ namespace GameUI
                 DefaultFont = new Font(_renderer, "Hack", 9)
             };
 
-            _canvas = new Canvas(skin) {ShouldDrawBackground = false};
-            _canvas.SetSize (window.Width, window.Height);
+            Canvas = new Canvas(skin) {ShouldDrawBackground = false};
+            Canvas.SetSize (window.Width, window.Height);
 
             _input = new Gwen.Input.OpenTK(window);
-            _input.Initialize(_canvas);
+            _input.Initialize(Canvas);
         }
  
         public void Draw()
         {
-            _canvas.RenderCanvas();
+            Canvas.RenderCanvas();
         }
 
         public void Update(float deltaTime)
@@ -68,7 +68,7 @@ namespace GameUI
         }
         public void AddRendererMenu(IGameLoop renderer)
         {
-            _menu = new MenuStrip(_canvas);
+            _menu = new MenuStrip(Canvas);
 
             var debugMenu = _menu.AddItem("Debug");
             debugMenu.Menu.AddItem("Model").SetAction((control, eventArgs) => CreateDebugWindow(Model));
@@ -79,7 +79,7 @@ namespace GameUI
             var tools = _menu.AddItem("Tools");
             tools.Menu.AddItem("Map Generator").SetAction((control, eventArgs) => { CreateMapGeneratorWindow();});
             
-            Layout = new InterfaceLayout(_canvas, Logger, renderer, Model, this);
+            Layout = new InterfaceLayout(Canvas, Logger, renderer, Model, this);
         }
 
         private void CreateMapGeneratorWindow()
@@ -88,7 +88,7 @@ namespace GameUI
             var mapGameObject = Model.GameObjects.FirstOrDefault(go => go is Map);
             if (mapGameObject is Map map)
             {
-                var window = new MapGenerator(_canvas,map , Logger);
+                var window = new MapGenerator(Canvas, map , Logger);
             }
         }
         
@@ -96,7 +96,7 @@ namespace GameUI
         public void Resize(Matrix4 projMatrix, int width, int height)
         {
             _renderer.Resize(projMatrix, width, height);
-            _canvas.SetSize(width, height);
+            Canvas.SetSize(width, height);
         }
 
         public bool KeyDown(KeyboardKeyEventArgs e)
@@ -122,6 +122,7 @@ namespace GameUI
 
         public bool MouseUp(MouseButtonEventArgs args)
         {
+            OnMouseUp?.Invoke(args);
             return _input.ProcessMouseMessage(args);
         }
 
@@ -138,19 +139,19 @@ namespace GameUI
 
         public void CreateDebugWindow(object o)
         {
-            var window = new DebugWindow(_canvas, o, Logger);
+            var window = new DebugWindow(Canvas, o, Logger);
             RegisterExplorer(window);
         }
         
         public void CreateArrayWindowWindow(IEnumerable collection)
         {
-            var window = new DebugCollectionWindow(_canvas, collection, Logger);
+            var window = new DebugCollectionWindow(Canvas, collection, Logger);
             RegisterExplorer(window);
         }
 
         public void CreateMethodInvoker(object o, MethodInfo info)
         {
-            var window = new MethodInvoker(_canvas, o, info, Logger);
+            var window = new MethodInvoker(Canvas, o, info, Logger);
             RegisterExplorer(window);
         }
 

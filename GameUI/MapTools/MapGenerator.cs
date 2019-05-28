@@ -1,5 +1,6 @@
 using System;
 using GameModel;
+using GameModel.GameObjects;
 using Gwen;
 using Gwen.Control;
 

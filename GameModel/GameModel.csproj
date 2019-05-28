@@ -62,6 +62,7 @@
     <Compile Include="GameObjects\ArmyGameObject.cs" />
     <Compile Include="GameObjects\Buggy.cs" />
     <Compile Include="GameObjects\Map.cs" />
+    <Compile Include="GameObjects\Voxel.cs" />
     <Compile Include="GameObjects\Soldier.cs" />
     <Compile Include="GameObjects\Tank.cs" />
     <Compile Include="GameObjects\GameObject.cs" />

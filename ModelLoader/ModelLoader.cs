@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using GameModel;
+using GameModel.GameObjects;
 using GamePhysics;
 
 namespace ModelLoader
 {
     public class ModelLoader
     {
-        private (Model, Map) buildModel()
+        private (Model, Map) BuildModel()
         {
             var physicsEngine = new PhysicsEngine();
             var map = new Map(100);
@@ -20,12 +21,12 @@ namespace ModelLoader
 
         public (Model, Map) CreateEmptyModelWithMap()
         {
-            return buildModel();
+            return BuildModel();
         }
 
         public (Model, Map) LoadModel(string path)
         {
-            return buildModel();
+            return BuildModel();
         }
     }
 }

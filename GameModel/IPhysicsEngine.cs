@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using BepuUtilities;
+using GameModel.GameObjects;
 
 namespace GameModel
 {

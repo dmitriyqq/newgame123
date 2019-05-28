@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml.Serialization;
 using GameModel;
-using GameModel.GameObjects;
 
 namespace ModelLoader
 {
@@ -19,8 +17,6 @@ namespace ModelLoader
             _logger = logger;
             _path = path;
             LoadAssets();
-            AddAsset(new SimpleAsset { Name = "Test Asset", Scene = "./models/trident/trident3.obj", Radius = 1.0f, GameObjectType = typeof(ArmyGameObject).AssemblyQualifiedName });
-            AddAsset(new Asset { Name ="Base", GameObjectType = typeof(Map).AssemblyQualifiedName});
         }
 
         private void LoadAssets()
@@ -69,11 +65,8 @@ namespace ModelLoader
                 {
                     Assets.Remove(Assets.Find(a => a.Name == asset.Name));
                 }
-                else
-                {
-                    Assets.Add(asset);
-                }
-            
+                
+                Assets.Add(asset);
                 SaveAssets();
                 OnAssetUpdate?.Invoke();
             }

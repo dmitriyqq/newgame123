@@ -1,4 +1,5 @@
 using GameModel;
+using GameModel.GameObjects;
 using Gwen;
 using Gwen.Control;
 using ModelLoader;
@@ -43,9 +44,9 @@ namespace GameUI
             RightDock.Width = 300;
         }
         
-        public void AddMapTools(Map map)
+        public void AddMapTools(Map map, UserInterface ui, Model model, IRayCaster rayCaster)
         {
-            MapTools = new MapTools(LeftDock, map);
+            MapTools = new MapTools(LeftDock, map, model, ui, rayCaster);
             LeftDock.TabControl.AddPage("MapTools", MapTools);
             RightDock.Width = 300;
         }

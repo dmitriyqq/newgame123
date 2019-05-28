@@ -21,7 +21,7 @@ namespace GameRenderer
 
             //Error checking
             var infolog = GL.GetShaderInfoLog(Id);
-            Console.WriteLine($"Infolog for shader id={Id}: {infolog}");
+            Console.WriteLine($"Infolog for shader name={filename} id={Id}: {infolog}");
         }
     }
 }

@@ -10,4 +10,12 @@
     <GameObjectType>GameModel.Map, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
     <Name>Base</Name>
   </Asset>
+  <Asset>
+    <GameObjectType>TestType</GameObjectType>
+    <Name>MyAsset</Name>
+  </Asset>
+  <Asset>
+    <GameObjectType>TestType</GameObjectType>
+    <Name>Name2</Name>
+  </Asset>
 </ArrayOfAsset>

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using GameModel;
+﻿using GameModel;
 using GameRenderer;
 using GameUI;
 using GamePhysics;
@@ -29,7 +28,7 @@ namespace RunDesktop
             ui.Layout.AddConstructor(assetStore, map, renderer.Camera);
             ui.Layout.AddEventView();
             ui.Layout.AddModelControls(renderer, model, renderer.Camera);
-            ui.Layout.AddMapTools(map);
+            ui.Layout.AddMapTools(map, ui, model, renderer.Camera);
 
             var loggers = new[]
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using GameModel;
+using GameModel.GameObjects;
 using GameUI;
 using GlmNet;
 using ModelLoader;
@@ -20,7 +21,6 @@ namespace GameRenderer
         
         public Toggle IsPlaying { get; set; } = new Toggle();
 
-        // Debug 
         private readonly Mesh _cameraDebug;
         private readonly Mesh _rayMesh;
 
@@ -30,7 +30,7 @@ namespace GameRenderer
         private DirectionalLight _dirLight;
 
         public Camera Camera { get; }
-        public Logger Logger { get; private set; }
+        public Logger Logger { get; }
         
         public Renderer(Model model, AssetStore store) : base(
             1920,

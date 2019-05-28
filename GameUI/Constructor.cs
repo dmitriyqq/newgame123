@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using GameModel;
+using GameModel.GameObjects;
 using Gwen;
 using Gwen.Control;
 using ModelLoader;
@@ -28,6 +29,7 @@ namespace GameUI
             _rayCaster = rayCaster;
             _logger = logger;
 
+            _assetStore.OnAssetUpdate += CreateListBox;
             CreateListBox();
         }
 
@@ -67,6 +69,7 @@ namespace GameUI
         
         private void HandleCreate(Base control, EventArgs e)
         {
+            _ui.Canvas.AddChild(new CreateAssetModal(_ui.Canvas, _assetStore));
             Unselect();
         }
 

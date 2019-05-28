@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Numerics;
 using BepuPhysics;
-using BepuPhysics.Collidables;
 using BepuUtilities;
 using BepuUtilities.Memory;
 using GameModel;
+using GameModel.GameObjects;
 
 namespace GamePhysics
 {

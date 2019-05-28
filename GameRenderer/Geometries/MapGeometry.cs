@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using GameModel;
+using GameModel.GameObjects;
 using GlmNet;
 using OpenTK.Graphics.OpenGL4;
 
@@ -21,14 +21,14 @@ namespace GameRenderer
             GenerateMap();
         }
 
-        public void GenerateMap()
+        private void GenerateMap()
         {
             ConstructData();
         }
 
         private vec3 GetVertexInPosition(int i, int j)
         {
-            float y = map.data[i, j];
+            float y = map.Data[i, j].Height;
             float x = (i - map.Size / 2) * map.Resolution;
             float z = -(j - map.Size / 2) * map.Resolution;
 

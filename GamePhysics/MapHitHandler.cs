@@ -3,12 +3,13 @@ using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Trees;
 using GameModel;
+using GameModel.GameObjects;
 
 namespace GamePhysics
 {
     public class MapHitHandler : IRayHitHandler
     {
-        private Map _map;
+        private readonly Map _map;
 
         public MapHitHandler(Map map)
         {

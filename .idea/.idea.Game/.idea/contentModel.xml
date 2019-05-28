@@ -16,6 +16,7 @@
           <e p="Soldier.cs" t="Include" />
           <e p="Tank.cs" t="Include" />
           <e p="Vehicle.cs" t="Include" />
+          <e p="Voxel.cs" t="Include" />
         </e>
         <e p="IGameLoop.cs" t="Include" />
         <e p="IPhysicsEngine.cs" t="Include" />
@@ -133,6 +134,7 @@
       </e>
       <e p="GameUI" t="IncludeRecursive">
         <e p="Constructor.cs" t="Include" />
+        <e p="CreateAssetModal.cs" t="Include" />
         <e p="CursorObject.cs" t="Include" />
         <e p="DebugCollectionWindow.cs" t="Include" />
         <e p="DebugWindow.cs" t="Include" />
@@ -140,8 +142,18 @@
         <e p="Explorer.cs" t="Include" />
         <e p="GameUI.csproj" t="IncludeRecursive" />
         <e p="InterfaceLayout.cs" t="Include" />
-        <e p="MapGenerator.cs" t="Include" />
-        <e p="MapTools.cs" t="Include" />
+        <e p="MapTools" t="Include">
+          <e p="Brush.cs" t="Include" />
+          <e p="CircleBrush.cs" t="Include" />
+          <e p="MapGenerator.cs" t="Include" />
+          <e p="MapTools.cs" t="Include" />
+          <e p="Pointer.cs" t="Include" />
+          <e p="RectangleBrush.cs" t="Include" />
+          <e p="Tool.cs" t="Include" />
+          <e p="ToolAverage.cs" t="Include" />
+          <e p="ToolDown.cs" t="Include" />
+          <e p="ToolUp.cs" t="Include" />
+        </e>
         <e p="MethodInvoker.cs" t="Include" />
         <e p="ModelControls.cs" t="Include" />
         <e p="OpenTK.dll.config" t="Include" />

@@ -1,18 +1,19 @@
 using System;
 
-namespace GameModel
+namespace GameModel.GameObjects
 {
     public class Map : GameObject
     {
-        public float[,] data { get; private set; }
+        public Voxel[,] Data { get; private set; }
         public int Size  { get; set; } 
         public float Resolution  { get; set; } = 1.0f;
         public int Octaves  { get; set; } = 3;
         public float Persistence { get; set; } = 3.83f;
-
         public event Action OnUpdate;
+        public event Action OnBatchUpdate;
+
         
-        public Map(int size) : base()
+        public Map(int size)
         {
             Size = size;
             Static = true;
@@ -23,36 +24,61 @@ namespace GameModel
         {
         }
 
+        public (float x, float z) MapToWorldCords(int i, int j)
+        {
+            var x = (i - Size / 2) * Resolution;
+            var z = -(j - Size / 2) * Resolution;
+
+            return (x, z);
+        }
+
+        public (int i, int j) WorldToMapCoords(float x, float y)
+        {
+            var i = (int) (x / Resolution + Size / 2);
+            var j = (int) (Size / 2 - y / Resolution);
+            return (j, i);
+        }
+
         public void CreateMap()
         {
-            data = new float[Size, Size];
+            Data = new Voxel[Size, Size];
 
-            float averageHeight = 0.0f;
+            var averageHeight = 0.0f;
             
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
             {
-                for (int j = 0; j < Size; j++)
+                for (var j = 0; j < Size; j++)
                 {
-                    double x = ((double) i ) / Size;
-                    double y = ((double) j ) / Size;
+                    var x = ((double) i ) / Size;
+                    var y = ((double) j ) / Size;
 
-                    data[i, j] = (float) Perlin.OctavePerlin(x, y, 1.0f, Octaves, Persistence);
+                    Data[i, j].Height = (float) Perlin.OctavePerlin(x, y, 1.0f, Octaves, Persistence);
 
-                    averageHeight += data[i, j];
+                    averageHeight += Data[i, j].Height;
                 }
             }
 
             averageHeight /= (Size * Size);
             
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
             {
-                for (int j = 0; j < Size; j++)
+                for (var j = 0; j < Size; j++)
                 {
-                    data[i, j] -= averageHeight;
+                    Data[i, j].Height -= averageHeight;
                 }
             }
 
             OnUpdate?.Invoke();
+        }
+
+        public void Update()
+        {
+            OnUpdate?.Invoke();
+        }
+        
+        public void BatchUpdate()
+        {
+            OnBatchUpdate?.Invoke();
         }
     }
 }

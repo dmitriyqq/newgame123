@@ -83,14 +83,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateAssetModal.cs" />
     <Compile Include="CursorObject.cs" />
     <Compile Include="DebugCollectionWindow.cs" />
     <Compile Include="DebugWindow.cs" />
     <Compile Include="EventView.cs" />
     <Compile Include="Explorer.cs" />
     <Compile Include="InterfaceLayout.cs" />
-    <Compile Include="MapGenerator.cs" />
-    <Compile Include="MapTools.cs" />
+    <Compile Include="MapTools\Brush.cs" />
+    <Compile Include="MapTools\CircleBrush.cs" />
+    <Compile Include="MapTools\MapGenerator.cs" />
+    <Compile Include="MapTools\MapTools.cs" />
+    <Compile Include="MapTools\Pointer.cs" />
+    <Compile Include="MapTools\RectangleBrush.cs" />
+    <Compile Include="MapTools\Tool.cs" />
+    <Compile Include="MapTools\ToolAverage.cs" />
+    <Compile Include="MapTools\ToolDown.cs" />
+    <Compile Include="MapTools\ToolUp.cs" />
     <Compile Include="MethodInvoker.cs" />
     <Compile Include="ModelControls.cs" />
     <Compile Include="Constructor.cs" />
