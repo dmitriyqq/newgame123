@@ -47,10 +47,12 @@ namespace GamePhysics
             return new RigidTransform(description.Pose.Position, description.Pose.Orientation);
         }
 
-        public Vector3? IntersectMap(Map map, Vector3 start, Vector3 dir)
+        public Vector3? IntersectMap(Map map, Vector3 start, Vector3 dir, out Vector3 normal)
         {
             var handler = new MapHitHandler(map);
+            
             _simulation.RayCast(start, dir, 1000.0f, ref handler);
+            normal = handler.Normal;
             return handler.Collision;
         }
         

@@ -46,9 +46,12 @@
   <ItemGroup>
     <Compile Include="Asset.cs" />
     <Compile Include="AssetStore.cs" />
+    <Compile Include="MapAsset.cs" />
+    <Compile Include="MeshDescription.cs" />
     <Compile Include="ModelLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleAsset.cs" />
+    <Compile Include="SkyboxAsset.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameModel\GameModel.csproj">

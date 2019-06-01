@@ -2,105 +2,60 @@ using GlmNet;
 
 namespace GameRenderer
 {
-    public class PointLight
+    public class PointLight : Light
     {
-        private ShaderProgram program;
-
-        private float constant;
-        
+        private float _constant;
+        private float _linear;
+        private float _quadratic;
+        private vec3 _position;
+        private vec3 _ambient;
+        private vec3 _diffuse;
+        private vec3 _specular;
         public float Constant
         {
-            get => constant;
-            set
-            {
-                constant = value;
-            }
+            get => _constant;
+            set => _constant = value;
         }
-        
-        private float linear;
-        
         public float Linear
         {
-            get => linear;
-            set
-            {
-                linear = value;
-            }
+            get => _linear;
+            set => _linear = value;
         }
-        
-        private float quadratic;
-
         public float Quadratic
         {
-            get => quadratic;
-            set
-            {
-                quadratic = value;
-            }
+            get => _quadratic;
+            set => _quadratic = value;
         }
-
-        public ShaderProgram Program
-        {
-            get => program;
-            set
-            {
-                program = value;
-            }
-        }
-
-        private vec3 position;
-
         public vec3 Position
         {
-            get => position;
-            set
-            {
-                position = value;
-            }
+            get => _position;
+            set => _position = value;
         }
-
-        private vec3 ambient;
-
         public vec3 Ambient
         {
-            get => ambient;
-            set
-            {
-                ambient = value;
-            }
+            get => _ambient;
+            set => _ambient = value;
         }
-
-        private vec3 diffuse;
-
         public vec3 Diffuse
         {
-            get => diffuse;
-            set
-            {
-                diffuse = value;
-            }
+            get => _diffuse;
+            set => _diffuse = value;
         }
-
-        private vec3 specular;
-
         public vec3 Specular
         {
-            get => specular;
-            set
-            {
-                specular = value;
-            }
+            get => _specular;
+            set => _specular = value;
         }
 
-        public void Uniform(ShaderProgram program)
+        public override void Uniform(ShaderProgram program)
         {
-            program.UniformVec3("PointLight.ambient", ambient);
-            program.UniformVec3("PointLight.diffuse", diffuse);
-            program.UniformVec3("PointLight.specular", specular);
-            program.UniformVec3("PointLight.position", position);
-            program.UniformFloat("PointLight.constant", constant);
-            program.UniformFloat("PointLight.linear", linear);
-            program.UniformFloat("PointLight.quadratic", quadratic);
+            program.UniformVec3("PointLight.ambient", _ambient);
+            program.UniformVec3("PointLight.diffuse", _diffuse);
+            program.UniformVec3("PointLight.specular", _specular);
+            program.UniformVec3("PointLight.position", _position);
+            program.UniformFloat("PointLight.constant", _constant);
+            program.UniformFloat("PointLight.linear", _linear);
+            program.UniformFloat("PointLight.quadratic", _quadratic);
         }
     }
 }

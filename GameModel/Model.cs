@@ -9,20 +9,17 @@ namespace GameModel
 {
     public class Model
     {
+        private readonly List<GameObject> _gameObjects = new List <GameObject>();
+        private List<Player> Players { get; } = new List <Player>();
         public event Action<GameObject> OnAddGameObject;
         public event Action<GameObject> OnRemoveGameObject;
-
         public IPhysicsEngine Engine { get; set; }
-        
-        private readonly List<GameObject> _gameObjects = new List <GameObject>();
         private List<GameObject> InitialState { get; set; }
-        private List<Player> Players { get; } = new List <Player>();
         public List<WeaponType> WeaponTypes { get; private set; } = new List<WeaponType>();
         public int Ticks { get; private set; } = -1;
         public int NumObjects => _gameObjects.Count;
         public float Time { get; private set; }
         public Logger Logger { get; private set; }
-
         public IEnumerable<GameObject> GameObjects => _gameObjects;
 
         public Model(List<GameObject> initialState)
@@ -91,17 +88,17 @@ namespace GameModel
         public void Update(float deltaTime)
         {
             Time += deltaTime;
-            for (int i = _gameObjects.Count - 1; i >= 0; i--)
+            for (var i = _gameObjects.Count - 1; i >= 0; i--)
             {
                 var unit = _gameObjects[i];
-
-                if (unit.Health < 0.0f)
-                {
-                    _gameObjects[i] = _gameObjects[_gameObjects.Count - 1];
-                    OnRemoveGameObject?.Invoke(unit);
-                    _gameObjects.RemoveAt(_gameObjects.Count - 1);
-                }
-                else
+//
+//                if (unit.Health < 0.0f)
+//                {
+//                    _gameObjects[i] = _gameObjects[_gameObjects.Count - 1];
+//                    OnRemoveGameObject?.Invoke(unit);
+//                    _gameObjects.RemoveAt(_gameObjects.Count - 1);
+//                }
+//                else
                 {
                     unit.Update(deltaTime);
                 }

@@ -7,7 +7,6 @@ namespace GameModel
     {
         public Vehicle()
         {
-            Radius = 2.0f;
         }
     }
 }

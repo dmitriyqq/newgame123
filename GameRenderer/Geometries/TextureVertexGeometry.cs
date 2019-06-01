@@ -2,7 +2,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
 {
-    public class TextureVertexGeometry : Geometry
+    public class TextureVertexGeometry : OpenGLGeometry
     {
         
         public override void DefineData()

@@ -6,9 +6,9 @@ using ModelLoader;
 
 namespace RunDesktop
 {
-    internal class Program
+    internal static class Program
     {
-        public const string AssetFile = "./assets/Assets.xml";
+        private const string AssetFile = "./assets/Assets.xml";
         public static void Main(string[] args)
         {
             var modelLoader = new ModelLoader.ModelLoader();
@@ -24,8 +24,8 @@ namespace RunDesktop
 
             var ui = new UserInterface(renderer, model);
             renderer.AddUserInterface(ui);
-
-            ui.Layout.AddConstructor(assetStore, map, renderer.Camera);
+            ui.AddRendererMenu(renderer);
+            ui.Layout.AddConstructor(assetStore, map, renderer.Camera, renderer);
             ui.Layout.AddEventView();
             ui.Layout.AddModelControls(renderer, model, renderer.Camera);
             ui.Layout.AddMapTools(map, ui, model, renderer.Camera);

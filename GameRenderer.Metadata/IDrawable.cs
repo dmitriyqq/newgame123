@@ -10,9 +10,9 @@ namespace GameRenderer
         vec3 Position { get; set; }
         vec3 Rotation { get; set; }
         vec3 Scale { get; set; }
+        bool Visible { get; set; }
         mat4 GetModelMatrix();
         IEnumerable<Mesh> GetAllMeshes();
-        IEnumerable<ShaderProgram> GetAllShaders();
         void Update(float deltaTime);
     }
 }

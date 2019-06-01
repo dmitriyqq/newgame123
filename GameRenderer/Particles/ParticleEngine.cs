@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using GlmNet;
+using GameRenderer.Materials;
 using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
 {
     public abstract class ParticleEngine : Mesh
     {
-        
         public int Vao { get; protected set; }
 
         public int BillboardVbo { get; protected set; }
@@ -118,11 +117,6 @@ namespace GameRenderer
         public override IEnumerable<Mesh> GetAllMeshes()
         {
             yield return this;
-        }
-
-        public override IEnumerable<ShaderProgram> GetAllShaders()
-        {
-            yield return Material.Program;
         }
     }
 }

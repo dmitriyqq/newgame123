@@ -1,33 +1,31 @@
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
 
-namespace GameRenderer
+namespace GameRenderer.Materials
 {
-    public class CubemapMaterial : Material
+    public class SkyboxMaterial : ShaderMaterial
     {
         /*
-                "right.jpg",
-                "left.jpg",
-                "top.jpg",
-                "bottom.jpg",
-                "front.jpg",
-                "back.jpg"
+            Correct order:
+            right,
+            left
+            top,
+            bottom,
+            front,
+            back
          */
         
         private static readonly ShaderProgram program;
-
-        public CubemapTexture Texture { get; set; }
+        public SkyboxTexture  Texture { get; set; }
         
-        static CubemapMaterial()
+        static SkyboxMaterial()
         {
             program = new ShaderProgram("shaders/cubemap.vert", "shaders/cubemap.frag");
         }
 
-        public CubemapMaterial()
+        public SkyboxMaterial() : base(program)
         {
-            Program = program;
         }
-
         public override void Use()
         {
             program.Use();

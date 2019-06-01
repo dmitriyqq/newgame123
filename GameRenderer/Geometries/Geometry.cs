@@ -4,7 +4,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
 {
-    public abstract class Geometry
+    public abstract class OpenGLGeometry : Geometry
     {
         protected int vao = -1;
 
@@ -15,11 +15,11 @@ namespace GameRenderer
         public int Offset { get; set; }
         public int Count { get; set; }
 
-        public Geometry()
+        public OpenGLGeometry()
         {
         }
         
-        public Geometry(PrimitiveType mode, int offset, int count)
+        public OpenGLGeometry(PrimitiveType mode, int offset, int count)
         {
             Mode = mode;
             Offset = offset;
@@ -28,7 +28,7 @@ namespace GameRenderer
 
         protected void UseVao() =>  GL.BindVertexArray(vao);
         
-        public virtual void Draw()
+        public override void Draw()
         {
             if (Count != 0)
             {
@@ -81,7 +81,7 @@ namespace GameRenderer
         
         public abstract int VertexSize();
 
-        ~Geometry()
+        ~OpenGLGeometry()
         {
             if (vao != -1)
             {

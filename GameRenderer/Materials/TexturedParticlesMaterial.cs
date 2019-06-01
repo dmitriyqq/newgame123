@@ -1,6 +1,6 @@
-namespace GameRenderer
+namespace GameRenderer.Materials
 {
-    public class TexturedParticlesMaterial : Material
+    public class TexturedParticlesMaterial : ShaderMaterial
     {
         private static readonly ParticleShader program;
         
@@ -11,9 +11,8 @@ namespace GameRenderer
             program = new ParticleShader("shaders/tparticles.vert", "shaders/tparticles.frag");
         }
 
-        public TexturedParticlesMaterial()
+        public TexturedParticlesMaterial() : base(program)
         {
-            Program = program;
         }
 
         public override void Use()

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using GameModel;
-using GameModel.GameObjects;
-using GameUI;
+using GameRenderer.Materials;
 using GlmNet;
 using ModelLoader;
 using OpenTK;
@@ -14,21 +11,22 @@ using OpenTK.Input;
 
 namespace GameRenderer
 {
-    public class Renderer : GameWindow, IGameLoop
+    public class Renderer : GameWindow, IGameLoop, IRenderer
     {
         private readonly Model _model;
-        private UserInterface _ui;
-        
+        private IUserInterface _ui;
         public Toggle IsPlaying { get; set; } = new Toggle();
 
+        // TODO remove debug
         private readonly Mesh _cameraDebug;
         private readonly Mesh _rayMesh;
 
         private readonly DrawablesFactory _factory;
-        private List<Mesh> _pipeline = new List<Mesh>();
         private readonly List<IDrawable> _drawables = new List<IDrawable>();
-        private DirectionalLight _dirLight;
+        private readonly List<Light> _lights = new List<Light>();
+        private readonly List<ShaderMaterial> _materials = new List<ShaderMaterial>();
 
+        private List<Mesh> _pipeline = new List<Mesh>();
         public Camera Camera { get; }
         public Logger Logger { get; }
         
@@ -56,16 +54,17 @@ namespace GameRenderer
             _rayMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 0.0f, 0.0f, 1.0f),
                 new vec4(0.0f, 1.0f, 0.0f, 1.0f)), new ColorMaterial());
 
-            var skyMaterial = new CubemapMaterial {Texture = new CubemapTexture(GetSkybox())};
-            Mesh skyBox = new SkyBoxMesh(new CubeGeometry(), skyMaterial) {Scale = new vec3(100.0f, 100.0f, 100.0f)};
-
-            _factory = new DrawablesFactory(store);
+            _factory = new DrawablesFactory(store, this, Logger);
             
-            _drawables.Add(skyBox);
             _drawables.Add(_cameraDebug);
             _drawables.Add(gridGeometry);
             _drawables.Add(axisGeometry);
             _drawables.Add(_rayMesh);
+            
+            _materials.Add(new LightMaterial());
+            _materials.Add(new ColorMaterial());
+            _materials.Add(new ParticleMaterial());
+            _materials.Add(new ColorModelMaterial());
             
             foreach (var weaponType in model.WeaponTypes)
             {
@@ -87,24 +86,43 @@ namespace GameRenderer
 
         private void CreateLights()
         {
-            _dirLight = new DirectionalLight
+            _lights.Add(new DirectionalLight
             {
                 Direction = glm.normalize(new vec3(0.5f, 1.0f, 0.3f)),
                 Ambient = new vec3(0.05f, 0.05f, 0.05f),
                 Diffuse = new vec3(0.7f, 0.7f, 0.7f),
                 Specular = new vec3(0.4f, 0.4f, 0.4f),
-                Program = new LightMaterial().Program,
-            };
+            });
 
-            _dirLight.Uniform(new LightMaterial().Program);
+            foreach (var light in _lights)
+            {
+                foreach (var material in _materials)
+                {
+                    light.Uniform(material.Program);
+                }
+            }
         }
 
-        public void AddUserInterface(UserInterface ui)
+        public void AddUserInterface(IUserInterface ui)
         {
-            _ui = ui; 
-            ui.AddRendererMenu(this);
+            _ui = ui;
+            
         }
 
+        public IDrawable AddDrawable(Asset asset)
+        {
+            var drawable = _factory.CreateDrawableForAsset(asset, null);
+            _drawables.Add(drawable);
+            ConstructPipeline();
+            return drawable;
+        }
+        
+        public void RemoveDrawable(IDrawable drawable)
+        {
+            _drawables.Remove(drawable);
+            ConstructPipeline();
+        }
+        
         private void ConstructPipeline()
         {
             _pipeline = new List<Mesh>();
@@ -117,6 +135,11 @@ namespace GameRenderer
                     _pipeline.Add(mesh);
                 }
             }
+        }
+
+        public void AddMaterial(ShaderMaterial material)
+        {
+            _materials.Add(material);
         }
 
         private void DeleteMesh(GameObject gameObject)
@@ -137,24 +160,14 @@ namespace GameRenderer
         {
             Logger.Info("Registering Mesh");
 
-            IDrawable um;
-            if (gameObject is Map map)
+            var um = _factory.CreateDrawableForGameObject(gameObject);
+            if (um == null)
             {
-                var mapMaterial = new LightMaterial
-                {
-                    diffuse = new Texture("textures/desert.jpeg"),
-                    specular = new Texture("textures/desert.jpeg"),
-                    shininess = 1.0f
-                };
+                Logger.Info("Can not create drawable for game object see errors before");
+                return;
+            }
 
-                um = new Mesh(new MapGeometry(map), mapMaterial);
-            }
-            else
-            {
-                um = _factory.CreateDrawableForGameObject(gameObject);
-                um.Rotation = new vec3(1.0f, 0.0f, 0.0f);
-            }
-            
+            um.Rotation = new vec3(1.0f, 0.0f, 0.0f);
             var t = new UnitMesh(um, gameObject);
             _drawables.Add(t);
             ConstructPipeline();
@@ -173,9 +186,9 @@ namespace GameRenderer
                 drawable.Update(deltaTime);
             }
 
-            foreach (var shader in GetAllShaders())
+            foreach (var material in _materials)
             {
-                shader.UniformCamera(Camera);
+                material.Program.UniformCamera(Camera);
             }
 
             foreach (var mesh in _pipeline)
@@ -216,20 +229,10 @@ namespace GameRenderer
             _ui.Update(deltaTime);
         }
 
-        private IEnumerable<Material> GetAllMaterials()
-        {
-            return _pipeline.Select(m => m.Material);
-        }
-
-        private IEnumerable<ShaderProgram> GetAllShaders()
-        {
-            return GetAllMaterials().Select(m => m.Program).Distinct();
-        }
-
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-            _ui.MouseMove(e);
             Camera.OnMouseMove(e);
+
             var (start, dir) = Camera.CastRay(e.X, e.Y);
             (_rayMesh.Geometry as LineGeometry)?.Update(start.ToGlm(), (dir * 1000.0f).ToGlm());
 
@@ -239,8 +242,6 @@ namespace GameRenderer
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-
-            _ui.MouseDown(e);
             Camera.OnMouseDown(e);
 
         }
@@ -248,7 +249,6 @@ namespace GameRenderer
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             base.OnMouseUp(e);
-            _ui.MouseUp(e);
             Camera.OnMouseUp(e);
         }
 
@@ -265,32 +265,5 @@ namespace GameRenderer
             
             base.OnResize(e);
         }
-
-        protected override void OnKeyUp(KeyboardKeyEventArgs e)
-        {
-            base.OnKeyUp(e);
-            _ui.KeyUp(e);
-        }
-
-        protected override void OnKeyDown(KeyboardKeyEventArgs e)
-        {
-            base.OnKeyDown(e);
-            _ui.KeyDown(e);
-        }
-
-        public List<string> GetSkybox()
-        {
-            return new List<string>
-            {
-                "textures/skybox/front.jpg",
-                "textures/skybox/back.jpg",
-                "textures/skybox/top.jpg",
-                "textures/skybox/bottom.jpg",
-                "textures/skybox/right.jpg",
-                "textures/skybox/left.jpg",
-            };
-        }
-
-        
     }
 }

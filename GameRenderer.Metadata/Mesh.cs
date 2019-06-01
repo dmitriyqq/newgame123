@@ -4,6 +4,10 @@ using GlmNet;
 
 namespace GameRenderer
 {
+    
+    /// <summary>
+    ///  Mesh is single unit of rendering, it should depend only from one material and vertex array object
+    /// </summary>
     public class Mesh : IDrawable
     {
         public string Name { get; set; }
@@ -15,7 +19,6 @@ namespace GameRenderer
         public virtual vec3 Position { get; set; } = new vec3(0.0f, 0.0f, 0.0f);
         public virtual vec3 Rotation { get; set; } = new vec3(0.0f, 1.0f, 0.0f);
         public virtual vec3 Scale { get; set; } = new vec3(1.0f, 1.0f, 1.0f);
-
         public virtual mat4 GetModelMatrix()
         {
             var m = mat4.identity();
@@ -24,6 +27,8 @@ namespace GameRenderer
 
             return m;
         }
+
+
         public virtual void Update(float deltaTime)
         {
             // Do nothing
@@ -38,24 +43,17 @@ namespace GameRenderer
 
         public virtual void Draw()
         {
-            if (Visible)
-            {
-                var matrix = UseParentTransform && Parent != null ? 
-                    GetModelMatrix() * Parent.GetModelMatrix(): GetModelMatrix();
-                Material.Program.UniformMat4("model", matrix);
-                Material?.Use();
-                Geometry?.Draw();
-            }
+            if (!Visible) return;
+
+            var matrix = UseParentTransform && Parent != null ? GetModelMatrix() * Parent.GetModelMatrix(): GetModelMatrix();
+            Material.UniformModel(matrix);
+            Material?.Use();
+            Geometry?.Draw();
         }
 
         public virtual IEnumerable<Mesh> GetAllMeshes()
         {
             yield return this;
-        }
-
-        public virtual IEnumerable<ShaderProgram> GetAllShaders()
-        {
-            yield return Material.Program;
         }
 
         public virtual Mesh Clone()

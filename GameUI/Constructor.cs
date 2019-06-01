@@ -2,6 +2,9 @@ using System;
 using System.Numerics;
 using GameModel;
 using GameModel.GameObjects;
+using GameRenderer;
+using GameUtils;
+using GlmNet;
 using Gwen;
 using Gwen.Control;
 using ModelLoader;
@@ -16,11 +19,14 @@ namespace GameUI
         private readonly Map _map;
         private readonly Logger _logger;
         private readonly IRayCaster _rayCaster;
+        private readonly IRenderer _renderer;
         private CollapsibleList _listBox;
         private CollapsibleCategory _actionsCategory;
         private CollapsibleCategory _assetsCategory;
+        private IDrawable _cursor;
+        private Asset _selectedAsset;
         
-        public Constructor(Base parent, Logger logger, AssetStore assetStore, UserInterface ui, Map map, IRayCaster rayCaster) : base(parent)
+        public Constructor(Base parent, Logger logger, AssetStore assetStore, UserInterface ui, Map map, IRayCaster rayCaster, IRenderer renderer) : base(parent)
         {
             Dock = Pos.Fill;
             _assetStore = assetStore;
@@ -28,6 +34,7 @@ namespace GameUI
             _map = map;
             _rayCaster = rayCaster;
             _logger = logger;
+            _renderer = renderer;
 
             _assetStore.OnAssetUpdate += CreateListBox;
             CreateListBox();
@@ -77,48 +84,57 @@ namespace GameUI
         {
             if (!(args.SelectedItem.UserData is Asset asset)) return;
 
-            _ui.CursorObject.Asset = asset;
-            _ui.CursorObject.Active = true;
-            _ui.OnMouseMove += MoveAsset;
-            _ui.OnMouseDown += PlaceAsset;
+            _selectedAsset = asset;
+            _cursor = _renderer.AddDrawable(asset);
+
+            _ui.Window.MouseMove += MoveAsset;
+            _ui.Window.MouseDown += PlaceAsset;
         }
 
-        private void MoveAsset(MouseMoveEventArgs e)
+        private void MoveAsset(object s, MouseMoveEventArgs e)
         {
             var (start, dir) = _rayCaster.CastRay(e.X, e.Y);
-            var v =_ui.Model.Engine.IntersectMap(_map, start, dir);
+            var v =_ui.Model.Engine.IntersectMap(_map, start, dir, out var normal);
+
             if (v.HasValue)
             {
-                _ui.CursorObject.Position = v.Value + new Vector3(0.0f, 3.0f, 0.0f);
+                _cursor.Position = v.Value.ToGlm() + new vec3(0.0f, 5.0f, 0.0f);
+                _cursor.Rotation = normal.ToGlm();
             }
         }
         
-        private void PlaceAsset(MouseButtonEventArgs e)
+        private void PlaceAsset(object s, MouseButtonEventArgs e)
         {
             _logger.Info($"Placing object");
-            _ui.CursorObject.Active = false;
-            _ui.OnMouseMove -= MoveAsset;
-            _ui.OnMouseDown -= PlaceAsset;
-            Unselect();
 
-            var typeName = _ui.CursorObject.Asset.GameObjectType;
-            var type = Type.GetType(typeName);
-            if (type == null)
+            try
             {
-                _logger.Error($"Couldn't get type {typeName}");
-                return;
-            }
+                var typeName = _selectedAsset.GameObjectType;
+                var gameObject = ReflectionHelper.CreateObjectFromType<GameObject>(typeName);
 
-            if (!(Activator.CreateInstance(type) is GameObject gameObject))
+                if (gameObject != null)
+                {
+                    gameObject.Asset = _selectedAsset;
+                    gameObject.Transform.Position = _cursor.Position.ToVector3();
+
+                    _ui.Model.AddGameObject(gameObject);
+                }
+                else
+                {
+                    _logger.Error($"Couldn't create gameObject of type {typeName}");
+                }
+            }
+            catch (Exception ex)
             {
-                _logger.Error($"Couldn't create gameObject of type {typeName}");
-                return;
+                _logger.Error(ex);
             }
-
-            gameObject.Asset = _ui.CursorObject.Asset;
-            gameObject.Transform.Position = _ui.CursorObject.Position;
+            finally
+            {
+                _ui.Window.MouseMove -= MoveAsset;
+                _ui.Window.MouseDown -= PlaceAsset;
             
-            _ui.Model.AddGameObject(gameObject);
+                Unselect();    
+            }
         }
 
         private void CreateRow(Asset asset)
@@ -130,6 +146,11 @@ namespace GameUI
 
         private void Unselect()
         {
+            _renderer.RemoveDrawable(_cursor);
+
+            _cursor = null;
+            _selectedAsset = null;
+            
             _listBox.UnselectAll();
         }
     }

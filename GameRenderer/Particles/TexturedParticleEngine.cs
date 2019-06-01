@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using GlmNet;
+using GameRenderer.Materials;
 using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer

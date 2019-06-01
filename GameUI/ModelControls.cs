@@ -36,15 +36,15 @@ namespace GameUI
 
         private void EnableSelector(Base control, EventArgs e)
         {
-            _ui.OnMouseDown += Select;
+            _ui.Window.MouseDown += Select;
         }
         
         private void DisableSelector()
         {
-            _ui.OnMouseDown -= Select;
+            _ui.Window.MouseDown -= Select;
         }
 
-        private void Select(MouseButtonEventArgs e)
+        private void Select(object s, MouseButtonEventArgs e)
         {
             DisableSelector();
             var (start, end) = _rayCaster.CastRay(e.X, e.Y);

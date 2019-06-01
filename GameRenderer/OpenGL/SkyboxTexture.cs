@@ -5,11 +5,11 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
 {
-    public class CubemapTexture
+    public class SkyboxTexture
     {
         private int tex;
 
-        public CubemapTexture(List<string> faces)
+        public SkyboxTexture(List<string> faces)
         {
             GL.GenTextures(1, out tex);
             GL.BindTexture(TextureTarget.Texture2D, tex);

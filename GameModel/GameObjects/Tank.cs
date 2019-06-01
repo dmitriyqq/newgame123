@@ -4,7 +4,6 @@ namespace GameModel
     {
         public Tank()
         {
-            Radius = 2.0f;
         }
     }
 }

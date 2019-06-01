@@ -33,9 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AssimpNet, Version=4.1.0.0, Culture=neutral, PublicKeyToken=0d51b391f59f42a6">
+      <HintPath>..\packages\AssimpNet.4.1.0\lib\net40\AssimpNet.dll</HintPath>
+    </Reference>
     <Reference Include="BepuUtilities, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\BepuUtilities.2.0.0\lib\netstandard2.0\BepuUtilities.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="GlmNet, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\GlmNet.0.5.1.0\lib\net40\GlmNet.dll</HintPath>
     </Reference>
     <Reference Include="Gwen, Version=3.0.6001.172, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Gwen.3.0.6001.172\lib\net40\Gwen.dll</HintPath>
@@ -115,6 +121,14 @@
     <ProjectReference Include="..\GameModel\GameModel.csproj">
       <Project>{12bfeb17-280c-41dc-80aa-a88994a7be92}</Project>
       <Name>GameModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameRenderer.Metadata\GameRenderer.Metadata.csproj">
+      <Project>{b4b15d9b-7e82-4768-90d4-9712094a92a7}</Project>
+      <Name>GameRenderer.Metadata</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameRenderer\GameRenderer.csproj">
+      <Project>{d01d9186-62d3-4e32-8edf-ac589cf27acf}</Project>
+      <Name>GameRenderer</Name>
     </ProjectReference>
     <ProjectReference Include="..\GameUtils\GameUtils.csproj">
       <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>

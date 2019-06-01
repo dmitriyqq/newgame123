@@ -12,7 +12,7 @@ namespace GameModel
         void RemoveGameObject(GameObject gameObject);
         RigidTransform GetTransform(int handle);
         event Action<GameObject, GameObject> OnCollision;
-        Vector3? IntersectMap(Map map, Vector3 start, Vector3 dir);
+        Vector3? IntersectMap(Map map, Vector3 start, Vector3 dir, out Vector3 normal);
         int? IntersectGameObjects(Vector3 start, Vector3 dir);
     }
 }

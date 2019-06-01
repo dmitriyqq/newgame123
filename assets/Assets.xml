@@ -4,7 +4,6 @@
     <GameObjectType>GameModel.GameObjects.ArmyGameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
     <Name>Test Asset</Name>
     <Scene>./models/trident/trident3.obj</Scene>
-    <Radius>1</Radius>
   </Asset>
   <Asset>
     <GameObjectType>GameModel.Map, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
@@ -17,5 +16,18 @@
   <Asset>
     <GameObjectType>TestType</GameObjectType>
     <Name>Name2</Name>
+  </Asset>
+  <Asset xsi:type="MapAsset">
+    <GameObjectType>GameModel.GameObjects.Map, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
+    <Name>Desert Map</Name>
+    <SkyboxAsset>
+      <Front>textures/skybox/front.jpg</Front>
+      <Back>textures/skybox/back.jpg</Back>
+      <Top>textures/skybox/top.jpg</Top>
+      <Bottom>textures/skybox/bottom.jpg</Bottom>
+      <Right>textures/skybox/right.jpg</Right>
+      <Left>textures/skybox/left.jpg</Left>
+    </SkyboxAsset>
+    <MapTexture>textures/desert.jpeg</MapTexture>
   </Asset>
 </ArrayOfAsset>

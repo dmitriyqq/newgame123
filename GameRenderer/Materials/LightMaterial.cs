@@ -1,25 +1,22 @@
 using OpenTK.Graphics.OpenGL4;
 
-namespace GameRenderer
+namespace GameRenderer.Materials
 {
-    public class LightMaterial: Material
+    public class LightMaterial: ShaderMaterial
     {
         private static ShaderProgram program ;
 
-        public float shininess;
-
-        public Texture diffuse;
-
-        public Texture specular;
+        public float Shininess;
+        public Texture Diffuse;
+        public Texture Specular;
         
         static LightMaterial()
         {
             program = new ShaderProgram("shaders/light.vert", "shaders/light.frag");
         }
 
-        public LightMaterial()
+        public LightMaterial() : base(program)
         {
-            Program = program;
         }
 
         public override void Use()
@@ -27,9 +24,9 @@ namespace GameRenderer
             program.Use();
             program.UniformInt("material.diffuse", 1);
             program.UniformInt("material.specular", 1);
-            program.UniformFloat("material.shininess", 32.0f);
-            diffuse.Use();
-            specular?.Use(TextureUnit.Texture1);
+            program.UniformFloat("material.shininess", Shininess);
+            Diffuse.Use();
+            Specular?.Use(TextureUnit.Texture1);
         }
     }
 }

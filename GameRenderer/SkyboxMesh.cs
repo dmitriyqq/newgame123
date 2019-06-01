@@ -2,9 +2,9 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
 {
-    public class SkyBoxMesh : Mesh
+    public class SkyboxMesh : Mesh
     {
-        public SkyBoxMesh(Geometry geometry, Material material) : base(geometry, material)
+        public SkyboxMesh(Geometry geometry, Material material) : base(geometry, material)
         {
         }
 

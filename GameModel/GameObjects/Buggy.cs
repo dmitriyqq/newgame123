@@ -6,7 +6,6 @@ namespace GameModel
     {
         public Buggy() 
         {
-            Radius = 2.0f;
         }
     }
 }

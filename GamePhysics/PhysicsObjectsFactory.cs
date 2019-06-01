@@ -27,13 +27,10 @@ namespace GamePhysics
         {
             if (gameObject is Map map)
             {
-                
                 return AddMap(map);
             }
-            else
-            {
-                return AddSphere(gameObject);
-            }
+            
+            return AddSphere(gameObject);
         }
         
         private static Vector3 GetVertexInPosition(Map map, int i, int j)
@@ -128,8 +125,8 @@ namespace GamePhysics
 
         private int AddSphere(GameObject gameObject)
         {
-            var r = gameObject.Radius;
-            var shape = new Sphere(r);
+//            var r = gameObject.Radius;
+            var shape = new Sphere(1.5f);
             var idx = _simulation.Shapes.Add(shape);
             shape.ComputeInertia(50.0f, out var bodyInertia);
             var rigidPose = new RigidPose(gameObject.Transform.Position, gameObject.Transform.Orientation);

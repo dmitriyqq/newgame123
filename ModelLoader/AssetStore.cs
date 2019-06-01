@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using GameModel;
+using GameModel.GameObjects;
 
 namespace ModelLoader
 {
@@ -17,6 +18,21 @@ namespace ModelLoader
             _logger = logger;
             _path = path;
             LoadAssets();
+            AddAsset(new MapAsset
+            {
+                GameObjectType = typeof(Map).AssemblyQualifiedName,
+                Name = "Desert Map",
+                MapTexture = "textures/desert.jpeg",
+                SkyboxAsset = new SkyboxAsset
+                {
+                    Front = "textures/skybox/front.jpg",
+                    Back = "textures/skybox/back.jpg",
+                    Top = "textures/skybox/top.jpg",
+                    Bottom = "textures/skybox/bottom.jpg",
+                    Right = "textures/skybox/right.jpg",
+                    Left = "textures/skybox/left.jpg"
+                }
+            });
         }
 
         private void LoadAssets()

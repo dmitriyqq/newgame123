@@ -1,5 +1,6 @@
 using GameModel;
 using GameModel.GameObjects;
+using GameRenderer;
 using Gwen;
 using Gwen.Control;
 using ModelLoader;
@@ -37,9 +38,9 @@ namespace GameUI
             RightDock.Width = 150;
         }
 
-        public void AddConstructor(AssetStore assetStore, Map map, IRayCaster rayCaster)
+        public void AddConstructor(AssetStore assetStore, Map map, IRayCaster rayCaster, IRenderer renderer)
         {
-            ObjectConstructor = new Constructor(LeftDock, _logger, assetStore, _ui, map, rayCaster);
+            ObjectConstructor = new Constructor(LeftDock, _logger, assetStore, _ui, map, rayCaster, renderer);
             LeftDock.TabControl.AddPage("Constructor", ObjectConstructor);
             RightDock.Width = 300;
         }

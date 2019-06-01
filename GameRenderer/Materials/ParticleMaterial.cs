@@ -1,8 +1,6 @@
-using GlmNet;
-
-namespace GameRenderer
+namespace GameRenderer.Materials
 {
-    public class ParticleMaterial : Material
+    public class ParticleMaterial : ShaderMaterial
     {
         private static readonly ParticleShader program;
         
@@ -11,9 +9,8 @@ namespace GameRenderer
             program = new ParticleShader("shaders/particles.vert", "shaders/particles.frag");
         }
 
-        public ParticleMaterial()
+        public ParticleMaterial() : base(program)
         {
-            Program = program;
         }
 
         public override void Use()

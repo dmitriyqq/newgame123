@@ -1,9 +1,8 @@
-using GlmNet;
 using OpenTK.Graphics.OpenGL4;
 
-namespace GameRenderer
+namespace GameRenderer.Materials
 {
-    public class TextureMaterial : Material
+    public class TextureMaterial : ShaderMaterial
     {
         private static readonly ShaderProgram program;
         
@@ -12,9 +11,8 @@ namespace GameRenderer
             program = new ShaderProgram("shaders/texture.vert", "shaders/texture.frag");
         }
 
-        public TextureMaterial()
+        public TextureMaterial() : base(program)
         {
-            Program = program;
         }
 
         public override void Use()

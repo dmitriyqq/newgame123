@@ -39,13 +39,10 @@ namespace GameRenderer
 
         public vec3 Up { get; set; } = new vec3(0.0f, 1.0f, 0.0f);
         public vec3 Forward => Target - Position;
-        
         public vec3 Right => glm.normalize(glm.cross(Up, Forward));
         public float Width { get; set; }
         public float Height { get; set; }
-
         public float Speed => Radius / 5;
-        
         public float RotationSpeed { get; set; } = 0.005f;
 
         public mat4 ProjectionMatrix => glm.perspective((float) Math.PI / 2, Width / Height, 0.1f, 1000.0f);
@@ -55,7 +52,7 @@ namespace GameRenderer
         
         public void Move(KeyboardState key, float deltaTime)
         {
-            vec3 velocity = new vec3(0);
+            var velocity = new vec3(0);
 
             if (key[Key.W])
             {
@@ -121,16 +118,16 @@ namespace GameRenderer
 
         public (Vector3 start, Vector3 dir) CastRay(int x1, int y1)
         {
-            float x = (2.0f * x1) / Width - 1.0f;
-            float y = 1.0f - (2.0f * y1) / Height;
-            float z = 1.0f;
+            var x = (2.0f * x1) / Width - 1.0f;
+            var y = 1.0f - (2.0f * y1) / Height;
+            var z = 1.0f;
 
             var rayNds = new vec3(x, y, z);
             var rayClip = new vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
             var rayEye =  glm.inverse(ProjectionMatrix) * rayClip;
             rayEye = new vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
             var rayWor1 = glm.inverse(ViewMatrix) * rayEye;
-            vec3 rayWor = glm.normalize(new vec3(rayWor1.x, rayWor1.y, rayWor1.z));
+            var rayWor = glm.normalize(new vec3(rayWor1.x, rayWor1.y, rayWor1.z));
 
             var origin = y * Up - x * Right;
             var start = new vec3( Position.x + origin.x, Position.y + origin.y, Position.z + origin.z);

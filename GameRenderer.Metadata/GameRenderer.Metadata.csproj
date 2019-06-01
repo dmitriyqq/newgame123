@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CE095EF6-9C7B-4F77-966B-EC9E0FCD93AD}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{B4B15D9B-7E82-4768-90D4-9712094A92A7}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RunDesktop</RootNamespace>
-    <AssemblyName>RunDesktop</AssemblyName>
+    <RootNamespace>GameRenderer.Metadata</RootNamespace>
+    <AssemblyName>GameRenderer.Metadata</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,64 +32,47 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gwen, Version=3.0.6001.172, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Gwen.3.0.6001.172\lib\net40\Gwen.dll</HintPath>
+    <Reference Include="AssimpNet, Version=4.1.0.0, Culture=neutral, PublicKeyToken=0d51b391f59f42a6">
+      <HintPath>..\packages\AssimpNet.4.1.0\lib\net40\AssimpNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MathFloat, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\MathFloat.1.0.1.0\lib\net20\MathFloat.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
-      <HintPath>..\packages\OpenTK.2.0.0\lib\net20\OpenTK.dll</HintPath>
+    <Reference Include="GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\GlmNet.0.7.0\lib\net40\GlmNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="CompoundMesh.cs" />
+    <Compile Include="Geometry.cs" />
+    <Compile Include="IDrawable.cs" />
+    <Compile Include="IRenderer.cs" />
+    <Compile Include="Material.cs" />
+    <Compile Include="Mesh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VectorHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GameModel\GameModel.csproj">
-      <Project>{12bfeb17-280c-41dc-80aa-a88994a7be92}</Project>
-      <Name>GameModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GamePhysics\GamePhysics.csproj">
-      <Project>{07bbcca4-338f-4e0d-a74d-93431c4d66a0}</Project>
-      <Name>GamePhysics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameRenderer.Metadata\GameRenderer.Metadata.csproj">
-      <Project>{b4b15d9b-7e82-4768-90d4-9712094a92a7}</Project>
-      <Name>GameRenderer.Metadata</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameRenderer\GameRenderer.csproj">
-      <Project>{d01d9186-62d3-4e32-8edf-ac589cf27acf}</Project>
-      <Name>GameRenderer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameUI\GameUI.csproj">
-      <Project>{681d10aa-7715-490c-ae9d-f792d5d71842}</Project>
-      <Name>GameUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GameUtils\GameUtils.csproj">
-      <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>
-      <Name>GameUtils</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ModelLoader\ModelLoader.csproj">
       <Project>{9a29d470-e064-42b8-9e1e-121c23840d12}</Project>
       <Name>ModelLoader</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="OpenTK.dll.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\AssimpNet.4.1.0\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.4.1.0\build\AssimpNet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\AssimpNet.4.1.0\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AssimpNet.4.1.0\build\AssimpNet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">

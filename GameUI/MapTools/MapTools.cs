@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using GameModel;
 using GameModel.GameObjects;
 using Gwen;
@@ -15,13 +16,12 @@ namespace GameUI
         private readonly UserInterface _ui;
         private readonly IRayCaster _rayCaster;
         private readonly Model _model;
+        private readonly Slider _brushSize;
+        private readonly ComboBox _brushType;
 
         private Brush _selectedBrush;
         private Tool _selectedTool;
         
-        private ComboBox _brushType;
-        private Slider _brushSize;
-
         public MapTools(Base parent, Map map, Model model, UserInterface ui, IRayCaster rayCaster) : base(parent)
         {
             Dock = Pos.Fill;
@@ -77,14 +77,14 @@ namespace GameUI
         
         private void EnableTool(Base control, EventArgs e)
         {
-            _ui.OnMouseDown += HandleStartDraw;
-            _ui.OnMouseUp += Stop;
+            _ui.Window.MouseDown += HandleStartDraw;
+            _ui.Window.MouseUp += Stop;
         }
 
-        private void Draw(MouseMoveEventArgs e)
+        private void Draw(object s, MouseMoveEventArgs e)
         {
             var (start, dir) = _rayCaster.CastRay(e.X, e.Y);
-            var hit = _model.Engine.IntersectMap(_map, start, dir);
+            var hit = _model.Engine.IntersectMap(_map, start, dir, out var normal);
             
             if (hit.HasValue)
             {
@@ -94,17 +94,17 @@ namespace GameUI
             _map.Update();
         }
         
-        private void Stop(MouseButtonEventArgs e)
+        private void Stop(object s, MouseButtonEventArgs e)
         {
-            _ui.OnMouseDown -= HandleStartDraw;
-            _ui.OnMouseMove -= Draw;
-            _ui.OnMouseUp -= Stop;
+            _ui.Window.MouseDown -= HandleStartDraw;
+            _ui.Window.MouseMove -= Draw;
+            _ui.Window.MouseUp -= Stop;
             _map.BatchUpdate();
         }
 
-        private void HandleStartDraw(MouseButtonEventArgs e)
+        private void HandleStartDraw(object s, MouseButtonEventArgs e)
         {
-            _ui.OnMouseMove += Draw;
+            _ui.Window.MouseMove += Draw;
         }
     }
 }

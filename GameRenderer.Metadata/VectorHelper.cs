@@ -2,7 +2,6 @@ using System;
 using System.Numerics;
 using Assimp;
 using GlmNet;
-using OpenTK.Graphics.OpenGL;
 
 namespace GameModel
 {

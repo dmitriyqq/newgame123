@@ -24,7 +24,6 @@ namespace GameUI
         private Properties fieldProps;
         private Properties propertiesProps;
 
-        private GroupBox root;
         private static BindingFlags flags => BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
         private IEnumerable<FieldInfo> Fields => type.GetFields(flags);
         private IEnumerable<PropertyInfo> Properties => type.GetProperties(flags);

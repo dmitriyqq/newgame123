@@ -1,6 +1,6 @@
-namespace GameRenderer
+namespace GameRenderer.Materials
 {
-    public class ColorMaterial : Material
+    public class ColorMaterial : ShaderMaterial
     {
         private static ShaderProgram program ;
 
@@ -9,14 +9,13 @@ namespace GameRenderer
             program = new ShaderProgram("shaders/debug.vert", "shaders/debug.frag");
         }
 
-        public ColorMaterial()
+        public ColorMaterial() : base(program)
         {
-            Program = program;
         }
 
         public override void Use()
         {
-            program.Use();
+            Program.Use();
         }
     }
 }

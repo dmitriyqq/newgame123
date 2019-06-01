@@ -8,31 +8,30 @@ using Font = Gwen.Font;
 using System.Reflection;
 using GameModel;
 using GameModel.GameObjects;
+using GameRenderer;
 using Key = OpenTK.Input.Key;
 
 
 namespace GameUI
 {
-    public class UserInterface
+    public class UserInterface : IUserInterface
     {
         private Gwen.Renderer.OpenTK _renderer;
         private Gwen.Input.OpenTK _input;
         private Menu _menu;
-        public event Action<MouseButtonEventArgs> OnMouseDown;
-        public event Action<MouseMoveEventArgs> OnMouseMove;
-        public event Action<MouseButtonEventArgs> OnMouseUp;
         public InterfaceLayout Layout { get; private set; }
         public Logger Logger { get; }
-        public CursorObject CursorObject { get; }
         public Model Model { get; }
         public Canvas Canvas { get; private set; }
+        public GameWindow Window { get; private set; }
+        
         public UserInterface(GameWindow window, Model model)
         {
+            Window = window;
             Model = model;
             Logger = new Logger("UI");
-            CursorObject = new CursorObject();
-
             Logger.Info("Created ui");
+
             try
             {
                 CreateCanvas(window);
@@ -41,6 +40,12 @@ namespace GameUI
             {
                 Logger.Error(e);
             }
+            
+            Window.KeyUp += KeyUp;
+            Window.MouseUp += MouseUp;
+            Window.MouseDown += MouseDown;
+            Window.MouseMove += MouseMove;
+            Window.MouseWheel += MouseWheel;
         }
 
         private void CreateCanvas(GameWindow window)
@@ -66,6 +71,7 @@ namespace GameUI
         {
             _renderer.Update(deltaTime);
         }
+
         public void AddRendererMenu(IGameLoop renderer)
         {
             _menu = new MenuStrip(Canvas);
@@ -99,42 +105,39 @@ namespace GameUI
             Canvas.SetSize(width, height);
         }
 
-        public bool KeyDown(KeyboardKeyEventArgs e)
+        public void KeyDown(object s, KeyboardKeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
                 throw new Exception();
             }
 
-            return _input.ProcessKeyDown(e);
+            _input.ProcessKeyDown(e);
         }
         
-        public bool KeyUp(KeyboardKeyEventArgs e)
+        public void KeyUp(object s, KeyboardKeyEventArgs e)
         {
-            return _input.ProcessKeyUp(e);
+            _input.ProcessKeyUp(e);
         }
 
-        public bool MouseDown(MouseButtonEventArgs args)
+        public void MouseDown(object s, MouseButtonEventArgs args)
         {
-            OnMouseDown?.Invoke(args);
-            return _input.ProcessMouseMessage(args);
+            _input.ProcessMouseMessage(args);
         }
 
-        public bool MouseUp(MouseButtonEventArgs args)
+        public void MouseUp(object s, MouseButtonEventArgs args)
         {
-            OnMouseUp?.Invoke(args);
-            return _input.ProcessMouseMessage(args);
+            _input.ProcessMouseMessage(args);
         }
 
-        public bool MouseMove(MouseMoveEventArgs args)
+        public void MouseMove(object s, MouseMoveEventArgs args)
         {
-            OnMouseMove?.Invoke(args);
-            return _input.ProcessMouseMessage(args);
+            _input.ProcessMouseMessage(args);
         }
 
-        public bool MouseWheel(MouseWheelEventArgs args)
+        public void MouseWheel(object s, MouseWheelEventArgs args)
         {
-            return _input.ProcessMouseMessage(args);
+            _input.ProcessMouseMessage(args);
         }
 
         public void CreateDebugWindow(object o)

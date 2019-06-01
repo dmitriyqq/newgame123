@@ -29,8 +29,10 @@ namespace GamePhysics
             }
 
             Collision = ray.Origin + ray.Direction * t;
+            Normal = normal;
         }
 
         public Vector3? Collision = null;
+        public Vector3 Normal;
     }
 }

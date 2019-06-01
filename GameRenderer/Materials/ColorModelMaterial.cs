@@ -1,27 +1,30 @@
 using GlmNet;
 
-namespace GameRenderer
+namespace GameRenderer.Materials
 {
-    public class ColorModelMaterial : Material
+    public class ColorModelMaterial : ShaderMaterial
     {
         private static readonly ShaderProgram program;
 
-        private vec3 color;
+        private readonly vec3 _color;
         
         static ColorModelMaterial()
         {
             program = new ShaderProgram("shaders/color.vert", "shaders/color.frag");
         }
     
-        public ColorModelMaterial(vec3 color)
+        public ColorModelMaterial(vec3 color) : base(program)
         {
-            Program = program;
-            this.color = color;
+            _color = color;
+        }
+        
+        public ColorModelMaterial() : base(program)
+        {
         }
     
         public override void Use()
         {
-            program.UniformVec3("color", color);
+            program.UniformVec3("color", _color);
             program.Use();
         }
     }

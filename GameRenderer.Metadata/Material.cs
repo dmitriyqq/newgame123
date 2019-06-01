@@ -1,8 +1,11 @@
+using GlmNet;
+
 namespace GameRenderer
 {
     public abstract class Material
     {
-        public ShaderProgram Program { get; set; }
         public abstract void Use();
+
+        public abstract void UniformModel(mat4 model);
     }
 }
