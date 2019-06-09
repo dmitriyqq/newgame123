@@ -20,7 +20,7 @@ namespace RunDesktop
             var assetStore = new AssetStore(AssetFile, assetStoreLogger);
             
             // Renderer contains game loop
-            var renderer = new Renderer(model, assetStore);
+            var renderer = new Renderer(model, assetStore.Assets);
 
             var ui = new UserInterface(renderer, model);
             renderer.AddUserInterface(ui);
@@ -42,7 +42,8 @@ namespace RunDesktop
             var sinks = new[]
             {
                 new ConsoleLoggerSink(),
-                ui.CreateLoggerSink()
+                ui.CreateLoggerSink(),
+                new FileLoggerSink("logs/log.txt") 
             };
 
             foreach (var logger in loggers)

@@ -1,3 +1,5 @@
+using GameRenderer.OpenGL;
+
 namespace GameRenderer.Materials
 {
     public class TexturedParticlesMaterial : ShaderMaterial

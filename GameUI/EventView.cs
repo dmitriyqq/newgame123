@@ -32,7 +32,7 @@ namespace GameUI
                 RemoveRow(0);
             }
 
-            var row = AddRow(message.formattedMessage);
+            var row = AddRow(message.FormattedMessage);
             row.SetTextColor(getMessageColor(message.MessageType));
             ScrollToBottom();
         }

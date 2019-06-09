@@ -20,7 +20,7 @@ namespace GameRenderer
         public override void Draw()
         {
             UseVao();
-            GL.DrawElements(PrimitiveType.Quads, count, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, 0);
         }
 
         ~IndexedColorGeometry()

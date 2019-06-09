@@ -71,8 +71,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimatedMesh.cs" />
-    <Compile Include="Animation.cs" />
+    <Compile Include="Animation\AnimatedModel.cs" />
+    <Compile Include="Animation\Animation.cs" />
+    <Compile Include="Animation\Animator.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\AnimatedModelData.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\AnimationData.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\JointData.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\JointTransformData.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\KeyFrameData.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\MeshData.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\SkeletonData.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\SkinningData.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\Vertex.cs" />
+    <Compile Include="Animation\ColladaParser\DataStructures\VertexSkinData.cs" />
+    <Compile Include="Animation\ColladaParser\Loader\AnimatedModelLoader.cs" />
+    <Compile Include="Animation\ColladaParser\Loader\AnimationLoader.cs" />
+    <Compile Include="Animation\ColladaParser\Loader\AnimationLoaderWrapper.cs" />
+    <Compile Include="Animation\ColladaParser\Loader\ColladaLoader.cs" />
+    <Compile Include="Animation\ColladaParser\Loader\GeometryLoader.cs" />
+    <Compile Include="Animation\ColladaParser\Loader\SkeletonLoader.cs" />
+    <Compile Include="Animation\ColladaParser\Loader\SkinLoader.cs" />
+    <Compile Include="Animation\ColladaParser\Loader\XmlNodeHelper.cs" />
+    <Compile Include="Animation\Joint.cs" />
+    <Compile Include="Animation\JointTransform.cs" />
+    <Compile Include="Animation\KeyFrame.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="DrawablesFactory.cs" />
     <Compile Include="Geometries\AxiesGeometry.cs" />
@@ -90,6 +112,7 @@
     <Compile Include="Geometries\TextureVertex.cs" />
     <Compile Include="Geometries\TextureVertexGeometry.cs" />
     <Compile Include="Geometries\TextureVertexHelper.cs" />
+    <Compile Include="Materials\AnimatedMaterial.cs" />
     <Compile Include="Materials\ColorMaterial.cs" />
     <Compile Include="Materials\ColorModelMaterial.cs" />
     <Compile Include="Materials\SkyboxMaterial.cs" />
@@ -101,11 +124,9 @@
     <Compile Include="MeshAnimation.cs" />
     <Compile Include="NodeAnimation.cs" />
     <Compile Include="OpenGL\SkyboxTexture.cs" />
-    <Compile Include="OpenGL\ElementBuffer.cs" />
     <Compile Include="OpenGL\Texture.cs" />
-    <Compile Include="OpenGL\VAO.cs" />
-    <Compile Include="OpenGL\VBO.cs" />
-    <Compile Include="OpenGL\VertexBuffer.cs" />
+    <Compile Include="OpenGL\VertexArray.cs" />
+    <Compile Include="OpenGL\Buffer.cs" />
     <Compile Include="Particles\BulletParticleEngine.cs" />
     <Compile Include="Particles\ParticleEngine.cs" />
     <Compile Include="Particles\TexturedParticleEngine.cs" />
@@ -140,10 +161,6 @@
     <ProjectReference Include="..\GameUtils\GameUtils.csproj">
       <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>
       <Name>GameUtils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ModelLoader\ModelLoader.csproj">
-      <Project>{9a29d470-e064-42b8-9e1e-121c23840d12}</Project>
-      <Name>ModelLoader</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

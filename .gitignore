@@ -6,6 +6,6 @@
 *.jpg
 /**/bin
 /**/obj
-
+/logs
 /mono_crash*.json
 /mono_crash*.blob

@@ -1,3 +1,4 @@
+using GameRenderer.OpenGL;
 using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer.Materials

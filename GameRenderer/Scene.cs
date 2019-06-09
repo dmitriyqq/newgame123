@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Assimp;
 using GameRenderer.Materials;
+using GameRenderer.OpenGL;
 using GlmNet;
 using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
 
@@ -12,10 +13,7 @@ namespace GameRenderer
         private readonly Assimp.Scene _scene;
         private readonly List<Mesh> _children;
         private readonly Dictionary<string, Texture> _textures = new Dictionary<string, Texture>();
-        private readonly Dictionary<string, Animation> _animations = new Dictionary<string, Animation>();
         private readonly Material _material;
-        private Animation _currentAnimation;
-        private bool _repeatAnimation;
         public IDrawable Parent { get; set; }
         public vec3 Position { get; set; } = new vec3(0.0f, 0.0f, 0.0f);
         public vec3 Rotation { get; set; } = new vec3(0.0f, 1.0f, 0.0f);
@@ -51,24 +49,6 @@ namespace GameRenderer
             m = glm.rotate(m, (float)- Math.PI / 2.0f, Rotation);
 
             return Parent?.GetModelMatrix() ?? m;
-        }
-
-        public IEnumerable<string> GetAvailableAnimations()
-        {
-            return _animations.Keys;
-        }
-
-        public void StartAnimation(string animation)
-        {
-            _animations.TryGetValue(animation, out _currentAnimation);
-
-            _currentAnimation?.Start();
-        }
-
-        public void RepeatAnimation(string animation)
-        {
-            _repeatAnimation = true;
-            _currentAnimation.Start();
         }
 
         private Texture LoadTexture(string filepath)
@@ -117,7 +97,6 @@ namespace GameRenderer
         }
         public void Update(float deltaTime)
         {
-            _currentAnimation?.Update(deltaTime);
         }
 
         public IEnumerable<Mesh> GetAllMeshes()

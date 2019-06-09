@@ -44,14 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Asset.cs" />
     <Compile Include="AssetStore.cs" />
-    <Compile Include="MapAsset.cs" />
     <Compile Include="MeshDescription.cs" />
     <Compile Include="ModelLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleAsset.cs" />
-    <Compile Include="SkyboxAsset.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameModel\GameModel.csproj">
@@ -61,6 +57,14 @@
     <ProjectReference Include="..\GamePhysics\GamePhysics.csproj">
       <Project>{07bbcca4-338f-4e0d-a74d-93431c4d66a0}</Project>
       <Name>GamePhysics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameRenderer.Metadata\GameRenderer.Metadata.csproj">
+      <Project>{b4b15d9b-7e82-4768-90d4-9712094a92a7}</Project>
+      <Name>GameRenderer.Metadata</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameRenderer\GameRenderer.csproj">
+      <Project>{d01d9186-62d3-4e32-8edf-ac589cf27acf}</Project>
+      <Name>GameRenderer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

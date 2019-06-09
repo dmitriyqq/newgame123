@@ -1,5 +1,3 @@
-using GameModel.GameObjects;
-
 namespace ModelLoader
 {
     public class MapAsset : Asset

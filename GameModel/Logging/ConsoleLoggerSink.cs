@@ -16,7 +16,7 @@ namespace GameModel
 
         private void HandleMessage(LogMessage message)
         {
-            Console.WriteLine(message.formattedMessage);
+            Console.WriteLine(message.FormattedMessage);
         }
     }
 }

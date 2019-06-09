@@ -18,21 +18,7 @@ namespace ModelLoader
             _logger = logger;
             _path = path;
             LoadAssets();
-            AddAsset(new MapAsset
-            {
-                GameObjectType = typeof(Map).AssemblyQualifiedName,
-                Name = "Desert Map",
-                MapTexture = "textures/desert.jpeg",
-                SkyboxAsset = new SkyboxAsset
-                {
-                    Front = "textures/skybox/front.jpg",
-                    Back = "textures/skybox/back.jpg",
-                    Top = "textures/skybox/top.jpg",
-                    Bottom = "textures/skybox/bottom.jpg",
-                    Right = "textures/skybox/right.jpg",
-                    Left = "textures/skybox/left.jpg"
-                }
-            });
+            AddAsset(new BoxAsset{Name = "Box", GameObjectType = typeof(ArmyGameObject).AssemblyQualifiedName, Size = 1.0f});
         }
 
         private void LoadAssets()

@@ -29,8 +29,9 @@ namespace GameRenderer
         private List<Mesh> _pipeline = new List<Mesh>();
         public Camera Camera { get; }
         public Logger Logger { get; }
+        public List<Asset> Assets { get; }
         
-        public Renderer(Model model, AssetStore store) : base(
+        public Renderer(Model model, List<Asset> assets) : base(
             1920,
             1000,
             GraphicsMode.Default,
@@ -46,6 +47,7 @@ namespace GameRenderer
             
             
             _model = model;
+            Assets = assets;
             Camera = new Camera();
 
             _cameraDebug = new Mesh(new AxiesGeometry(Camera.Target, Camera.Forward, Camera.Right, Camera.Up), new ColorMaterial());
@@ -54,7 +56,7 @@ namespace GameRenderer
             _rayMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 0.0f, 0.0f, 1.0f),
                 new vec4(0.0f, 1.0f, 0.0f, 1.0f)), new ColorMaterial());
 
-            _factory = new DrawablesFactory(store, this, Logger);
+            _factory = new DrawablesFactory(this, Logger);
             
             _drawables.Add(_cameraDebug);
             _drawables.Add(gridGeometry);
@@ -106,7 +108,6 @@ namespace GameRenderer
         public void AddUserInterface(IUserInterface ui)
         {
             _ui = ui;
-            
         }
 
         public IDrawable AddDrawable(Asset asset)
@@ -265,5 +266,6 @@ namespace GameRenderer
             
             base.OnResize(e);
         }
+        
     }
 }

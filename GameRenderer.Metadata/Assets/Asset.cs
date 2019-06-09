@@ -7,6 +7,8 @@ namespace ModelLoader
     [XmlInclude(typeof(SimpleAsset))]
     [XmlInclude(typeof(SkyboxAsset))]
     [XmlInclude(typeof(MapAsset))]
+    [XmlInclude(typeof(AnimatedModelAsset))]
+    [XmlInclude(typeof(BoxAsset))]
     public class Asset
     {
         [XmlElement]

@@ -26,6 +26,6 @@ namespace GameModel
             Caller = caller;
         }
         
-        public string formattedMessage => $"[{Scope}][{MessageType}][{Caller}][{Time.ToShortTimeString()}]:{e?.Message ?? RawMessage}";
+        public string FormattedMessage => $"[{Scope}][{MessageType}][{Caller}][{Time.ToShortTimeString()}]:{e?.Message ?? RawMessage}";
     }
 }
