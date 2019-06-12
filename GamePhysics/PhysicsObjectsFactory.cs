@@ -35,12 +35,13 @@ namespace GamePhysics
         
         private static Vector3 GetVertexInPosition(Map map, int i, int j)
         {
-            var y = map.Data[i, j].Height;
+            var y = map.Data[i, j];
             var x = (i - map.Size / 2) * map.Resolution;
             var z = (j - map.Size / 2) * map.Resolution;
 
             return new Vector3(x, y, z);
         }
+
         private int ConstructMap(Map map)
         {
             var mapMesh = CreateDeformedPlane(map);

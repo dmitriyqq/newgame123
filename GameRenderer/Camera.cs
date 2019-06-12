@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using GameModel;
+using GameRenderer.Metadata;
 using GlmNet;
 using OpenTK.Input;
 

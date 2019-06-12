@@ -4,20 +4,17 @@ namespace GameModel.GameObjects
 {
     public class Map : GameObject
     {
-        public Voxel[,] Data { get; private set; }
+        public VoxelData Data { get; set; }
         public int Size  { get; set; } 
         public float Resolution  { get; set; } = 1.0f;
         public int Octaves  { get; set; } = 3;
         public float Persistence { get; set; } = 3.83f;
         public event Action OnUpdate;
         public event Action OnBatchUpdate;
-
         
-        public Map(int size)
+        public Map()
         {
-            Size = size;
             Static = true;
-            CreateMap();
         }
 
         public override void Update(float deltaTime)
@@ -26,22 +23,28 @@ namespace GameModel.GameObjects
 
         public (float x, float z) MapToWorldCords(int i, int j)
         {
-            var x = (i - Size / 2) * Resolution;
-            var z = -(j - Size / 2) * Resolution;
+            var x = (i - Size / 2.0f) * Resolution;
+            var z = -(j - Size / 2.0f) * Resolution;
 
             return (x, z);
         }
 
         public (int i, int j) WorldToMapCoords(float x, float y)
         {
-            var i = (int) (x / Resolution + Size / 2);
-            var j = (int) (Size / 2 - y / Resolution);
+            var i = (int) (x / Resolution + Size / 2.0f);
+            var j = (int) (Size / 2.0f - y / Resolution);
             return (j, i);
         }
 
         public void CreateMap()
         {
-            Data = new Voxel[Size, Size];
+            if (Size == 0)
+            {
+                throw new Exception("Map should have size > 0");
+            }
+
+            Data = new VoxelData();
+            Data.InitializedData(Size);
 
             var averageHeight = 0.0f;
             
@@ -52,9 +55,9 @@ namespace GameModel.GameObjects
                     var x = ((double) i ) / Size;
                     var y = ((double) j ) / Size;
 
-                    Data[i, j].Height = (float) Perlin.OctavePerlin(x, y, 1.0f, Octaves, Persistence);
+                    Data[i, j] = (float) Perlin.OctavePerlin(x, y, 1.0f, Octaves, Persistence);
 
-                    averageHeight += Data[i, j].Height;
+                    averageHeight += Data[i, j];
                 }
             }
 
@@ -64,7 +67,7 @@ namespace GameModel.GameObjects
             {
                 for (var j = 0; j < Size; j++)
                 {
-                    Data[i, j].Height -= averageHeight;
+                    Data[i, j] -= averageHeight;
                 }
             }
 

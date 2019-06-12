@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using GameModel;
+using GameRenderer.Materials;
+using GameRenderer.Metadata;
+using GameRenderer.Particles;
 using GlmNet;
 
 namespace GameRenderer
@@ -8,8 +11,7 @@ namespace GameRenderer
     public class BulletParticleEngine : ParticleEngine, IDrawable
     {
         public List<Bullet> Bullets;
-
-        public BulletParticleEngine(List<Bullet> bullets)
+        public BulletParticleEngine(List<Bullet> bullets, Material material) : base(material)
         {
             Bullets = bullets;
         }
@@ -21,7 +23,7 @@ namespace GameRenderer
             var positions = new float[4 * list.Count];
             var colors = new float[4 * list.Count];
 
-            for (int i = 0; i < list.Count; i++)
+            for (var i = 0; i < list.Count; i++)
             {
                 var index = i * 4;
                 positions[index + 0] = list[i].Position.X;

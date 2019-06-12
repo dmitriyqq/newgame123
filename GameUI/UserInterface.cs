@@ -76,6 +76,10 @@ namespace GameUI
         {
             _menu = new MenuStrip(Canvas);
 
+            var main = _menu.AddItem("Main");
+            main.Menu.AddItem("Save model").SetAction((control, eventArgs) => SaveModel());
+            main.Menu.AddItem("Load model").SetAction((control, eventArgs) => LoadModel());
+
             var debugMenu = _menu.AddItem("Debug");
             debugMenu.Menu.AddItem("Model").SetAction((control, eventArgs) => CreateDebugWindow(Model));
             debugMenu.Menu.AddItem("Renderer").SetAction((control, eventArgs) => CreateDebugWindow(renderer));
@@ -84,8 +88,27 @@ namespace GameUI
 
             var tools = _menu.AddItem("Tools");
             tools.Menu.AddItem("Map Generator").SetAction((control, eventArgs) => { CreateMapGeneratorWindow();});
-            
+
             Layout = new InterfaceLayout(Canvas, Logger, renderer, Model, this);
+        }
+
+        private void SaveModel()
+        {
+            var modelLoader = new ModelLoader.ModelLoader();
+            try
+            {
+                Logger.Info("Saving model");
+                modelLoader.SaveModel(Model);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
+        private void LoadModel()
+        {
+            
         }
 
         private void CreateMapGeneratorWindow()

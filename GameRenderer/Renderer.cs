@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameModel;
+using GameModel.GameObjects;
 using GameRenderer.Materials;
+using GameRenderer.Metadata.Assets;
+using GameRenderer.OpenGL;
 using GlmNet;
-using ModelLoader;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -11,7 +13,7 @@ using OpenTK.Input;
 
 namespace GameRenderer
 {
-    public class Renderer : GameWindow, IGameLoop, IRenderer
+    public class Renderer : GameWindow, IGameLoop
     {
         private readonly Model _model;
         private IUserInterface _ui;
@@ -22,16 +24,17 @@ namespace GameRenderer
         private readonly Mesh _rayMesh;
 
         private readonly DrawablesFactory _factory;
+        private readonly MaterialManager _materialManager;
+        private readonly AssetsManager _assetsManager;
         private readonly List<IDrawable> _drawables = new List<IDrawable>();
         private readonly List<Light> _lights = new List<Light>();
-        private readonly List<ShaderMaterial> _materials = new List<ShaderMaterial>();
 
-        private List<Mesh> _pipeline = new List<Mesh>();
+        private Pipeline _pipeline;
         public Camera Camera { get; }
         public Logger Logger { get; }
         public List<Asset> Assets { get; }
         
-        public Renderer(Model model, List<Asset> assets) : base(
+        public Renderer(Model model, AssetsFile assetsFile) : base(
             1920,
             1000,
             GraphicsMode.Default,
@@ -47,30 +50,28 @@ namespace GameRenderer
             
             
             _model = model;
-            Assets = assets;
+            _materialManager = new MaterialManager(assetsFile.Materials, Logger);
+            _assetsManager = new AssetsManager(assetsFile.Assets, Logger);
+            Assets = assetsFile.Assets;
             Camera = new Camera();
 
-            _cameraDebug = new Mesh(new AxiesGeometry(Camera.Target, Camera.Forward, Camera.Right, Camera.Up), new ColorMaterial());
-            var gridGeometry = new Mesh(new GridGeometry(100.0f, 10.0f, new vec4(1.0f, 1.0f, 1.0f, 0.4f)), new ColorMaterial());
-            var axisGeometry = new Mesh(new AxiesGeometry(new vec3(0.0f),new vec3(0.0f, 0.0f, 1.0f),new vec3(1.0f, 0.0f, 0.0f), new vec3(0.0f, 1.0f, 0.0f), 10.0f), new ColorMaterial());
+            _cameraDebug = new Mesh(new AxiesGeometry(Camera.Target, Camera.Forward, Camera.Right, Camera.Up), _materialManager.GetMaterial(Constants.DebugMaterial));
+            var gridGeometry = new Mesh(new GridGeometry(100.0f, 10.0f, new vec4(1.0f, 1.0f, 1.0f, 0.4f)), _materialManager.GetMaterial(Constants.DebugMaterial));
+            var axisGeometry = new Mesh(new AxiesGeometry(new vec3(0.0f),new vec3(0.0f, 0.0f, 1.0f),new vec3(1.0f, 0.0f, 0.0f), new vec3(0.0f, 1.0f, 0.0f), 10.0f), _materialManager.GetMaterial(Constants.DebugMaterial));
             _rayMesh = new Mesh(new LineGeometry(new vec3(), new vec3(), new vec4(1.0f, 0.0f, 0.0f, 1.0f),
-                new vec4(0.0f, 1.0f, 0.0f, 1.0f)), new ColorMaterial());
+                new vec4(0.0f, 1.0f, 0.0f, 1.0f)), _materialManager.GetMaterial(Constants.DebugMaterial));
 
-            _factory = new DrawablesFactory(this, Logger);
+            _factory = new DrawablesFactory(this, _materialManager, _assetsManager,Logger);
             
             _drawables.Add(_cameraDebug);
             _drawables.Add(gridGeometry);
             _drawables.Add(axisGeometry);
             _drawables.Add(_rayMesh);
-            
-            _materials.Add(new LightMaterial());
-            _materials.Add(new ColorMaterial());
-            _materials.Add(new ParticleMaterial());
-            _materials.Add(new ColorModelMaterial());
+
             
             foreach (var weaponType in model.WeaponTypes)
             {
-                _drawables.Add(new BulletParticleEngine(weaponType.Bullets));
+                // _drawables.Add(new BulletParticleEngine(weaponType.Bullets, _materialManager.GetMaterial("temp")));
             }
             
             model.OnAddGameObject += RegisterMesh;
@@ -90,15 +91,15 @@ namespace GameRenderer
         {
             _lights.Add(new DirectionalLight
             {
-                Direction = glm.normalize(new vec3(0.5f, 1.0f, 0.3f)),
+                Direction = glm.normalize(new vec3(0.0f, -1.0f, 0.0f)),
                 Ambient = new vec3(0.05f, 0.05f, 0.05f),
                 Diffuse = new vec3(0.7f, 0.7f, 0.7f),
-                Specular = new vec3(0.4f, 0.4f, 0.4f),
+                Specular = new vec3(0.4f, 0.4f, 0.4f)
             });
 
             foreach (var light in _lights)
             {
-                foreach (var material in _materials)
+                foreach (var material in _materialManager.Materials)
                 {
                     light.Uniform(material.Program);
                 }
@@ -126,21 +127,7 @@ namespace GameRenderer
         
         private void ConstructPipeline()
         {
-            _pipeline = new List<Mesh>();
-            
-            foreach (var drawable in _drawables)
-            {
-                var l = drawable.GetAllMeshes();
-                foreach (var mesh in l)
-                {
-                    _pipeline.Add(mesh);
-                }
-            }
-        }
-
-        public void AddMaterial(ShaderMaterial material)
-        {
-            _materials.Add(material);
+            _pipeline = new Pipeline(_drawables);
         }
 
         private void DeleteMesh(GameObject gameObject)
@@ -187,15 +174,12 @@ namespace GameRenderer
                 drawable.Update(deltaTime);
             }
 
-            foreach (var material in _materials)
+            foreach (var material in _materialManager.Materials)
             {
                 material.Program.UniformCamera(Camera);
             }
 
-            foreach (var mesh in _pipeline)
-            {
-                mesh.Draw();
-            }
+            _pipeline.Draw();
 
             _ui.Draw();
             SwapBuffers();

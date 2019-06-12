@@ -13,7 +13,6 @@ out vec2 pass_textureCoords;
 out vec3 pass_normal;
 
 uniform mat4 jointTransforms[MAX_JOINTS];
-
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;

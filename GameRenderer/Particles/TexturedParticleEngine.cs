@@ -1,5 +1,6 @@
 using System;
 using GameRenderer.Materials;
+using GameRenderer.Particles;
 using OpenTK.Graphics.OpenGL4;
 
 namespace GameRenderer
@@ -8,7 +9,7 @@ namespace GameRenderer
     {
         public int TVBO { get; private set; }
 
-        public TexturedParticleEngine()
+        public TexturedParticleEngine(Material material) : base(material)
         {
             var vertexBufferData = new []{
                 -0.5f, -0.5f, 0.0f, 
@@ -24,8 +25,6 @@ namespace GameRenderer
                 0.0f, 1.0f,
                 1.0f, 1.0f,
             };
-
-            Material = new TexturedParticlesMaterial();
     
             Vao = GL.GenVertexArray();
             GL.BindVertexArray(Vao);

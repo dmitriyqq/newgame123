@@ -48,5 +48,29 @@ namespace GameModel
             var norm = glm.normalize(dir);
             return norm;
         }
+
+        public static float[] ToRawArray(this vec3[] array)
+        {
+            var floatArray = new float[array.Length * 3];
+            for (var i = 0; i < array.Length; i++)
+            {
+                floatArray[3 * i + 0] = array[i].x;
+                floatArray[3 * i + 1] = array[i].y;
+                floatArray[3 * i + 2] = array[i].z;
+            }
+            return floatArray;
+        }
+        
+        public static float[] ToRawArray(this vec2[] array)
+        {
+            var floatArray = new float[array.Length * 2];
+            for (var i = 0; i < array.Length; i++)
+            {
+                floatArray[2 * i + 0] = array[i].x;
+                floatArray[2 * i + 1] = array[i].y;
+            }
+
+            return floatArray;
+        }
     }
 }

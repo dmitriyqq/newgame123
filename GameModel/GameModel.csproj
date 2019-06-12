@@ -56,13 +56,10 @@
   <ItemGroup>
     <Compile Include="Bullet.cs" />
     <Compile Include="GameObjects\ArmyGameObject.cs" />
-    <Compile Include="GameObjects\Buggy.cs" />
     <Compile Include="GameObjects\Map.cs" />
-    <Compile Include="GameObjects\Voxel.cs" />
-    <Compile Include="GameObjects\Soldier.cs" />
-    <Compile Include="GameObjects\Tank.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
-    <Compile Include="GameObjects\Vehicle.cs" />
+    <Compile Include="GameObjects\VoxelData.cs" />
+    <Compile Include="GameSave.cs" />
     <Compile Include="IGameLoop.cs" />
     <Compile Include="IPhysicsEngine.cs" />
     <Compile Include="Logging\ConsoleLoggerSink.cs" />

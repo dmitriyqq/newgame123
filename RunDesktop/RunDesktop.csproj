@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GameAssetLoader\GameAssetLoader.csproj">
+      <Project>{9a29d470-e064-42b8-9e1e-121c23840d12}</Project>
+      <Name>GameAssetLoader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameModel\GameModel.csproj">
       <Project>{12bfeb17-280c-41dc-80aa-a88994a7be92}</Project>
       <Name>GameModel</Name>
@@ -80,10 +84,6 @@
     <ProjectReference Include="..\GameUtils\GameUtils.csproj">
       <Project>{0d954a09-b8c1-4fd6-b979-88a035595b3a}</Project>
       <Name>GameUtils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ModelLoader\ModelLoader.csproj">
-      <Project>{9a29d470-e064-42b8-9e1e-121c23840d12}</Project>
-      <Name>ModelLoader</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

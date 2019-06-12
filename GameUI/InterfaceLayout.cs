@@ -38,7 +38,7 @@ namespace GameUI
             RightDock.Width = 150;
         }
 
-        public void AddConstructor(AssetStore assetStore, Map map, IRayCaster rayCaster, IRenderer renderer)
+        public void AddConstructor(AssetStore assetStore, Map map, IRayCaster rayCaster, Renderer renderer)
         {
             ObjectConstructor = new Constructor(LeftDock, _logger, assetStore, _ui, map, rayCaster, renderer);
             LeftDock.TabControl.AddPage("Constructor", ObjectConstructor);

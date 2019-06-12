@@ -1,8 +1,8 @@
 using System;
-using System.Numerics;
 using GameModel;
 using GameModel.GameObjects;
 using GameRenderer;
+using GameRenderer.Metadata.Assets;
 using GameUtils;
 using GlmNet;
 using Gwen;
@@ -19,14 +19,14 @@ namespace GameUI
         private readonly Map _map;
         private readonly Logger _logger;
         private readonly IRayCaster _rayCaster;
-        private readonly IRenderer _renderer;
+        private readonly Renderer _renderer;
         private CollapsibleList _listBox;
         private CollapsibleCategory _actionsCategory;
         private CollapsibleCategory _assetsCategory;
         private IDrawable _cursor;
         private Asset _selectedAsset;
         
-        public Constructor(Base parent, Logger logger, AssetStore assetStore, UserInterface ui, Map map, IRayCaster rayCaster, IRenderer renderer) : base(parent)
+        public Constructor(Base parent, Logger logger, AssetStore assetStore, UserInterface ui, Map map, IRayCaster rayCaster, Renderer renderer) : base(parent)
         {
             Dock = Pos.Fill;
             _assetStore = assetStore;
@@ -57,7 +57,7 @@ namespace GameUI
             var editButton = _actionsCategory.Add("Edit");
             editButton.Clicked += HandleEdit;
             
-            foreach (var asset in _assetStore.Assets)
+            foreach (var asset in _assetStore.AssetsFile.Assets)
             {
                 CreateRow(asset);
             }
@@ -114,7 +114,7 @@ namespace GameUI
 
                 if (gameObject != null)
                 {
-                    gameObject.Asset = _selectedAsset;
+                    gameObject.Asset = _selectedAsset.Name;
                     gameObject.Transform.Position = _cursor.Position.ToVector3();
 
                     _ui.Model.AddGameObject(gameObject);

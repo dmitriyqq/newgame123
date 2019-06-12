@@ -1,3 +1,5 @@
+using GameModel.GameObjects;
+
 namespace GameModel.Tasks
 {
     public class Attack : Task

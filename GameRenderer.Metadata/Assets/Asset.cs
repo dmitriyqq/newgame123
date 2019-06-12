@@ -1,18 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace ModelLoader
+namespace GameRenderer.Metadata.Assets
 {
     [Serializable]
-    [XmlInclude(typeof(SimpleAsset))]
+    [XmlInclude(typeof(StaticModelAsset))]
     [XmlInclude(typeof(SkyboxAsset))]
     [XmlInclude(typeof(MapAsset))]
     [XmlInclude(typeof(AnimatedModelAsset))]
-    [XmlInclude(typeof(BoxAsset))]
     public class Asset
     {
-        [XmlElement]
         public string GameObjectType { get; set; }
+        public string MaterialName { get; set; }
         public string Name { get; set; }
+
+        public List<UniformValue> MaterialParameters { get; set; }
     }
 }

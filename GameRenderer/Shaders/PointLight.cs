@@ -1,3 +1,4 @@
+using GameRenderer.Shaders;
 using GlmNet;
 
 namespace GameRenderer
@@ -49,13 +50,13 @@ namespace GameRenderer
 
         public override void Uniform(ShaderProgram program)
         {
-            program.UniformVec3("PointLight.ambient", _ambient);
-            program.UniformVec3("PointLight.diffuse", _diffuse);
-            program.UniformVec3("PointLight.specular", _specular);
-            program.UniformVec3("PointLight.position", _position);
-            program.UniformFloat("PointLight.constant", _constant);
-            program.UniformFloat("PointLight.linear", _linear);
-            program.UniformFloat("PointLight.quadratic", _quadratic);
+            program.UniformVec3("pointLights.ambient", _ambient);
+            program.UniformVec3("pointLights.diffuse", _diffuse);
+            program.UniformVec3("pointLights.specular", _specular);
+            program.UniformVec3("pointLights.position", _position);
+            program.UniformFloat("pointLights.constant", _constant);
+            program.UniformFloat("pointLights.linear", _linear);
+            program.UniformFloat("pointLights.quadratic", _quadratic);
         }
     }
 }

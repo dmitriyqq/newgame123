@@ -1,3 +1,5 @@
+using GameRenderer.Shaders;
+
 namespace GameRenderer
 {
     public abstract class Light

@@ -1,70 +1,123 @@
-using System.Linq;
+using GameModel;
 using GlmNet;
 using OpenTK.Graphics.OpenGL4;
 
-namespace GameRenderer
+namespace GameRenderer.Shaders
 {
     public class ShaderProgram
     {
-        private int id;
-
-        public ShaderProgram(string vertexShaderPath, string fragmentShaderPath)
+        private readonly int _id;
+        private readonly Shader _vertexShader;
+        private readonly Shader _fragmentShader;
+        private readonly Logger _logger;
+        
+        public ShaderProgram(string vertexShaderPath, string fragmentShaderPath, Logger logger)
         {
-            Shader vertShader = new Shader(vertexShaderPath, ShaderType.VertexShader);
-            Shader fragShader = new Shader(fragmentShaderPath, ShaderType.FragmentShader);
+            _logger = logger;
+            _vertexShader = new Shader(vertexShaderPath, ShaderType.VertexShader);
+            _fragmentShader = new Shader(fragmentShaderPath, ShaderType.FragmentShader);
 
-            id = GL.CreateProgram();
-            GL.AttachShader(id, vertShader.Id);
-            GL.AttachShader(id, fragShader.Id);
-            GL.LinkProgram(id);
+            _id = GL.CreateProgram();
+            GL.AttachShader(_id, _vertexShader.Id);
+            GL.AttachShader(_id, _fragmentShader.Id);
+            GL.LinkProgram(_id);
+            _logger.Info($"Created new {nameof(ShaderProgram)} id = {_id}");
         }
 
         public void Use()
         {
-            GL.UseProgram(id);
+            GL.UseProgram(_id);
         }
 
-        public void UniformMat4(string name, mat4 m)
+        ~ShaderProgram()
         {
-            Use();
-            var location = GL.GetUniformLocation(id, name);
-            GL.UniformMatrix4(location, 1,false,  m.to_array());
+            _logger.Info($"Deleting ${nameof(ShaderProgram)} with id = {_id}");
+            GL.DetachShader(_id, _vertexShader.Id);
+            GL.DetachShader(_id, _fragmentShader.Id);
+            GL.DeleteProgram(_id);
         }
 
-        public void UniformVec3(string name, vec3 v)
+        public int GetUniformLocation(string name) => GL.GetUniformLocation(_id, name);
+
+        // Use mat4.to_array to pass matrix to the shader program
+        // to prevent boxing/unboxing of mat4
+        public void UniformMat4(string name, object m)
         {
             Use();
-            GL.Uniform3(GL.GetUniformLocation(id, name), 1,  v.to_array());
+            GL.UniformMatrix4(GL.GetUniformLocation(_id, name), 1,false,  (float[]) m);
+        }
+        
+        // Use vec3.to_array to pass matrix to the shader program
+        // to prevent boxing/unboxing of vec3
+        public void UniformMat4(int location, object m)
+        {
+            Use();
+            GL.UniformMatrix4(location, 1,false,  (float[]) m);
         }
 
-        public void UniformVec4(string name, vec4 v)
+        // Use vec3.to_array to pass matrix to the shader program
+        // to prevent boxing/unboxing of vec3
+        public void UniformVec3(string name, object v)
         {
             Use();
-            GL.Uniform4(GL.GetUniformLocation(id, name), 1,  v.to_array());
+            GL.Uniform3(GL.GetUniformLocation(_id, name), 1,  (float[]) v);
+        }
+        
+        // Use vec3.to_array to pass matrix to the shader program
+        // to prevent boxing/unboxing of vec3
+        public void UniformVec3(int location, object v)
+        {
+            Use();
+            GL.Uniform3(location, 1,  (float[]) v);
         }
 
-        public void UniformFloat(string name, float f)
+        public void UniformVec4(string name, object v)
         {
             Use();
-            GL.Uniform1(GL.GetUniformLocation(id, name), f);
+            GL.Uniform4(GL.GetUniformLocation(_id, name), 1,  (float[]) v);
+        }
+        
+        public void UniformVec4(int location, object v)
+        {
+            Use();
+            GL.Uniform4(location, 1,  (float[]) v);
         }
 
-        public void UniformInt(string name, int i)
+        // Todo find a way to solve this without object
+        public void UniformFloat(string name, object f)
         {
             Use();
-            GL.Uniform1(GL.GetUniformLocation(id, name), i);
+            GL.Uniform1(GL.GetUniformLocation(_id, name), (float) f);
+        }
+
+        public void UniformFloat(int location, object v)
+        {
+            Use();
+            GL.Uniform1(location, (float) v);
+        }
+        
+        public void UniformInt(string name, object i)
+        {
+            Use();
+            GL.Uniform1(GL.GetUniformLocation(_id, name), (int) i);
+        }
+        
+        public void UniformInt(int location, object i)
+        {
+            Use();
+            GL.Uniform1(location, (int) i);
         }
         
         public virtual void UniformCamera(Camera camera)
         {
-            UniformMat4("view", camera.ViewMatrix);
-            UniformMat4("projection", camera.ProjectionMatrix);
+            UniformMat4("view", camera.ViewMatrix.to_array());
+            UniformMat4("projection", camera.ProjectionMatrix.to_array());
         }
 
-        public virtual void UniformMat4Array(string name, mat4[] array)
+        public void UniformMat4Array(int location, object ma)
         {
             Use();
-            var layout = GL.GetUniformLocation(id, name);
+            var array = (mat4[]) ma;
             var floatsArray = new float[array.Length * 16];
             var index = 0;
             
@@ -89,7 +142,13 @@ namespace GameRenderer
                 index += 16;
             }
 
-            GL.UniformMatrix4(layout, array.Length, true, floatsArray);
+            GL.UniformMatrix4(location, array.Length, true, floatsArray);
+        }
+        
+        public void UniformMat4Array(string name, object ma)
+        {
+            var location = GL.GetUniformLocation(_id, name);
+            UniformMat4Array(location, ma);
         }
     }
 }

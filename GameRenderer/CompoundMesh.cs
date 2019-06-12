@@ -1,24 +1,26 @@
 using System.Collections.Generic;
+using GameRenderer.Metadata;
 
 namespace GameRenderer
 {
     public class CompoundMesh : Mesh
     {
         private List<Mesh> _children = new List<Mesh>();
-        public CompoundMesh(Geometry geometry, Material material) : base(geometry, material)
+
+        public CompoundMesh() : base()
         {
+            
         }
         
         public override IEnumerable<Mesh> GetAllMeshes()
         {
-            
+            yield return this;
+
             foreach (var child in _children)
             {
                 yield return child;                
             }
-            yield return this;
         }
-
         public override Mesh Clone()
         {
             var mesh = MemberwiseClone() as CompoundMesh;
@@ -32,7 +34,7 @@ namespace GameRenderer
             return mesh;
         }
 
-        public virtual void AddChild(Mesh mesh)
+        public void AddChild(Mesh mesh)
         {
             mesh.Parent = this;
             _children.Add(mesh);

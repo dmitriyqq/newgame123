@@ -1,15 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Assimp;
-using GameModel;
 using GameRenderer.Materials;
 using GameRenderer.OpenGL;
 using GlmNet;
-using OpenTK;
-using OpenTK.Graphics.OpenGL4;
-using Buffer = GameRenderer.OpenGL.Buffer;
-using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
+using Material = GameRenderer.Materials.Material;
 
 namespace GameRenderer.Animation
 {
@@ -25,18 +19,16 @@ namespace GameRenderer.Animation
 		public vec3 Rotation { get; set; }
 		public vec3 Scale { get; set; }
 		public bool Visible { get; set; }
-
-		private readonly AnimatedMaterial _material;
-
+		private readonly Material _material;
 		public readonly List<Animation> Animations = new List<Animation>();
-		public AnimatedModel(VertexArray vertexArray, Texture texture, Joint rootJoint, int jointCount) 
+		public AnimatedModel(VertexArray vertexArray, Texture texture, Material material, Joint rootJoint, int jointCount) 
 		{
 			_vertexArray = vertexArray;
 			RootJoint = rootJoint;
 			JointCount = jointCount;
 			_animator = new Animator(this);
 			_texture = texture;
-			_material = new AnimatedMaterial {Diffuse = _texture};
+			_material = material;
 			rootJoint.CalcInverseBindTransform(mat4.identity());
 		}
 	
@@ -58,7 +50,7 @@ namespace GameRenderer.Animation
 		public void Update(float deltaTime) 
 		{
 			_animator.Update(deltaTime);
-			_material.Program.UniformMat4Array("jointTransforms", GetJointTransforms());
+			_material.Uniform("jointTransforms", GetJointTransforms());
 		}
 	
 		public mat4[] GetJointTransforms() 

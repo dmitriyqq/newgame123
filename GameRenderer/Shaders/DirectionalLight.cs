@@ -1,3 +1,4 @@
+using GameRenderer.Shaders;
 using GlmNet;
 
 namespace GameRenderer
@@ -32,10 +33,10 @@ namespace GameRenderer
 
         public override void Uniform(ShaderProgram program)
         {
-            program.UniformVec3("dirLight.ambient", ambient);
-            program.UniformVec3("dirLight.diffuse", diffuse);
-            program.UniformVec3("dirLight.specular", specular);
-            program.UniformVec3("dirLight.direction", direction);
+            program.UniformVec3("dirLight.ambient", ambient.to_array());
+            program.UniformVec3("dirLight.diffuse", diffuse.to_array());
+            program.UniformVec3("dirLight.specular", specular.to_array());
+            program.UniformVec3("dirLight.direction", direction.to_array());
         }
     }
 }

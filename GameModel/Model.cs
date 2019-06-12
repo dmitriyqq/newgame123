@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using GameModel.GameObjects;
-using GameModel.Tasks;
 
 namespace GameModel
 {
@@ -14,7 +13,7 @@ namespace GameModel
         public event Action<GameObject> OnAddGameObject;
         public event Action<GameObject> OnRemoveGameObject;
         public IPhysicsEngine Engine { get; set; }
-        private List<GameObject> InitialState { get; set; }
+        public List<GameObject> InitialState { get; set; } = new List<GameObject>();
         public List<WeaponType> WeaponTypes { get; private set; } = new List<WeaponType>();
         public int Ticks { get; private set; } = -1;
         public int NumObjects => _gameObjects.Count;
@@ -22,18 +21,44 @@ namespace GameModel
         public Logger Logger { get; private set; }
         public IEnumerable<GameObject> GameObjects => _gameObjects;
 
-        public Model(List<GameObject> initialState)
+        public Model()
         {
-            InitialState = initialState;
-
             Logger = new Logger("Model");
-            Logger.Info("Created model");
+            Logger.Info("Creating model from scratch");
 
-            Players.Add(new Player("Human", new Vector3(0.0f, 0.0f, 1.0f)));
-            Players.Add(new Player("Computer", new Vector3(1.0f, 0.0f, 0.0f)));
+            Players.Add(new Player{Name = "Human", Color = new Vector3(0.0f, 0.0f, 1.0f)});
+            Players.Add(new Player{Name = "Computer", Color = new Vector3(1.0f, 0.0f, 0.0f)});
 
-            
             WeaponTypes.Add(new WeaponType());
+        }
+        
+        public Model(GameSave save)
+        {
+            Logger = new Logger("Model");
+            Logger.Info("Creating model from save");
+            
+            Players = save.Players;
+
+            foreach (var gameObject in save.GameObjects)
+            {
+                AddGameObject(gameObject);
+            }
+
+            Time = save.Time;
+            Ticks = save.Ticks;
+        }
+
+        public GameSave CreateSave()
+        {
+            var save = new GameSave
+            {
+                Players = Players,
+                GameObjects = _gameObjects,
+                Ticks = Ticks,
+                Time = Time
+            };
+
+            return save;
         }
 
         public void Use(IPhysicsEngine engine)
@@ -43,7 +68,6 @@ namespace GameModel
             OnAddGameObject += engine.AddGameObject;
             OnRemoveGameObject += engine.RemoveGameObject;
         }
-
         public void Start()
         {
             if (InitialState == null)

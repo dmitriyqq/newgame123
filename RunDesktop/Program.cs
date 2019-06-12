@@ -2,6 +2,7 @@
 using GameRenderer;
 using GameUI;
 using GamePhysics;
+using GameRenderer.Materials;
 using ModelLoader;
 
 namespace RunDesktop
@@ -20,7 +21,7 @@ namespace RunDesktop
             var assetStore = new AssetStore(AssetFile, assetStoreLogger);
             
             // Renderer contains game loop
-            var renderer = new Renderer(model, assetStore.Assets);
+            var renderer = new Renderer(model, assetStore.AssetsFile);
 
             var ui = new UserInterface(renderer, model);
             renderer.AddUserInterface(ui);

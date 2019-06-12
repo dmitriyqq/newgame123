@@ -1,6 +1,7 @@
 
 using System;
 using System.Numerics;
+using GameRenderer.Metadata.Assets;
 using ModelLoader;
 
 namespace GameUI

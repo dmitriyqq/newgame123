@@ -1,7 +1,9 @@
 using GameModel;
 using GameRenderer.Animation.ColladaParser.DataStructures;
+using GameRenderer.Materials;
 using GameRenderer.OpenGL;
 using OpenTK.Graphics.OpenGL4;
+using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
 
 namespace GameRenderer.Animation.ColladaParser.Loader
 {
@@ -18,7 +20,7 @@ namespace GameRenderer.Animation.ColladaParser.Loader
 		    _animationLoader = new AnimationLoaderWrapper(_modelLoader);
 	    }
 	    
-		public AnimatedModel LoadEntity(string modelFile, string textureFile) 
+		public AnimatedModel LoadEntity(string modelFile, string textureFile, Material material) 
 		{
 			var entityData = _modelLoader.LoadColladaModel(modelFile, 3);
 			var model = CreateVao(entityData.GetMeshData());
@@ -26,7 +28,7 @@ namespace GameRenderer.Animation.ColladaParser.Loader
 			var skeletonData = entityData.GetJointsData();
 			var headJoint = CreateJoints(skeletonData.HeadJoint);
 
-			var animatedModel = new AnimatedModel(model, texture, headJoint, skeletonData.JointCount);
+			var animatedModel = new AnimatedModel(model, texture, material, headJoint, skeletonData.JointCount);
 			var animation = _animationLoader.LoadAnimation(modelFile);
 			animatedModel.Animations.Add(animation);
 			return animatedModel;
@@ -53,11 +55,11 @@ namespace GameRenderer.Animation.ColladaParser.Loader
 		private VertexArray CreateVao(MeshData data) {
 			var vao = new VertexArray(data.Vertices.Length, PrimitiveType.Triangles, _logger);
 			vao.UseIndices(data.Indices);
-			vao.AttachComponent( "vertices", BufferUsageHint.StaticDraw, data.Vertices, 3, VertexAttribPointerType.Float, 1);
-			vao.AttachComponent("UV", BufferUsageHint.StaticDraw, data.TextureCoords,2, VertexAttribPointerType.Float, 1);
-			vao.AttachComponent("normals", BufferUsageHint.StaticDraw, data.Normals,3, VertexAttribPointerType.Float, 1);
-			vao.AttachIntegerComponent("joint ids", BufferUsageHint.StaticDraw, data.JointIds,3, VertexAttribIntegerType.Int, 1);
-			vao.AttachComponent("vertex weights", BufferUsageHint.StaticDraw, data.VertexWeights,3, VertexAttribPointerType.Float, 1);
+			vao.AttachComponent( "vertices", BufferUsageHint.StaticDraw, data.Vertices, 3,  1);
+			vao.AttachComponent("UV", BufferUsageHint.StaticDraw, data.TextureCoords,2, 1);
+			vao.AttachComponent("normals", BufferUsageHint.StaticDraw, data.Normals,3,  1);
+			vao.AttachIntegerComponent("joint ids", BufferUsageHint.StaticDraw, data.JointIds,3, 1);
+			vao.AttachComponent("vertex weights", BufferUsageHint.StaticDraw, data.VertexWeights,3, 1);
 			vao.GenerateVertexAttribPointer();
 			return vao;
 		}

@@ -1,44 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ArrayOfAsset xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Asset xsi:type="SimpleAsset">
-    <GameObjectType>GameModel.GameObjects.ArmyGameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
-    <Name>Test Asset</Name>
-    <Scene>./models/trident/trident3.obj</Scene>
-  </Asset>
-  <Asset xsi:type="AnimatedModelAsset">
-    <GameObjectType>GameModel.GameObjects.ArmyGameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
-    <Name>Soldier</Name>
-    <AnimatedModel>./models/soldier/soldier_ani.dae</AnimatedModel>
-    <Texture>./models/soldier/soldier_DM_1024.png</Texture>
-  </Asset>
-  <Asset xsi:type="AnimatedModelAsset">
-    <GameObjectType>GameModel.GameObjects.ArmyGameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
-    <Name>Mech</Name>
-    <AnimatedModel>./models/Mech/Mech5_final3.dae</AnimatedModel>
-    <Texture>./models/Mech5_desert.png.001.png</Texture>
-  </Asset>
-  <Asset xsi:type="AnimatedModelAsset">
-    <GameObjectType>GameModel.GameObjects.ArmyGameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
-    <Name>Test Animated Model</Name>
-    <AnimatedModel>./models/TestModel/model.dae</AnimatedModel>
-    <Texture>./models/TestModel/diffuse.png</Texture>
-  </Asset>
-  <Asset xsi:type="MapAsset">
-    <GameObjectType>GameModel.GameObjects.Map, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
-    <Name>Desert Map</Name>
-    <SkyboxAsset>
-      <Front>textures/skybox/front.jpg</Front>
-      <Back>textures/skybox/back.jpg</Back>
-      <Top>textures/skybox/top.jpg</Top>
-      <Bottom>textures/skybox/bottom.jpg</Bottom>
-      <Right>textures/skybox/right.jpg</Right>
-      <Left>textures/skybox/left.jpg</Left>
-    </SkyboxAsset>
-    <MapTexture>textures/desert.jpeg</MapTexture>
-  </Asset>
-  <Asset xsi:type="BoxAsset">
-    <GameObjectType>GameModel.GameObjects.ArmyGameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
-    <Name>Box</Name>
-    <Size>1</Size>
-  </Asset>
-</ArrayOfAsset>
+<AssetsFile xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Textures />
+  <Materials>
+    <MaterialAsset>
+      <Name>AnimatedMaterial</Name>
+      <ShaderType>GameRenderer.Shaders.ShaderProgram, GameRenderer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</ShaderType>
+      <VertexShaderPath>shaders/animated.vert</VertexShaderPath>
+      <FragmentShaderPath>shaders/animated.frag</FragmentShaderPath>
+      <MaxTextures>1</MaxTextures>
+      <GeometryLayout>
+        <GlslInputType>Vec3</GlslInputType>
+        <GlslInputType>Vec2</GlslInputType>
+        <GlslInputType>Vec3</GlslInputType>
+        <GlslInputType>Ivec3</GlslInputType>
+        <GlslInputType>Vec3</GlslInputType>
+      </GeometryLayout>
+      <Uniforms>
+        <Uniform>
+          <Type>GlmNet.mat4[], GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>jointTransforms</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>model</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>view</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>projection</Name>
+        </Uniform>
+      </Uniforms>
+    </MaterialAsset>
+    <MaterialAsset>
+      <Name>LightMaterial</Name>
+      <ShaderType>GameRenderer.Shaders.ShaderProgram, GameRenderer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</ShaderType>
+      <VertexShaderPath>shaders/light.vert</VertexShaderPath>
+      <FragmentShaderPath>shaders/light.frag</FragmentShaderPath>
+      <MaxTextures>2</MaxTextures>
+      <GeometryLayout>
+        <GlslInputType>Vec3</GlslInputType>
+        <GlslInputType>Vec2</GlslInputType>
+        <GlslInputType>Vec3</GlslInputType>
+        <GlslInputType>Ivec3</GlslInputType>
+        <GlslInputType>Vec3</GlslInputType>
+      </GeometryLayout>
+      <Uniforms>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>model</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>view</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>projection</Name>
+        </Uniform>
+        <Uniform>
+          <Type>System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</Type>
+          <Name>material.shininess</Name>
+        </Uniform>
+        <Uniform>
+          <Type>System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</Type>
+          <Name>material.specular</Name>
+        </Uniform>
+        <Uniform>
+          <Type>System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</Type>
+          <Name>material.diffuse</Name>
+        </Uniform>
+      </Uniforms>
+    </MaterialAsset>
+    <MaterialAsset>
+      <Name>SkyboxMaterial</Name>
+      <ShaderType>GameRenderer.Shaders.ShaderProgram, GameRenderer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</ShaderType>
+      <VertexShaderPath>shaders/cubemap.vert</VertexShaderPath>
+      <FragmentShaderPath>shaders/cubemap.frag</FragmentShaderPath>
+      <MaxTextures>1</MaxTextures>
+      <GeometryLayout>
+        <GlslInputType>Vec3</GlslInputType>
+      </GeometryLayout>
+      <Uniforms>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>model</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>view</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>projection</Name>
+        </Uniform>
+      </Uniforms>
+    </MaterialAsset>
+    <MaterialAsset>
+      <Name>debug</Name>
+      <ShaderType>GameRenderer.Shaders.ShaderProgram, GameRenderer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</ShaderType>
+      <VertexShaderPath>shaders/debug.vert</VertexShaderPath>
+      <FragmentShaderPath>shaders/debug.frag</FragmentShaderPath>
+      <MaxTextures>0</MaxTextures>
+      <GeometryLayout>
+        <GlslInputType>Vec3</GlslInputType>
+        <GlslInputType>Vec4</GlslInputType>
+      </GeometryLayout>
+      <Uniforms>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>model</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>view</Name>
+        </Uniform>
+        <Uniform>
+          <Type>GlmNet.mat4, GlmNet, Version=0.7.0.0, Culture=neutral, PublicKeyToken=null</Type>
+          <Name>projection</Name>
+        </Uniform>
+      </Uniforms>
+    </MaterialAsset>
+  </Materials>
+  <Assets>
+    <Asset xsi:type="MapAsset">
+      <GameObjectType>GameModel.GameObjects.Map, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
+      <MaterialName>LightMaterial</MaterialName>
+      <Name>Desert Map Asset</Name>
+      <MaterialParameters>
+        <UniformValue>
+          <Uniform>material.shininess</Uniform>
+          <Value xsi:type="xsd:float">32</Value>
+        </UniformValue>
+        <UniformValue>
+          <Uniform>material.specular</Uniform>
+          <Value xsi:type="xsd:int">1</Value>
+        </UniformValue>
+        <UniformValue>
+          <Uniform>material.diffuse</Uniform>
+          <Value xsi:type="xsd:int">0</Value>
+        </UniformValue>
+      </MaterialParameters>
+      <SkyboxAsset>
+        <GameObjectType>GameModel.GameObjects.Map, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
+        <MaterialName>SkyboxMaterial</MaterialName>
+        <Name>Day Skybox</Name>
+        <Front>textures/skybox/front.jpg</Front>
+        <Back>textures/skybox/back.jpg</Back>
+        <Top>textures/skybox/top.jpg</Top>
+        <Bottom>textures/skybox/bottom.jpg</Bottom>
+        <Right>textures/skybox/right.jpg</Right>
+        <Left>textures/skybox/left.jpg</Left>
+      </SkyboxAsset>
+      <DiffuseTexture>textures/desert.jpeg</DiffuseTexture>
+      <SpecularTexture>textures/desert.jpeg</SpecularTexture>
+    </Asset>
+  </Assets>
+</AssetsFile>

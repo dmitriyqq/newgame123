@@ -1,4 +1,5 @@
 using System;
+using GameRenderer.Metadata.Assets;
 using Gwen;
 using Gwen.Control;
 using ModelLoader;

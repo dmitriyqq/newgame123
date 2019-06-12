@@ -1,9 +1,8 @@
-namespace ModelLoader
+namespace GameRenderer.Metadata.Assets
 {
     public class AnimatedModelAsset: Asset
     {
-        public string MaterialType { get; set; }
-        public string AnimatedModel { get; set; }
+        public string ColladaFile { get; set; }
         public string Texture { get; set; }
     }
 }

@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamePhysics", "GamePhysics\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameUtils", "GameUtils\GameUtils.csproj", "{0D954A09-B8C1-4FD6-B979-88A035595B3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelLoader", "ModelLoader\ModelLoader.csproj", "{9A29D470-E064-42B8-9E1E-121C23840D12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAssetLoader", "GameAssetLoader\GameAssetLoader.csproj", "{9A29D470-E064-42B8-9E1E-121C23840D12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameRenderer.Metadata", "GameRenderer.Metadata\GameRenderer.Metadata.csproj", "{B4B15D9B-7E82-4768-90D4-9712094A92A7}"
 EndProject

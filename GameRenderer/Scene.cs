@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using Assimp;
 using GameRenderer.Materials;
+using GameRenderer.Metadata;
 using GameRenderer.OpenGL;
 using GlmNet;
+using Material = GameRenderer.Materials.Material;
+using Mesh = GameRenderer.Mesh;
 using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
 
 namespace GameRenderer
@@ -76,6 +79,7 @@ namespace GameRenderer
                 child.Parent = this;
             }
         }
+
         public Scene(string path, Material material)
         {
             _material = material;
@@ -95,6 +99,7 @@ namespace GameRenderer
                 }
             }
         }
+
         public void Update(float deltaTime)
         {
         }
@@ -114,13 +119,12 @@ namespace GameRenderer
                     ProcessMesh(mesh);
                 }
             }
-            
-            if (node.HasChildren)
+
+            if (!node.HasChildren) return;
+
+            foreach (var child in node.Children)
             {
-                foreach (var child in node.Children)
-                {
-                    ProcessNode(scene, child);
-                }
+                ProcessNode(scene, child);
             }
         }
 
@@ -156,41 +160,14 @@ namespace GameRenderer
                 }
             }
 
-            var material = _material ?? CreateMaterial(mesh);
-            
-        
-
             geometry.UpdateIndicies(indices.ToArray());
             geometry.Mode = PrimitiveType.Triangles;
 
-            var m = new Mesh(geometry, material) {Name = mesh.Name, Parent = this};
+            var m = new Mesh(geometry, _material) {Name = mesh.Name, Parent = this};
             _children.Add(m);
         }
-
-        private Material CreateMaterial(Assimp.Mesh mesh)
-        {
-            var mt = _scene.Materials[mesh.MaterialIndex];
-            if (mt.HasTextureDiffuse)
-            {
-                var textureMaterial = new LightMaterial {Shininess = 32};
-
-                if  (mt.HasTextureDiffuse) {
-                    textureMaterial.Diffuse = LoadTexture(mt.TextureDiffuse.FilePath);
-                    textureMaterial.Specular = LoadTexture(mt.TextureDiffuse.FilePath);
-                }
-                if (mt.HasTextureSpecular)
-                {
-                    textureMaterial.Specular = LoadTexture(mt.TextureSpecular.FilePath);
-                }
-
-                return textureMaterial;
-            }
-
-            var color = new vec3(mt.ColorDiffuse.R, mt.ColorDiffuse.G, mt.ColorDiffuse.B);
-            return new ColorModelMaterial(color);
-        }
         
-        public Scene Clone(Material material)
+        public Scene Clone()
         {
             var l = new List<Mesh>();
             foreach (var child in _children)
@@ -200,7 +177,7 @@ namespace GameRenderer
                 m.Parent = this;
             }
             
-            return new Scene(l, _scene, material ?? _material);
+            return new Scene(l, _scene, _material);
         }
     }
 }

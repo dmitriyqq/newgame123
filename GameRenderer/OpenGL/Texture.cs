@@ -9,6 +9,8 @@ namespace GameRenderer.OpenGL
     {
         private int _id;
 
+        public Texture(){}
+        
         public Texture(string path, TextureTarget target = TextureTarget.Texture2D)
         {
             var bitmap = new Bitmap(path);

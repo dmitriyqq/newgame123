@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GameModel;
+using GameModel.GameObjects;
 using GameModel.Tasks;
 using GameRenderer.Materials;
+using GameRenderer.Metadata;
 using GlmNet;
 
 namespace GameRenderer

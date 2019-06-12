@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using GameRenderer.Materials;
+using GameRenderer.Metadata;
 using OpenTK.Graphics.OpenGL4;
 
-namespace GameRenderer
+namespace GameRenderer.Particles
 {
     public abstract class ParticleEngine : Mesh
     {
@@ -19,7 +20,7 @@ namespace GameRenderer
 
         public int MaxParticles { get; protected set; } = 2000;
 
-        public ParticleEngine() : base(null, new ParticleMaterial())
+        public ParticleEngine(Material material) : base(null, material)
         {
             var vertexBufferData = new []{
                 -0.5f, -0.5f, 0.0f,

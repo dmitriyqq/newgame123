@@ -49,17 +49,18 @@
   <ItemGroup>
     <Compile Include="Assets\AnimatedModelAsset.cs" />
     <Compile Include="Assets\Asset.cs" />
-    <Compile Include="Assets\BoxAsset.cs" />
+    <Compile Include="Assets\AssetsFile.cs" />
     <Compile Include="Assets\MapAsset.cs" />
-    <Compile Include="Assets\SimpleAsset.cs" />
+    <Compile Include="Assets\MaterialAsset.cs" />
+    <Compile Include="Assets\StaticModelAsset.cs" />
     <Compile Include="Assets\SkyboxAsset.cs" />
-    <Compile Include="CompoundMesh.cs" />
+    <Compile Include="Assets\TextureAsset.cs" />
+    <Compile Include="Assets\Uniform.cs" />
+    <Compile Include="Assets\UniformValue.cs" />
     <Compile Include="Geometry.cs" />
-    <Compile Include="IDrawable.cs" />
-    <Compile Include="IRenderer.cs" />
-    <Compile Include="Material.cs" />
-    <Compile Include="Mesh.cs" />
+    <Compile Include="GLSLInputType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextureType.cs" />
     <Compile Include="VectorHelper.cs" />
   </ItemGroup>
   <ItemGroup>

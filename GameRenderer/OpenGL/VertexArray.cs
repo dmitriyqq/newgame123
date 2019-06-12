@@ -64,19 +64,19 @@ namespace GameRenderer.OpenGL
             _logger.Info($"Created Vertex Attrib pointer for VAO id: {_id}, buffers: {index}");
         }
 
-        public Buffer<float> AttachComponent(string name, BufferUsageHint hint, float[] data, int elementsCount, VertexAttribPointerType type, int divisor)
+        public Buffer<float> AttachComponent(string name, BufferUsageHint hint, float[] data, int elementsCount, int divisor)
         {
             Bind();
-            var buffer = new Buffer<float>(name, BufferTarget.ArrayBuffer, hint, elementsCount, type, VertexAttribIntegerType.Int, _logger);
+            var buffer = new Buffer<float>(name, BufferTarget.ArrayBuffer, hint, elementsCount, VertexAttribPointerType.Float, VertexAttribIntegerType.Int, _logger);
             buffer.BufferData(data);
             AttachVbo(buffer, divisor);
             return buffer;
         }
 
-        public Buffer AttachIntegerComponent(string name, BufferUsageHint hint, int[] data, int elementsCount, VertexAttribIntegerType type, int divisor)
+        public Buffer<int> AttachIntegerComponent(string name, BufferUsageHint hint, int[] data, int elementsCount, int divisor)
         {
             Bind();
-            var buffer = new Buffer<int>(name, BufferTarget.ArrayBuffer, hint, elementsCount, VertexAttribPointerType.Int, type, _logger);
+            var buffer = new Buffer<int>(name, BufferTarget.ArrayBuffer, hint, elementsCount, VertexAttribPointerType.Int, VertexAttribIntegerType.Int, _logger);
             buffer.BufferData(data);
             AttachVbo(buffer, divisor);
             return buffer;

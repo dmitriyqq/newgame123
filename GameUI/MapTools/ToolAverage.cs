@@ -16,7 +16,7 @@ namespace GameUI
             foreach (var voxel in enumerable)
             {
                 var (i, j) = voxel;
-                average += map.Data[i, j].Height;
+                average += map.Data[i, j];
             }
 
             if (enumerable.Length != 0)
@@ -28,8 +28,8 @@ namespace GameUI
             foreach (var voxel in enumerable)
             {
                 var (i, j) = voxel;
-                var diff = (map.Data[i, j].Height - average) / 10.0f;
-                map.Data[i, j].Height -= diff;    
+                var diff = (map.Data[i, j] - average) / 10.0f;
+                map.Data[i, j] -= diff;    
             }
             
         }
