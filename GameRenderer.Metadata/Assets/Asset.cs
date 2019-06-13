@@ -14,7 +14,6 @@ namespace GameRenderer.Metadata.Assets
         public string GameObjectType { get; set; }
         public string MaterialName { get; set; }
         public string Name { get; set; }
-
         public List<UniformValue> MaterialParameters { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace GameUI
         public MapTools MapTools { get; private set; }
         public Constructor ObjectConstructor { get; private set; }
 
-        public InterfaceLayout(Base parent, Logger logger, IGameLoop renderer, Model model, UserInterface ui) : base(parent)
+        public InterfaceLayout(Base parent, Logger logger, UserInterface ui) : base(parent)
         {
             Dock = Pos.Fill;
             _ui = ui;
@@ -31,23 +31,23 @@ namespace GameUI
             BottomDock.Height = 200;
         }
 
-        public void AddModelControls(IGameLoop renderer, Model model, IRayCaster rayCaster)
+        public void AddModelControls(IGameLoop renderer, IRayCaster rayCaster)
         {
-            ModelControls = new ModelControls(RightDock, renderer, model, _ui, rayCaster);
+            ModelControls = new ModelControls(RightDock, renderer, _ui, rayCaster);
             RightDock.TabControl.AddPage("Model Controls", ModelControls);
             RightDock.Width = 150;
         }
 
-        public void AddConstructor(AssetStore assetStore, Map map, IRayCaster rayCaster, Renderer renderer)
+        public void AddConstructor(AssetStore assetStore, IRayCaster rayCaster, Renderer renderer)
         {
-            ObjectConstructor = new Constructor(LeftDock, _logger, assetStore, _ui, map, rayCaster, renderer);
+            ObjectConstructor = new Constructor(LeftDock, _logger, assetStore, _ui, rayCaster, renderer);
             LeftDock.TabControl.AddPage("Constructor", ObjectConstructor);
             RightDock.Width = 300;
         }
         
-        public void AddMapTools(Map map, UserInterface ui, Model model, IRayCaster rayCaster)
+        public void AddMapTools(UserInterface ui,  IRayCaster rayCaster)
         {
-            MapTools = new MapTools(LeftDock, map, model, ui, rayCaster);
+            MapTools = new MapTools(LeftDock,  _ui, rayCaster);
             LeftDock.TabControl.AddPage("MapTools", MapTools);
             RightDock.Width = 300;
         }

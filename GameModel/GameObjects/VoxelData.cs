@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
@@ -7,6 +8,7 @@ using System.Xml.Serialization;
 
 namespace GameModel.GameObjects
 {
+    [Serializable]
     public class VoxelData : IXmlSerializable
     {
         private float[,] _data;
@@ -30,7 +32,8 @@ namespace GameModel.GameObjects
         public void ReadXml(XmlReader reader)
         {
             var serializer = new XmlSerializer(typeof(List<float>));
-            var list = serializer.Deserialize(reader);
+            var stream = new StringReader(reader.ReadInnerXml());
+            var list = serializer.Deserialize(stream);
 
             if (list is List<float> vertexList)
             {

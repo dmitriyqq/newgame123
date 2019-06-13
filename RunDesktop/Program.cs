@@ -1,14 +1,16 @@
-﻿using GameModel;
+﻿using System.Collections.Generic;
+using GameModel;
 using GameRenderer;
 using GameUI;
 using GamePhysics;
-using GameRenderer.Materials;
 using ModelLoader;
 
 namespace RunDesktop
 {
-    internal static class Program
+    public static class Program
     {
+
+
         private const string AssetFile = "./assets/Assets.xml";
         public static void Main(string[] args)
         {
@@ -23,37 +25,32 @@ namespace RunDesktop
             // Renderer contains game loop
             var renderer = new Renderer(model, assetStore.AssetsFile);
 
-            var ui = new UserInterface(renderer, model);
-            renderer.AddUserInterface(ui);
-            ui.AddRendererMenu(renderer);
-            ui.Layout.AddConstructor(assetStore, map, renderer.Camera, renderer);
-            ui.Layout.AddEventView();
-            ui.Layout.AddModelControls(renderer, model, renderer.Camera);
-            ui.Layout.AddMapTools(map, ui, model, renderer.Camera);
-
-            var loggers = new[]
+            var loggers = new List<Logger>
             {
                 (model.Engine as PhysicsEngine)?.Logger,
                 model.Logger,
                 renderer.Logger,
-                ui.Logger,
                 assetStoreLogger
             };
 
-            var sinks = new[]
+            var sinks = new List<ILoggerSink>
             {
                 new ConsoleLoggerSink(),
-                ui.CreateLoggerSink(),
                 new FileLoggerSink("logs/log.txt") 
             };
+            
+            var loggerManager = new LoggerManager(sinks, loggers);
+            
+            var ui = new UserInterface(renderer, model, loggerManager);
+            renderer.AddUserInterface(ui);
+            ui.AddRendererMenu(renderer);
+            ui.Layout.AddConstructor(assetStore, renderer.Camera, renderer);
+            ui.Layout.AddEventView();
+            ui.Layout.AddModelControls(renderer, renderer.Camera);
+            ui.Layout.AddMapTools(ui, renderer.Camera);
 
-            foreach (var logger in loggers)
-            {
-                foreach (var sink in sinks)
-                {
-                    sink.Subscribe(logger);
-                }
-            }
+            loggerManager.AddLogger(ui.Logger);
+            loggerManager.AddSink(ui.CreateLoggerSink());
             
             renderer.Run(60, 60);
         }

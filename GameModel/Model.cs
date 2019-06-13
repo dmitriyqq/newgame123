@@ -15,7 +15,7 @@ namespace GameModel
         public IPhysicsEngine Engine { get; set; }
         public List<GameObject> InitialState { get; set; } = new List<GameObject>();
         public List<WeaponType> WeaponTypes { get; private set; } = new List<WeaponType>();
-        public int Ticks { get; private set; } = -1;
+        public int Ticks { get; private set; }
         public int NumObjects => _gameObjects.Count;
         public float Time { get; private set; }
         public Logger Logger { get; private set; }
@@ -41,7 +41,7 @@ namespace GameModel
 
             foreach (var gameObject in save.GameObjects)
             {
-                AddGameObject(gameObject);
+                InitialState.Add(gameObject);
             }
 
             Time = save.Time;

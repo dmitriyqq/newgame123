@@ -18,7 +18,7 @@ uniform mat4 view;
 uniform mat4 projection;
 
 void main(void){
-	mat4 projectionViewMatrix = projection * view;
+	mat4 projectionViewMatrix = projection * view * model;
 
 	vec4 totalLocalPos = vec4(0.0);
 	vec4 totalNormal = vec4(0.0);

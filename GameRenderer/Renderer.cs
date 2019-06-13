@@ -15,7 +15,7 @@ namespace GameRenderer
 {
     public class Renderer : GameWindow, IGameLoop
     {
-        private readonly Model _model;
+        private Model _model;
         private IUserInterface _ui;
         public Toggle IsPlaying { get; set; } = new Toggle();
 
@@ -31,6 +31,12 @@ namespace GameRenderer
 
         private Pipeline _pipeline;
         public Camera Camera { get; }
+
+        public Model Model
+        {
+            set => UseModel(value);
+        }
+
         public Logger Logger { get; }
         public List<Asset> Assets { get; }
         
@@ -48,8 +54,6 @@ namespace GameRenderer
             Logger = new Logger("Render");
             Logger.Info("Created renderer");
             
-            
-            _model = model;
             _materialManager = new MaterialManager(assetsFile.Materials, Logger);
             _assetsManager = new AssetsManager(assetsFile.Assets, Logger);
             Assets = assetsFile.Assets;
@@ -73,9 +77,8 @@ namespace GameRenderer
             {
                 // _drawables.Add(new BulletParticleEngine(weaponType.Bullets, _materialManager.GetMaterial("temp")));
             }
-            
-            model.OnAddGameObject += RegisterMesh;
-            model.OnRemoveGameObject += DeleteMesh;
+
+            UseModel(model);
             
             GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             GL.Enable(EnableCap.Blend);
@@ -83,10 +86,28 @@ namespace GameRenderer
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             CreateLights();
-
-            model.Start();
         }
 
+        private void UseModel(Model model)
+        {
+            if (_model != null)
+            {
+                _model.OnAddGameObject -= RegisterMesh;
+                _model.OnRemoveGameObject -= DeleteMesh;
+                
+                _drawables.RemoveAll(o => o is UnitMesh);
+                ConstructPipeline();
+            }
+            
+            _model = model;
+            
+            model.OnAddGameObject += RegisterMesh;
+            model.OnRemoveGameObject += DeleteMesh;
+            model.Start();
+        }
+        
+        
+        
         private void CreateLights()
         {
             _lights.Add(new DirectionalLight

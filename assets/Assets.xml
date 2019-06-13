@@ -157,5 +157,19 @@
       <DiffuseTexture>textures/desert.jpeg</DiffuseTexture>
       <SpecularTexture>textures/desert.jpeg</SpecularTexture>
     </Asset>
+    <Asset xsi:type="AnimatedModelAsset">
+      <GameObjectType>GameModel.GameObjects.GameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
+      <MaterialName>AnimatedMaterial</MaterialName>
+      <Name>Test Animated Model</Name>
+      <ColladaFile>./models/TestModel/model.dae</ColladaFile>
+      <Texture>./models/TestModel/diffuse.png</Texture>
+    </Asset>
+    <Asset xsi:type="StaticModelAsset">
+      <GameObjectType>GameModel.GameObjects.GameObject, GameModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</GameObjectType>
+      <MaterialName>LightMaterial</MaterialName>
+      <Name>Static Model</Name>
+      <Scene>./models/trident/trident3.obj</Scene>
+      <Texture>./models/trident/tex.png</Texture>
+    </Asset>
   </Assets>
 </AssetsFile>

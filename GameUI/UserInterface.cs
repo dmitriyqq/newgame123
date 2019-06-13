@@ -16,36 +16,42 @@ namespace GameUI
 {
     public class UserInterface : IUserInterface
     {
+        private readonly LoggerManager _loggerManager;
+
         private Gwen.Renderer.OpenTK _renderer;
         private Gwen.Input.OpenTK _input;
         private Menu _menu;
+
         public InterfaceLayout Layout { get; private set; }
         public Logger Logger { get; }
-        public Model Model { get; }
+        public Model Model { get; set; }
         public Canvas Canvas { get; private set; }
-        public GameWindow Window { get; private set; }
-        
-        public UserInterface(GameWindow window, Model model)
+        public Renderer Renderer { get; private set; }
+        public event Action<Model> ModelReload;
+
+        public UserInterface(Renderer renderer, Model model, LoggerManager loggerManager)
         {
-            Window = window;
+            _loggerManager = loggerManager;
+
+            Renderer = renderer;
             Model = model;
             Logger = new Logger("UI");
             Logger.Info("Created ui");
 
             try
             {
-                CreateCanvas(window);
+                CreateCanvas(renderer);
             }
             catch (Exception e)
             {
                 Logger.Error(e);
             }
             
-            Window.KeyUp += KeyUp;
-            Window.MouseUp += MouseUp;
-            Window.MouseDown += MouseDown;
-            Window.MouseMove += MouseMove;
-            Window.MouseWheel += MouseWheel;
+            Renderer.KeyUp += KeyUp;
+            Renderer.MouseUp += MouseUp;
+            Renderer.MouseDown += MouseDown;
+            Renderer.MouseMove += MouseMove;
+            Renderer.MouseWheel += MouseWheel;
         }
 
         private void CreateCanvas(GameWindow window)
@@ -84,12 +90,12 @@ namespace GameUI
             debugMenu.Menu.AddItem("Model").SetAction((control, eventArgs) => CreateDebugWindow(Model));
             debugMenu.Menu.AddItem("Renderer").SetAction((control, eventArgs) => CreateDebugWindow(renderer));
             debugMenu.Menu.AddItem("Interface").SetAction((control, eventArgs) => CreateDebugWindow(this));
-            debugMenu.Menu.AddItem("Settings").SetAction((control, eventArgs) => {CreateDebugWindow(new {settings="settings",x = 200, y = 300});});
+            debugMenu.Menu.AddItem("Settings").SetAction((control, eventArgs) => {CreateDebugWindow(new {settings = "settings",x = 200, y = 300});});
 
             var tools = _menu.AddItem("Tools");
             tools.Menu.AddItem("Map Generator").SetAction((control, eventArgs) => { CreateMapGeneratorWindow();});
 
-            Layout = new InterfaceLayout(Canvas, Logger, renderer, Model, this);
+            Layout = new InterfaceLayout(Canvas, Logger, this);
         }
 
         private void SaveModel()
@@ -108,7 +114,22 @@ namespace GameUI
 
         private void LoadModel()
         {
-            
+            var modelLoader = new ModelLoader.ModelLoader();
+            try
+            {
+                Logger.Info("Loading model");
+                var model = modelLoader.LoadModel("./saves/save.xml");
+                
+                _loggerManager.AddLogger(model.Logger);
+
+                Model = model;
+                Renderer.Model = model;
+                ModelReload?.Invoke(model);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         private void CreateMapGeneratorWindow()

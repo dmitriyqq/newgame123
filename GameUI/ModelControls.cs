@@ -8,40 +8,48 @@ namespace GameUI
 {
     public class ModelControls : Base
     {
-        private ToggleButton _toggle;
         private readonly Label _ticksLabel;
         private readonly Label _timeLabel;
         private readonly Label _objectsLabel;
         private readonly Button _picker;
         private readonly IRayCaster _rayCaster;
         private readonly UserInterface _ui;
-        private readonly Model _model;
+
+        private Model _model;
+        private ToggleButton _toggle;
         
-        
-        public ModelControls(Base parent, IGameLoop loop, Model model, UserInterface ui, IRayCaster rayCaster) : base(parent)
+        public ModelControls(Base parent, IGameLoop loop,  UserInterface ui, IRayCaster rayCaster) : base(parent)
         {
             _ui = ui;
             _rayCaster = rayCaster;
-            _model = model;
             _toggle = new ToggleButton(this, loop.IsPlaying, "Stop", "Play"){ Dock = Pos.Top};
 
-            _ticksLabel = new Label(this) { Dock = Pos.Top};
-            _timeLabel = new Label(this) { Dock = Pos.Top};
-            _objectsLabel = new Label(this) { Dock = Pos.Top};
+            _ui.ModelReload += HandleModelReload;
+            HandleModelReload(ui.Model);
+
+            _ticksLabel = new Label(this) {Dock = Pos.Top};
+            _timeLabel = new Label(this) {Dock = Pos.Top};
+            _objectsLabel = new Label(this) {Dock = Pos.Top};
+
             _picker = new Button(this) {Text = "Pick Object", Dock = Pos.Top};
             _picker.Clicked += EnableSelector;
             
             UpdateLabels();
         }
 
+        private void HandleModelReload(Model model)
+        {
+            _model = model;
+        }
+
         private void EnableSelector(Base control, EventArgs e)
         {
-            _ui.Window.MouseDown += Select;
+            _ui.Renderer.MouseDown += Select;
         }
         
         private void DisableSelector()
         {
-            _ui.Window.MouseDown -= Select;
+            _ui.Renderer.MouseDown -= Select;
         }
 
         private void Select(object s, MouseButtonEventArgs e)

@@ -96,6 +96,7 @@
     <Compile Include="EventView.cs" />
     <Compile Include="Explorer.cs" />
     <Compile Include="InterfaceLayout.cs" />
+    <Compile Include="LoggerManager.cs" />
     <Compile Include="MapTools\Brush.cs" />
     <Compile Include="MapTools\CircleBrush.cs" />
     <Compile Include="MapTools\MapGenerator.cs" />

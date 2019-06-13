@@ -4,7 +4,7 @@ namespace GameModel.GameObjects
 {
     public class Map : GameObject
     {
-        public VoxelData Data { get; set; }
+        public VoxelData Data;
         public int Size  { get; set; } 
         public float Resolution  { get; set; } = 1.0f;
         public int Octaves  { get; set; } = 3;

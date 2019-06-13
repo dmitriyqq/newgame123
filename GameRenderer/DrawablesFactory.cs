@@ -60,7 +60,7 @@ namespace GameRenderer
                 case StaticModelAsset staticModel:
                 {
                     var material = _materialManager.GetMaterial(staticModel.MaterialName);
-                    var scene = CreateOrCloneScene(staticModel.Scene, material);
+                    var scene = CreateOrCloneScene(staticModel.Scene, material, staticModel.Texture);
                     return scene;
                 }
                 case MapAsset mapAsset:
@@ -95,14 +95,14 @@ namespace GameRenderer
             return _loader.LoadEntity(animatedModel, textureFile, _materialManager.GetMaterial(material));
         }
 
-        private Scene CreateOrCloneScene(string path, Material material)
+        private Scene CreateOrCloneScene(string path, Material material, string texture)
         {
             if (_scenes.TryGetValue(path, out var scene))
             {
                 return scene.Clone();
             }
             
-            scene = new Scene(path, material);
+            scene = new Scene(path, material, texture);
             _scenes[path] = scene;
             return scene.Clone();
         }

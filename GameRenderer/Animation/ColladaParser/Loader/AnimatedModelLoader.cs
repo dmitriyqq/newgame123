@@ -25,6 +25,7 @@ namespace GameRenderer.Animation.ColladaParser.Loader
 			var entityData = _modelLoader.LoadColladaModel(modelFile, 3);
 			var model = CreateVao(entityData.GetMeshData());
 			var texture = LoadTexture(textureFile);
+			material.Textures[0] = texture;
 			var skeletonData = entityData.GetJointsData();
 			var headJoint = CreateJoints(skeletonData.HeadJoint);
 

@@ -178,6 +178,24 @@ namespace ModelLoader
                     new UniformValue { Uniform = "material.diffuse", Value = 0 }
                 }
             }, false);
+            
+            AddAsset(new AnimatedModelAsset
+            {
+                Name = "Test Animated Model",
+                GameObjectType = typeof(GameObject).AssemblyQualifiedName,
+                ColladaFile = "./models/TestModel/model.dae",
+                Texture = "./models/TestModel/diffuse.png",
+                MaterialName = "AnimatedMaterial"
+            });
+            
+            AddAsset(new StaticModelAsset()
+            {
+                Name = "Static Model",
+                GameObjectType = typeof(GameObject).AssemblyQualifiedName,
+                Scene = "./models/trident/trident3.obj",
+                MaterialName = "LightMaterial",
+                Texture = "./models/trident/tex.png"
+            });
 
             SaveAssets();
         }

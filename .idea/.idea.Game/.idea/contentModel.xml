@@ -204,6 +204,7 @@
         <e p="Explorer.cs" t="Include" />
         <e p="GameUI.csproj" t="IncludeRecursive" />
         <e p="InterfaceLayout.cs" t="Include" />
+        <e p="LoggerManager.cs" t="Include" />
         <e p="MapTools" t="Include">
           <e p="Brush.cs" t="Include" />
           <e p="CircleBrush.cs" t="Include" />

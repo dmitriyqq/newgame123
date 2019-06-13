@@ -80,11 +80,14 @@ namespace GameRenderer
             }
         }
 
-        public Scene(string path, Material material)
+        public Scene(string path, Material material, string texture)
         {
             _material = material;
             _children = new List<Mesh>();
+
             var segments = new List<string>(path.Split('/'));
+            _material.Textures[0] = new Texture(texture);
+
             Name = segments[segments.Count - 1]; 
             segments.RemoveAt(segments.Count - 1);
             Directory = string.Join("/", segments);

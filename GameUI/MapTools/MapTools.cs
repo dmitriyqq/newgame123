@@ -1,5 +1,5 @@
 using System;
-using System.Numerics;
+using System.Linq;
 using GameModel;
 using GameModel.GameObjects;
 using Gwen;
@@ -10,31 +10,34 @@ namespace GameUI
 {
     public class MapTools : Base
     {
-        private readonly Map _map;
         private readonly Button _select;
         private readonly ComboBox _tool;
         private readonly UserInterface _ui;
         private readonly IRayCaster _rayCaster;
-        private readonly Model _model;
+        
         private readonly Slider _brushSize;
         private readonly ComboBox _brushType;
+
+        private Map _map;
+        private Model _model;
 
         private Brush _selectedBrush;
         private Tool _selectedTool;
         
-        public MapTools(Base parent, Map map, Model model, UserInterface ui, IRayCaster rayCaster) : base(parent)
+        public MapTools(Base parent, UserInterface ui, IRayCaster rayCaster) : base(parent)
         {
             Dock = Pos.Fill;
-            _map = map;
-            _model = model;
-            _ui = ui;
             _rayCaster = rayCaster;
+
+            _select = new Button(this) {Dock = Pos.Top, Text = "Select"};
+            _select.Clicked += EnableTool;
+
+            _ui = ui;
+            _ui.ModelReload += HandleModelReload;
+            HandleModelReload(_ui.Model);
 
             _selectedBrush = new RectangleBrush();
             _selectedTool = new ToolUp();
-            
-            _select = new Button(this) {Dock = Pos.Top, Text = "Select"};
-            _select.Clicked += EnableTool;
             
             _tool = new ComboBox(this) {Dock = Pos.Top, Margin = Margin.Five};
             _tool.AddItem("Painter", "", new ToolUp());
@@ -53,6 +56,43 @@ namespace GameUI
             _brushSize.ValueChanged += HandleChangeSize;
         }
 
+        private void HandleModelReload(Model model)
+        {
+            _map = null;
+            _select.Disable();
+            
+            if (_model != null)
+            {
+                _model.OnAddGameObject -= UpdateMap;
+                _model.OnRemoveGameObject -= HandleRemove;
+            }
+            
+            _model = model;
+            _model.OnAddGameObject += UpdateMap;
+            _model.OnRemoveGameObject += HandleRemove;
+
+            var map = _model.GameObjects.FirstOrDefault(o => o is Map) as Map;
+            UpdateMap(map);
+        }
+
+        private void UpdateMap(GameObject gameObject)
+        {
+            if (gameObject is Map map)
+            {
+                _select.Enable();
+                _map = map;
+            }
+        }
+
+        private void HandleRemove(GameObject gameObject)
+        {
+            if (gameObject is Map)
+            {
+                _map = null;
+                _select.Disable();
+            }
+        }
+        
         private void SelectBrush(Base control, ItemSelectedEventArgs e)
         {
             if (e.SelectedItem.UserData is Brush brush)
@@ -77,8 +117,8 @@ namespace GameUI
         
         private void EnableTool(Base control, EventArgs e)
         {
-            _ui.Window.MouseDown += HandleStartDraw;
-            _ui.Window.MouseUp += Stop;
+            _ui.Renderer.MouseDown += HandleStartDraw;
+            _ui.Renderer.MouseUp += Stop;
         }
 
         private void Draw(object s, MouseMoveEventArgs e)
@@ -96,15 +136,15 @@ namespace GameUI
         
         private void Stop(object s, MouseButtonEventArgs e)
         {
-            _ui.Window.MouseDown -= HandleStartDraw;
-            _ui.Window.MouseMove -= Draw;
-            _ui.Window.MouseUp -= Stop;
+            _ui.Renderer.MouseDown -= HandleStartDraw;
+            _ui.Renderer.MouseMove -= Draw;
+            _ui.Renderer.MouseUp -= Stop;
             _map.BatchUpdate();
         }
 
         private void HandleStartDraw(object s, MouseButtonEventArgs e)
         {
-            _ui.Window.MouseMove += Draw;
+            _ui.Renderer.MouseMove += Draw;
         }
     }
 }

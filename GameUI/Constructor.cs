@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using GameModel;
 using GameModel.GameObjects;
 using GameRenderer;
@@ -16,22 +17,22 @@ namespace GameUI
     {
         private readonly AssetStore _assetStore;
         private readonly UserInterface _ui;
-        private readonly Map _map;
         private readonly Logger _logger;
         private readonly IRayCaster _rayCaster;
         private readonly Renderer _renderer;
+
         private CollapsibleList _listBox;
         private CollapsibleCategory _actionsCategory;
         private CollapsibleCategory _assetsCategory;
         private IDrawable _cursor;
         private Asset _selectedAsset;
+        private Map _map;
         
-        public Constructor(Base parent, Logger logger, AssetStore assetStore, UserInterface ui, Map map, IRayCaster rayCaster, Renderer renderer) : base(parent)
+        public Constructor(Base parent, Logger logger, AssetStore assetStore, UserInterface ui, IRayCaster rayCaster, Renderer renderer) : base(parent)
         {
             Dock = Pos.Fill;
             _assetStore = assetStore;
             _ui = ui;
-            _map = map;
             _rayCaster = rayCaster;
             _logger = logger;
             _renderer = renderer;
@@ -87,20 +88,31 @@ namespace GameUI
             _selectedAsset = asset;
             _cursor = _renderer.AddDrawable(asset);
 
-            _ui.Window.MouseMove += MoveAsset;
-            _ui.Window.MouseDown += PlaceAsset;
+            if (_ui.Model.GameObjects.FirstOrDefault(o => o is Map) is Map map)
+            {
+                _map = map;
+                _ui.Renderer.MouseMove += MoveAsset;
+                _ui.Renderer.MouseDown += PlaceAsset;
+            }
+            else
+            {
+                _logger.Warning("No map for asset");
+            }
         }
 
         private void MoveAsset(object s, MouseMoveEventArgs e)
         {
             var (start, dir) = _rayCaster.CastRay(e.X, e.Y);
+
             var v =_ui.Model.Engine.IntersectMap(_map, start, dir, out var normal);
 
-            if (v.HasValue)
+            if (!v.HasValue)
             {
-                _cursor.Position = v.Value.ToGlm() + new vec3(0.0f, 5.0f, 0.0f);
-                _cursor.Rotation = normal.ToGlm();
+                return;
             }
+
+            _cursor.Position = v.Value.ToGlm() + new vec3(0.0f, 5.0f, 0.0f);
+            _cursor.Rotation = normal.ToGlm();
         }
         
         private void PlaceAsset(object s, MouseButtonEventArgs e)
@@ -130,8 +142,8 @@ namespace GameUI
             }
             finally
             {
-                _ui.Window.MouseMove -= MoveAsset;
-                _ui.Window.MouseDown -= PlaceAsset;
+                _ui.Renderer.MouseMove -= MoveAsset;
+                _ui.Renderer.MouseDown -= PlaceAsset;
             
                 Unselect();    
             }
