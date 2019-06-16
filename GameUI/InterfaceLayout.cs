@@ -51,5 +51,10 @@ namespace GameUI
             LeftDock.TabControl.AddPage("MapTools", MapTools);
             RightDock.Width = 300;
         }
+
+        public void AddAssetExplorer(UserInterface ui)
+        {
+            
+        }
     }
 }

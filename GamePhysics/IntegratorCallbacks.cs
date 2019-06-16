@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using BepuPhysics;
 using GameModel;
 
-namespace GamePhysics
+namespace PhysicsEngine
 {
     public class IntegratorCallbacks
     {

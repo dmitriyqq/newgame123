@@ -7,7 +7,7 @@
     <ProjectGuid>{07BBCCA4-338F-4E0D-A74D-93431C4D66A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PhysicsEngine</RootNamespace>
+    <RootNamespace>GamePhysics</RootNamespace>
     <AssemblyName>GamePhysics</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -69,7 +69,14 @@
     <Compile Include="MapHitHandler.cs" />
     <Compile Include="NarrowPhaseCallbacks.cs" />
     <Compile Include="PhysicsEngine.cs" />
+    <Compile Include="PhysicsEngineVisualizer.cs" />
     <Compile Include="PhysicsObjectsFactory.cs" />
+    <Compile Include="PhysicsShapes\Box.cs" />
+    <Compile Include="PhysicsShapes\ComplexShape.cs" />
+    <Compile Include="PhysicsShapes\CompoundShape.cs" />
+    <Compile Include="PhysicsShapes\PhysicsShape.cs" />
+    <Compile Include="PhysicsShapes\Solver.cs" />
+    <Compile Include="PhysicsShapes\Sphere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -9,10 +9,10 @@ namespace GameRenderer.OpenGL
     public class Buffer
     {
         protected readonly int Id;
-        public readonly string Name;
         protected readonly Logger Logger;
         protected readonly BufferTarget Target;
         protected readonly BufferUsageHint Hint;
+        public readonly string Name;
         public VertexAttribPointerType Type { get; }
         public VertexAttribIntegerType IType { get; }
         public int TypeSize { get; } 

@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Reflection;
 using GameModel;
 using Gwen;
@@ -12,37 +10,26 @@ namespace GameUI
 {
     public class DebugWindow : Explorer
     {
-        private object o;
+        private static BindingFlags Flags => BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
 
-        private Base parent;
-
-        private Color publicColor = Color.Lime;
-        private Color privateColor = Color.Red;
-        private Color readonlyColor = Color.Maroon;
-        private Type type => o.GetType();
-
-        private Properties fieldProps;
-        private Properties propertiesProps;
-
-        private static BindingFlags flags => BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
-        private IEnumerable<FieldInfo> Fields => type.GetFields(flags);
-        private IEnumerable<PropertyInfo> Properties => type.GetProperties(flags);
-        
         private readonly Dictionary<PropertyInfo, string> _propValues = new Dictionary<PropertyInfo, string>();
         private readonly Dictionary<FieldInfo, string> _fieldValues = new Dictionary<FieldInfo, string>();
-        
-        private Logger logger;
+        private readonly Logger _logger;
+        private readonly object _objectToExplore;
+        private Properties _fieldProps;
+        private TabControl _tabs;
+        private Properties _propertiesProps;
+        private Type Type => _objectToExplore.GetType();
+        private IEnumerable<FieldInfo> Fields => Type.GetFields(Flags);
+        private IEnumerable<PropertyInfo> Properties => Type.GetProperties(Flags);
 
-        private TabControl tabs;
-        
-        public DebugWindow(Base parent, object o, Logger logger) : base(parent)
+        public DebugWindow(Base parent, object objectToExplore, Logger logger) : base(parent)
         {
-            this.parent = parent;
-            this.o = o;
-            this.logger = logger;
+            _objectToExplore = objectToExplore;
+            _logger = logger;
 
-            Title = $"Object {o.GetType().Name}";
-            logger.Info($"Creating window for object {o}");
+            Title = $"Object {objectToExplore.GetType().Name}";
+            logger.Info($"Creating window for object {objectToExplore}");
 
             SetSize(400, 400);
             CreateTabs();
@@ -52,6 +39,11 @@ namespace GameUI
             
             var refreshButton = new Button(this) { Dock = Pos.Bottom, Text = "Update values"};
             refreshButton.Clicked += HandleRefreshClick;
+        }
+
+        public sealed override bool SetSize(int width, int height)
+        {
+            return base.SetSize(width, height);
         }
 
         private void HandleUpdateClick(Base control, EventArgs e)
@@ -66,18 +58,19 @@ namespace GameUI
 
         private void CreateTabs()
         {
-            tabs = new TabControl(this) {Dock = Pos.Fill};
+            _tabs = new TabControl(this) {Dock = Pos.Fill};
             AddFields();
             AddProperties();
             AddMethods();
         }
-        
-        public void Refresh()
+
+        private void Refresh()
         {
-            RemoveChild(tabs, true);
+            RemoveChild(_tabs, true);
             CreateTabs();
         }
-        public void Update()
+
+        private void Update()
         {
             UpdateProps();
             UpdateFields();
@@ -115,13 +108,13 @@ namespace GameUI
                         continue;
                     }
                     
-                    logger.Info($"Updating property {property.Name} with value {value}");
-                    property.SetMethod.Invoke(o, new[] {value});
+                    _logger.Info($"Updating property {property.Name} with value {value}");
+                    property.SetMethod.Invoke(_objectToExplore, new[] {value});
                 }
             }
             catch (Exception e)
             {
-                logger.Error(e);
+                _logger.Error(e);
             }
             
             _propValues.Clear();
@@ -159,54 +152,53 @@ namespace GameUI
                         continue;
                     }
 
-                    logger.Info($"Updating property {field.Name} with value {value}");
-                    field.SetValue(o, value);
+                    _logger.Info($"Updating property {field.Name} with value {value}");
+                    field.SetValue(_objectToExplore, value);
                 }
             }
             catch (Exception e)
             {
-                logger.Error(e);
+                _logger.Error(e);
             }
             
             _fieldValues.Clear();
         }
 
-        private Properties CreateGroup(string name, int position)
+        private Properties CreateGroup(string name)
         {
-            var button = tabs.AddPage(name);
+            var button = _tabs.AddPage(name);
             var page = button.Page;
             
             var scroll = new ScrollControl(page);
             scroll.EnableScroll(true, true);
             scroll.Dock = Pos.Fill;
-            var props = new Properties(scroll);
-            props.Dock = Pos.Fill;
+            var props = new Properties(scroll) {Dock = Pos.Fill};
             return props;
         }
 
         private void AddFields()
         {
             // All fields
-           fieldProps = CreateGroup("Fields", 0);
+           _fieldProps = CreateGroup("Fields");
 
             try
             {
                 foreach (var field in Fields)
                 {
-                    var value = field.GetValue(o);
+                    var value = field.GetValue(_objectToExplore);
 
-                    var row = createRowForObject(field.Name, value, fieldProps);
+                    var row = CreateRowForObject(field.Name, value, _fieldProps);
                     row.UserData = field;
                     row.ValueChanged += HandleFieldChange;
                 }
             }
             catch (Exception e)
             {
-                logger.Error(e.Message);
+                _logger.Error(e.Message);
             }
         }
 
-        private PropertyRow createRowForObject(string name, object obj, Properties props)
+        private PropertyRow CreateRowForObject(string name, object obj, Properties props)
         {
             PropertyRow row;
 
@@ -262,16 +254,16 @@ namespace GameUI
         {
             var data = control.UserData;
             // Dirty hack
-            if (data is FieldInfo finfo)
+            if (data is FieldInfo fieldInfo)
             {
-                control.UserData = finfo.GetValue(o);
-            } else if (data is PropertyInfo pinfo)
+                control.UserData = fieldInfo.GetValue(_objectToExplore);
+            } else if (data is PropertyInfo propertyInfo)
             {
-                control.UserData = pinfo.GetValue(o);
+                control.UserData = propertyInfo.GetValue(_objectToExplore);
             }
             else
             {
-                logger.Error("UserData should be field/property");
+                _logger.Error("UserData should be field/property");
             }
             
             base.HandleClassClick(control, args);
@@ -281,17 +273,19 @@ namespace GameUI
         protected override void HandleArrayClick(Base control, EventArgs args)
         {
             var data = control.UserData;
+
             // Dirty hack
-            if (data is FieldInfo finfo)
+            if (data is FieldInfo fieldInfo)
             {
-                control.UserData = finfo.GetValue(o);
-            } else if (data is PropertyInfo pinfo)
+                control.UserData = fieldInfo.GetValue(_objectToExplore);
+            }
+            else if (data is PropertyInfo propertyInfo)
             {
-                control.UserData = pinfo.GetValue(o);
+                control.UserData = propertyInfo.GetValue(_objectToExplore);
             }
             else
             {
-                logger.Error("UserData should be field/property");
+                _logger.Error("UserData should be field/property");
             }
             
             base.HandleArrayClick(control, args);
@@ -303,16 +297,14 @@ namespace GameUI
             // Properties
             try
             {
-                propertiesProps = CreateGroup("Properties", 1);
+                _propertiesProps = CreateGroup("Properties");
 
                 foreach (var property in Properties)
                 {
                     if (property.CanRead)
                     {
-                        var value = property.GetValue(o);
-                        var str = value?.ToString() ?? "null";
-                        
-                        var row = createRowForObject(property.Name, value, propertiesProps);
+                        var value = property.GetValue(_objectToExplore);
+                        var row = CreateRowForObject(property.Name, value, _propertiesProps);
                         row.UserData = property;
                         row.ValueChanged += HandlePropertyChange;
                     }
@@ -320,22 +312,21 @@ namespace GameUI
             }
             catch (Exception e)
             {
-                logger.Error(e.Message);
+                _logger.Error(e.Message);
             }
         }
 
         private void AddMethods()
         {
-            var button = tabs.AddPage("Methods");
+            var button = _tabs.AddPage("Methods");
             var page = button.Page;
-            
-            var listBox = new ListBox(page);
-            listBox.Dock = Pos.Fill;
 
-            foreach (var method in type.GetMethods(flags))
+            var listBox = new ListBox(page) {Dock = Pos.Fill};
+
+            foreach (var method in Type.GetMethods(Flags))
             {
                 var row = listBox.AddRow($"[{listBox.RowCount}] {method.Name}");
-                var payload = (o, method);
+                var payload = (o: _objectToExplore, method);
 
                 row.UserData = payload;
                 row.Clicked += HandleOpenMethodInvoker;
@@ -345,9 +336,9 @@ namespace GameUI
         private void HandleFieldChange(Base control, EventArgs args)
         {
             var row = control as PropertyRow;
-            var o = row.UserData;
+            var userData = row?.UserData;
 
-            if (o is FieldInfo field)
+            if (userData is FieldInfo field)
             {
                 _fieldValues[field] = row.Value;    
             }
@@ -355,24 +346,14 @@ namespace GameUI
             {
                 throw new ArgumentException();
             }
-//            try
-//            {
-//                var field = type.GetField(row.Label, flags);
-//                field.SetValue(o, row.Value);
-//            }
-//            catch (Exception e)
-//            {
-//                logger.Error(e.Message);
-//                throw e;
-//            }
         }
 
         private void HandlePropertyChange(Base control, EventArgs args)
         {
             var row = control as PropertyRow;
-            var o = row.UserData;
+            var userData = row?.UserData;
 
-            if (o is PropertyInfo property)
+            if (userData is PropertyInfo property)
             {
                 _propValues[property] = row.Value;    
             }
@@ -380,17 +361,6 @@ namespace GameUI
             {
                 throw new ArgumentException();
             }
-            
-//            try
-//            {
-//                var property = type.GetProperty(row.Label, flags);
-//                property.SetValue(o, row.Value);
-//            }
-//            catch (Exception e)
-//            {
-//                logger.Error(e.Message);
-//                throw e;
-//            }
         }
     }
 }

@@ -9,6 +9,8 @@ using System.Reflection;
 using GameModel;
 using GameModel.GameObjects;
 using GameRenderer;
+using GameRenderer.Metadata.Assets;
+using GameUI.AssetViewers;
 using Key = OpenTK.Input.Key;
 
 
@@ -17,7 +19,7 @@ namespace GameUI
     public class UserInterface : IUserInterface
     {
         private readonly LoggerManager _loggerManager;
-
+        private readonly GameWindow _gameWindow;
         private Gwen.Renderer.OpenTK _renderer;
         private Gwen.Input.OpenTK _input;
         private Menu _menu;
@@ -26,13 +28,16 @@ namespace GameUI
         public Logger Logger { get; }
         public Model Model { get; set; }
         public Canvas Canvas { get; private set; }
+        public Toggle BlockGameInput { get; private set; }
         public Renderer Renderer { get; private set; }
         public event Action<Model> ModelReload;
 
         public UserInterface(Renderer renderer, Model model, LoggerManager loggerManager)
         {
             _loggerManager = loggerManager;
+            _gameWindow = renderer;
 
+            BlockGameInput = new Toggle(); 
             Renderer = renderer;
             Model = model;
             Logger = new Logger("UI");
@@ -48,6 +53,7 @@ namespace GameUI
             }
             
             Renderer.KeyUp += KeyUp;
+            Renderer.KeyDown += KeyDown;
             Renderer.MouseUp += MouseUp;
             Renderer.MouseDown += MouseDown;
             Renderer.MouseMove += MouseMove;
@@ -142,6 +148,14 @@ namespace GameUI
             }
         }
         
+        public void SetCenter(Base window)
+        {
+            var bounds = window.Bounds;
+            var halfSizeX = (bounds.Right - bounds.Left) / 2.0f;
+            var halfSizeY = (bounds.Top - bounds.Bottom) / 2.0f;
+            window.SetPosition(Canvas.Width / 2.0f - halfSizeX, Canvas.Height / 2.0f + halfSizeY);
+        }
+        
         // Event handlers
         public void Resize(Matrix4 projMatrix, int width, int height)
         {
@@ -153,7 +167,7 @@ namespace GameUI
         {
             if (e.Key == Key.Escape)
             {
-                throw new Exception();
+                _gameWindow.Exit();
             }
 
             _input.ProcessKeyDown(e);
@@ -189,14 +203,14 @@ namespace GameUI
             var window = new DebugWindow(Canvas, o, Logger);
             RegisterExplorer(window);
         }
-        
-        public void CreateArrayWindowWindow(IEnumerable collection)
+
+        private void CreateArrayWindowWindow(IEnumerable collection)
         {
             var window = new DebugCollectionWindow(Canvas, collection, Logger);
             RegisterExplorer(window);
         }
 
-        public void CreateMethodInvoker(object o, MethodInfo info)
+        private void CreateMethodInvoker(object o, MethodInfo info)
         {
             var window = new MethodInvoker(Canvas, o, info, Logger);
             RegisterExplorer(window);

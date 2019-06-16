@@ -15,5 +15,7 @@ namespace GameRenderer.Metadata.Assets
         public string MaterialName { get; set; }
         public string Name { get; set; }
         public List<UniformValue> MaterialParameters { get; set; }
+        
+        public GamePhysics.PhysicsShapes.PhysicsShape Shape { get; set; }
     }
 }

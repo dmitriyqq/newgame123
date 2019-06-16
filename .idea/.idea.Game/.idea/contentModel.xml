@@ -62,7 +62,16 @@
         <e p="MapHitHandler.cs" t="Include" />
         <e p="NarrowPhaseCallbacks.cs" t="Include" />
         <e p="PhysicsEngine.cs" t="Include" />
+        <e p="PhysicsEngineVisualizer.cs" t="Include" />
         <e p="PhysicsObjectsFactory.cs" t="Include" />
+        <e p="PhysicsShapes" t="Include">
+          <e p="Box.cs" t="Include" />
+          <e p="ComplexShape.cs" t="Include" />
+          <e p="CompoundShape.cs" t="Include" />
+          <e p="PhysicsShape.cs" t="Include" />
+          <e p="Solver.cs" t="Include" />
+          <e p="Sphere.cs" t="Include" />
+        </e>
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
@@ -195,8 +204,16 @@
         <e p="packages.config" t="Include" />
       </e>
       <e p="GameUI" t="IncludeRecursive">
+        <e p="AssetViewers" t="Include">
+          <e p="AnimatedAssetWidget.cs" t="Include" />
+          <e p="AssetTypeSelector.cs" t="Include" />
+          <e p="AssetTypeWidget.cs" t="Include" />
+          <e p="AssetViewer.cs" t="Include" />
+          <e p="CreateAssetModal.cs" t="Include" />
+          <e p="GameObjectWidget.cs" t="Include" />
+          <e p="StaticAssetWidget.cs" t="Include" />
+        </e>
         <e p="Constructor.cs" t="Include" />
-        <e p="CreateAssetModal.cs" t="Include" />
         <e p="CursorObject.cs" t="Include" />
         <e p="DebugCollectionWindow.cs" t="Include" />
         <e p="DebugWindow.cs" t="Include" />

@@ -5,6 +5,7 @@ using BepuUtilities;
 using BepuUtilities.Memory;
 using GameModel;
 using GameModel.GameObjects;
+using PhysicsEngine;
 
 namespace GamePhysics
 {
@@ -13,6 +14,7 @@ namespace GamePhysics
         public readonly Logger Logger;
         private readonly Simulation _simulation;
         private readonly PhysicsObjectsFactory _factory;
+        private readonly PhysicsEngineVisualizer _visualizer;
         private BufferPool _bufferPool;
         public PhysicsEngine()
         {

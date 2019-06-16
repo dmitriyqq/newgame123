@@ -2,22 +2,19 @@
 using GameModel;
 using GameRenderer;
 using GameUI;
-using GamePhysics;
 using ModelLoader;
 
 namespace RunDesktop
 {
     public static class Program
     {
-
-
         private const string AssetFile = "./assets/Assets.xml";
         public static void Main(string[] args)
         {
             var modelLoader = new ModelLoader.ModelLoader();
 
             // Get model with initial state
-            var (model, map) = modelLoader.CreateEmptyModelWithMap();
+            var model = modelLoader.CreateEmptyModelWithMap();
 
             var assetStoreLogger = new Logger("Assets");
             var assetStore = new AssetStore(AssetFile, assetStoreLogger);
@@ -27,7 +24,7 @@ namespace RunDesktop
 
             var loggers = new List<Logger>
             {
-                (model.Engine as PhysicsEngine)?.Logger,
+                (model.Engine as GamePhysics.PhysicsEngine)?.Logger,
                 model.Logger,
                 renderer.Logger,
                 assetStoreLogger

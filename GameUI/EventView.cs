@@ -11,8 +11,6 @@ namespace GameUI
         public EventView(Base parent) : base(parent)
         {
         }
-
-        
         
         public void Subscribe(Logger logger)
         {

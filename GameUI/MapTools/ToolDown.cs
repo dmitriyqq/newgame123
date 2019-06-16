@@ -12,9 +12,8 @@ namespace GameUI
             foreach (var voxel in voxels)
             {
                 var (i, j) = voxel;
-                map.Data[i, j] += 0.05f;    
+                map.Data[i, j] -= 0.05f;    
             }
-            
         }
     }
 }

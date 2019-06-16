@@ -77,7 +77,7 @@ namespace GameUI
         
         private void HandleCreate(Base control, EventArgs e)
         {
-            _ui.Canvas.AddChild(new CreateAssetModal(_ui.Canvas, _assetStore));
+            _ui.Canvas.AddChild(new CreateAssetModal(_ui.Canvas, _ui, _assetStore));
             Unselect();
         }
 

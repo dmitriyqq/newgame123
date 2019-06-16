@@ -2,11 +2,9 @@ using System;
 using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
-using BepuUtilities.Collections;
 using BepuUtilities.Memory;
 using GameModel;
 using GameModel.GameObjects;
-using MathFloat;
 
 namespace GamePhysics
 {
@@ -29,6 +27,10 @@ namespace GamePhysics
             {
                 return AddMap(map);
             }
+
+            _simulation.Statics.GetDescription(2, out var description);
+            var shape = description.Collidable.Shape;
+            var s = _simulation.Shapes[shape.Index];
             
             return AddSphere(gameObject);
         }

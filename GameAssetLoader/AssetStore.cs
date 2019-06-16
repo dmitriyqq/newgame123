@@ -20,6 +20,8 @@ namespace ModelLoader
 
         public Action OnAssetUpdate;
         public AssetsFile AssetsFile { get; private set; }
+        public IEnumerable<Asset> Assets => AssetsFile.Assets;
+        public IEnumerable<MaterialAsset> Materials => AssetsFile.Materials;
         public AssetStore(string path, Logger logger)
         {
             _logger = logger;

@@ -4,15 +4,14 @@ using System.Xml;
 using System.Xml.Serialization;
 using GameModel;
 using GameModel.GameObjects;
-using GamePhysics;
 
 namespace ModelLoader
 {
     public class ModelLoader
     {
-        private (Model, Map) BuildModel()
+        private Model BuildModel()
         {
-            var physicsEngine = new PhysicsEngine();
+            var physicsEngine = new GamePhysics.PhysicsEngine();
             var map = new Map{Size = 100};
             map.CreateMap();
 
@@ -20,10 +19,10 @@ namespace ModelLoader
             var model = new Model() { InitialState = initialState};
 
             model.Use(physicsEngine);
-            return (model, map);
+            return model;
         }
 
-        public (Model, Map) CreateEmptyModelWithMap()
+        public Model CreateEmptyModelWithMap()
         {
             return BuildModel();
         }
@@ -37,7 +36,7 @@ namespace ModelLoader
                 if (gameSave is GameSave save)
                 {
                     var model = new Model(save);
-                    var physicsEngine = new PhysicsEngine();
+                    var physicsEngine = new GamePhysics.PhysicsEngine();
                     model.Use(physicsEngine);
                     return model;
                 }

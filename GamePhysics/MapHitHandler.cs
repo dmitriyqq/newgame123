@@ -2,7 +2,6 @@ using System.Numerics;
 using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Trees;
-using GameModel;
 using GameModel.GameObjects;
 
 namespace GamePhysics

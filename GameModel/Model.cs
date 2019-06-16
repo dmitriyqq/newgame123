@@ -2,24 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using GameModel.GameObjects;
 
 namespace GameModel
 {
     public class Model
     {
+        private IEnumerable<Type> _gameObjectTypes;
+
         private readonly List<GameObject> _gameObjects = new List <GameObject>();
         private List<Player> Players { get; } = new List <Player>();
-        public event Action<GameObject> OnAddGameObject;
-        public event Action<GameObject> OnRemoveGameObject;
         public IPhysicsEngine Engine { get; set; }
         public List<GameObject> InitialState { get; set; } = new List<GameObject>();
         public List<WeaponType> WeaponTypes { get; private set; } = new List<WeaponType>();
         public int Ticks { get; private set; }
-        public int NumObjects => _gameObjects.Count;
         public float Time { get; private set; }
         public Logger Logger { get; private set; }
         public IEnumerable<GameObject> GameObjects => _gameObjects;
+        public int NumObjects => _gameObjects.Count;
+        public IEnumerable<Type> GameObjectTypes => _gameObjectTypes;
+        
+        public event Action<GameObject> OnAddGameObject;
+        public event Action<GameObject> OnRemoveGameObject;
 
         public Model()
         {
@@ -30,6 +35,8 @@ namespace GameModel
             Players.Add(new Player{Name = "Computer", Color = new Vector3(1.0f, 0.0f, 0.0f)});
 
             WeaponTypes.Add(new WeaponType());
+
+            GetGameObjectTypes();
         }
         
         public Model(GameSave save)
@@ -136,6 +143,13 @@ namespace GameModel
 
             Engine.Update(deltaTime);
             Ticks++;
+        }
+
+        private void GetGameObjectTypes()
+        {
+            _gameObjectTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(t => t.GetTypes())
+                .Where(t => t.IsClass && t.Namespace != null && t.Namespace.Contains("GameObjects"));
         }
     }
 }
